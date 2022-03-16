@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                     url: 'images/uno.jpg',
                   ),
                   Text(
-                    'Welcome back!',
+                    'Welcome!',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 38.0
@@ -57,10 +57,15 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     width: double.infinity,
                     height: 60.0,
-                    child: FlatButton(
-                      color: Color.fromARGB(255, 199, 38, 26),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
                       onPressed: (){
                         final route = MaterialPageRoute(
                           builder: (context) => SignIn());
@@ -81,8 +86,15 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     width: double.infinity,
                     height: 60.0,
-                    child: FlatButton(
-                      color: Color.fromARGB(255, 199, 38, 26),
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
                       onPressed: (){
                         final route = MaterialPageRoute(
                           builder: (context) => SignUp());

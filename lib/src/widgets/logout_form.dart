@@ -1,17 +1,16 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({ Key? key }) : super(key: key);
+class LogoutForm extends StatefulWidget {
+  const LogoutForm({ Key? key }) : super(key: key);
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  _LogoutFormState createState() => _LogoutFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _LogoutFormState extends State<LogoutForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
+  String _name = '';
   String _email = '';
   String _password = '';
   _submit(){
@@ -25,12 +24,30 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         children: <Widget> [
           InputText(
-            hint: 'Email Address',
-            label: 'Email Adress',
+            hint: 'User Name',
+            label: 'User Name',
+            keyboard: TextInputType.name,
+            icono: Icon(Icons.supervised_user_circle),
+            onChanged: (data) {
+              _name = data;
+            },
+            validator: (data) {
+              if (data!.trim().isEmpty) {
+                return "Invalid user name";
+              }
+              return null;
+            },
+          ),
+          Divider(
+            height: 25.0,
+          ),
+          InputText(
+            hint: 'Email address',
+            label: 'Email address',
             keyboard: TextInputType.emailAddress,
             icono: Icon(Icons.verified_user),
             onChanged: (data) {
-              _email = data;
+              _email = (data);
             },
             validator: (data) {
               if (!data!.contains('@')) {
@@ -72,7 +89,7 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ),
               onPressed: this._submit,
-              child: Text('Sign In',
+              child: Text('Register',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'FredokaOne',
@@ -85,17 +102,17 @@ class _LoginFormState extends State<LoginForm> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget> [
               Text(
-                'New here?',
+                'Already have an account?',
                 style: TextStyle(
                   fontFamily: 'FredokaOne'
                 ),
               ),
               FlatButton(
                 onPressed: (){
-                  Navigator.pushNamed(context, 'sign_up');
+                  Navigator.pushNamed(context, 'sign_in');
                 }, 
                 child: Text(
-                  'Sign Up',
+                  'Sign In',
                   style: TextStyle(
                     color: Colors.teal,
                     fontFamily: 'FredokaOne'

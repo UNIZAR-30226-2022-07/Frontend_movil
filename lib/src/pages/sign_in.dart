@@ -30,7 +30,7 @@ class _SignInState extends State<SignIn> {
           child: ListView(
             padding: EdgeInsets.symmetric(
               horizontal: 40.0,
-              vertical: 200
+              vertical: 100
             ),
             children: <Widget>  [
               Column(
@@ -40,17 +40,17 @@ class _SignInState extends State<SignIn> {
                     url: 'images/uno.jpg',
                   ),
                   Text(
-                    'Welcome back!',
+                    'Sign In',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 38.0
                     ),
                   ),
                   Text(
-                    'Login',
+                    'Hi there! Nice to see you again.',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
-                      fontSize: 35.0
+                      fontSize: 15.0
                     )
                   ),
                   Divider(
@@ -59,7 +59,19 @@ class _SignInState extends State<SignIn> {
                   // Formulario 
                   LoginForm()
                 ],
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>  [
+                  FloatingActionButton(
+                    backgroundColor: Colors.red[900],
+                    child: Icon(Icons.settings_backup_restore),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
