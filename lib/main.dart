@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
+import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/sign_in.dart';
 import 'package:flutter_unogame/src/pages/sign_up.dart';
 import 'package:flutter_unogame/src/pages/forgot_password.dart';
@@ -26,6 +28,8 @@ class MyApp extends StatelessWidget {
         'sign_in': (BuildContext context) => SignIn(),
         'sign_up': (BuildContext context) => SignUp(),
         'forgot_password': (BuildContext context) => forgotPassword(),
+        'partida': (BuildContext context) => Partida(),
+        'home_page': (BuildContext context) => HomePage(),
 
       }
     );

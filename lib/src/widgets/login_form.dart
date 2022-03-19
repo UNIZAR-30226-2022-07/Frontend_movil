@@ -1,7 +1,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
+import 'package:flutter_unogame/src/pages/partida.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({ Key? key }) : super(key: key);
@@ -17,6 +19,7 @@ class _LoginFormState extends State<LoginForm> {
   _submit(){
     final isLogin = _formKey.currentState?.validate();
     print('IsLogin Form $isLogin');
+    
   }
   @override
   Widget build(BuildContext context) {
@@ -71,7 +74,12 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                         ),
                       ),
-              onPressed: this._submit,
+              onPressed: (){
+                this._submit;
+                final route = MaterialPageRoute(
+                  builder: (context) => HomePage());
+                Navigator.push(context, route);
+              },
               child: Text('Sign In',
                 style: TextStyle(
                   color: Colors.white,
@@ -93,6 +101,7 @@ class _LoginFormState extends State<LoginForm> {
               FlatButton(
                 onPressed: (){
                   Navigator.pushNamed(context, 'sign_up');
+                  
                 }, 
                 child: Text(
                   'Sign Up',
@@ -107,12 +116,6 @@ class _LoginFormState extends State<LoginForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget> [
-              // Text(
-              // //   'Forgot password?',
-              // //   style: TextStyle(
-              // //     fontFamily: 'FredokaOne'
-              // //   ),
-              // // ),
               FlatButton(
                 onPressed: (){
                   Navigator.pushNamed(context, 'forgot_password');
