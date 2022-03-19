@@ -103,6 +103,29 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               )
             ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget> [
+              // Text(
+              // //   'Forgot password?',
+              // //   style: TextStyle(
+              // //     fontFamily: 'FredokaOne'
+              // //   ),
+              // // ),
+              FlatButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, 'forgot_password');
+                }, 
+                child: Text(
+                  'Forgot password',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontFamily: 'FredokaOne'
+                  ),
+                ),
+              )
+            ],
           )
         ],
       )

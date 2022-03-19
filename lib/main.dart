@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
 import 'package:flutter_unogame/src/pages/sign_in.dart';
 import 'package:flutter_unogame/src/pages/sign_up.dart';
+import 'package:flutter_unogame/src/pages/forgot_password.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         'Login': (BuildContext context) => LoginPage(),
         'sign_in': (BuildContext context) => SignIn(),
         'sign_up': (BuildContext context) => SignUp(),
+        'forgot_password': (BuildContext context) => forgotPassword(),
 
       }
     );
