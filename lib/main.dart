@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
+import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/sign_in.dart';
 import 'package:flutter_unogame/src/pages/sign_up.dart';
 import 'package:flutter_unogame/src/pages/forgot_password.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,

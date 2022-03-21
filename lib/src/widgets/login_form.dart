@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
-import 'package:flutter_unogame/src/pages/partida.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({ Key? key }) : super(key: key);

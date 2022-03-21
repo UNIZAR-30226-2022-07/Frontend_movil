@@ -18,15 +18,38 @@ class _HomePageState extends State<HomePage> {
     return Container(
       child: Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.star),
-          title: Text(''),
-          actions: [
-            Icon(Icons.list),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 65),
-              child: Icon(Icons.notifications),
+          // title: Text('My App'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.star,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                // do something
+              },
+              padding: EdgeInsets.symmetric(horizontal: 100),
             ),
-            // Icon(Icons.more_vert),
+            IconButton(
+              icon: Icon(
+                Icons.notifications,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                // do something
+              },
+              padding: EdgeInsets.symmetric(horizontal: 100),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.list,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                // do something
+              },
+              padding: EdgeInsets.symmetric(horizontal: 100),
+            ),
           ],
           backgroundColor: Color.fromARGB(255, 255, 68, 68),
         ),
@@ -44,8 +67,8 @@ class _HomePageState extends State<HomePage> {
           ),
           child: ListView(
             padding: EdgeInsets.symmetric(
-              horizontal: 40.0,
-              vertical: 200
+              horizontal: 200.0,
+              vertical: 50
             ),
             children: <Widget>  [
               
@@ -70,6 +93,64 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(context, route);
                       },
                       child: Text('Quick Game',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'FredokaOne',
+                          fontSize: 30.0
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 25,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: (){
+                        final route = MaterialPageRoute(
+                          builder: (context) => Partida());
+                        Navigator.push(context, route);
+                      },
+                      child: Text('Create private game',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'FredokaOne',
+                          fontSize: 30.0
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    height: 25,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: (){
+                        final route = MaterialPageRoute(
+                          builder: (context) => Partida());
+                        Navigator.push(context, route);
+                      },
+                      child: Text('Join private game',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',
