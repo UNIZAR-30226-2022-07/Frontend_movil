@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 
+// import 'search_players.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({ Key? key }) : super(key: key);
 
@@ -18,41 +20,32 @@ class _HomePageState extends State<HomePage> {
     return Container(
       child: Scaffold(
         appBar: AppBar(
-          // title: Text('My App'),
+          leading: IconButton(
+            icon: Icon(Icons.star),
+            // icon: Image.asset('images/uno.jpg'),
+            onPressed: () { },
+          ),
+          backgroundColor: Color.fromARGB(255, 255, 155, 147),
+          
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.star,
-                color: Colors.white,
-              ),
+              icon: Icon(Icons.notifications),
+              // tooltip: 'Show Snackbar',
               onPressed: () {
-                // do something
+                
               },
-              padding: EdgeInsets.symmetric(horizontal: 100),
             ),
             IconButton(
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.list),
               onPressed: () {
-                // do something
+                // final route = MaterialPageRoute(
+                // builder: (context) => SearchPlayers());
+                // Navigator.push(context, route);
               },
-              padding: EdgeInsets.symmetric(horizontal: 100),
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.list,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                // do something
-              },
-              padding: EdgeInsets.symmetric(horizontal: 100),
             ),
           ],
-          backgroundColor: Color.fromARGB(255, 255, 68, 68),
         ),
+        
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -71,7 +64,9 @@ class _HomePageState extends State<HomePage> {
               vertical: 50
             ),
             children: <Widget>  [
-              
+              // Divider(
+              //   height: 90,
+              // ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget> [
@@ -80,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                     height: 60.0,
                     child: TextButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(230, 0, 0, 0)),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
@@ -109,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                     height: 60.0,
                     child: TextButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(230, 0, 0, 0)),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
@@ -138,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                     height: 60.0,
                     child: TextButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(230, 0, 0, 0)),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),

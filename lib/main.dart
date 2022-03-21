@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
-import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/sign_in.dart';
 import 'package:flutter_unogame/src/pages/sign_up.dart';
 import 'package:flutter_unogame/src/pages/forgot_password.dart';
+// import 'package:flutter_unogame/src/pages/search_players.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         'forgot_password': (BuildContext context) => forgotPassword(),
         'partida': (BuildContext context) => Partida(),
         'home_page': (BuildContext context) => HomePage(),
+        // 'lista_amigos': (BuildContext context) => SearchPlayers(),
 
       }
     );
