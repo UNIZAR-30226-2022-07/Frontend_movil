@@ -9,18 +9,18 @@ class ForgotPasswordForm extends StatefulWidget {
 }
 
 class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
-  // GlobalKey<FormState> _formKey = GlobalKey();
+  GlobalKey<FormState> _formKey = GlobalKey();
   // String _name = '';
   String _email = '';
-  String _password = '';
-  // _submit(){
-  //   final isLogin = _formKey.currentState?.validate();
-  //   print('IsLogin Form $isLogin');
-  // }
+  // String _password = '';
+  _submit(){
+    final forgotPassword = _formKey.currentState?.validate();
+    print('ForgotPassword Form $forgotPassword');
+  }
   @override
   Widget build(BuildContext context) {
     return Form(
-      // key: _formKey,
+      key: _formKey,
       child: Column(
         children: <Widget> [
           InputText(
@@ -33,6 +33,9 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
             },
             validator: (data) {
               if (!data!.contains('@')) {
+                return "Invalid email";
+              }
+              else if (data.trim().isEmpty){
                 return "Invalid email";
               }
               return null;

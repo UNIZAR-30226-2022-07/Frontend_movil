@@ -1,7 +1,5 @@
 
-
 import 'package:flutter/material.dart';
-import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
 class LoginForm extends StatefulWidget {
@@ -17,8 +15,7 @@ class _LoginFormState extends State<LoginForm> {
   String _password = '';
   _submit(){
     final isLogin = _formKey.currentState?.validate();
-    print('IsLogin Form $isLogin');
-    
+    print('IsLogin Form $isLogin'); 
   }
   @override
   Widget build(BuildContext context) {
@@ -32,7 +29,7 @@ class _LoginFormState extends State<LoginForm> {
             keyboard: TextInputType.emailAddress,
             icono: Icon(Icons.verified_user),
             onChanged: (data) {
-              _email = data;
+              _email = (data);
             },
             validator: (data) {
               if (!data!.contains('@')) {
@@ -56,7 +53,7 @@ class _LoginFormState extends State<LoginForm> {
               if (data!.trim().isEmpty) {
                 return "Invalid password";
               }
-              return null;
+              return null; 
             },
           ),
           Divider(
@@ -73,12 +70,10 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                         ),
                       ),
-              onPressed: (){
-                this._submit;
-                final route = MaterialPageRoute(
-                  builder: (context) => HomePage());
-                Navigator.push(context, route);
-              },
+              onPressed: this._submit,
+                // final route = MaterialPageRoute(
+                //   builder: (context) => HomePage());
+                // Navigator.push(context, route);
               child: Text('Sign In',
                 style: TextStyle(
                   color: Colors.white,

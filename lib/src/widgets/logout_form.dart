@@ -14,8 +14,8 @@ class _LogoutFormState extends State<LogoutForm> {
   String _email = '';
   String _password = '';
   _submit(){
-    final isLogin = _formKey.currentState?.validate();
-    print('IsLogin Form $isLogin');
+    final isRegister = _formKey.currentState?.validate();
+    print('IsRegister Form $isRegister');
   }
   @override
   Widget build(BuildContext context) {
