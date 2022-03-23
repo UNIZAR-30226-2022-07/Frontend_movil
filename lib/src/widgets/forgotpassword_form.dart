@@ -55,7 +55,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                           ),
                         ),
                       ),
-              onPressed: (){},  // poner lo de la pagina que han dicho estos,
+              onPressed: _submit,  // poner lo de la pagina que han dicho estos,
               child: Text('Send email',
                 style: TextStyle(
                   color: Colors.white,

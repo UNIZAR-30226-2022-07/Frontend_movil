@@ -47,7 +47,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   Text(
-                    'Hi there! Nice to see you again',
+                    'Hi there! Nice to see you again.',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 15.0
@@ -57,24 +57,21 @@ class _SignInState extends State<SignIn> {
                     height: 10.0,
                   ),
                   // Formulario 
-                  LoginForm(),
-                  Divider(
-                    height: 20.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>  [
-                      FloatingActionButton(
-                        backgroundColor: Colors.red[900],
-                        child: Icon(Icons.settings_backup_restore),
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  )
+                  LoginForm()
                 ],
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>  [
+                  FloatingActionButton(
+                    backgroundColor: Colors.red[900],
+                    child: Icon(Icons.settings_backup_restore),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),

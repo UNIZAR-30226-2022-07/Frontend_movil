@@ -1,6 +1,9 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
+
+import '../pages/home_page.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({ Key? key }) : super(key: key);
@@ -13,10 +16,10 @@ class _LoginFormState extends State<LoginForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
   String _email = '';
   String _password = '';
-  _submit(){
-    final isLogin = _formKey.currentState?.validate();
-    print('IsLogin Form $isLogin'); 
-  }
+  // _submit(){
+  //   final isLogin = _formKey.currentState?.validate();
+  //   print('IsLogin Form $isLogin');
+  // }
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -29,7 +32,7 @@ class _LoginFormState extends State<LoginForm> {
             keyboard: TextInputType.emailAddress,
             icono: Icon(Icons.verified_user),
             onChanged: (data) {
-              _email = (data);
+              _email = data;
             },
             validator: (data) {
               if (!data!.contains('@')) {
@@ -53,7 +56,7 @@ class _LoginFormState extends State<LoginForm> {
               if (data!.trim().isEmpty) {
                 return "Invalid password";
               }
-              return null; 
+              return null;
             },
           ),
           Divider(
@@ -70,10 +73,16 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                         ),
                       ),
-              onPressed: this._submit,
-                // final route = MaterialPageRoute(
-                //   builder: (context) => HomePage());
-                // Navigator.push(context, route);
+              // onPressed: this._submit,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => HomePage(),
+                    ),
+                  );
+                }
+              },
               child: Text('Sign In',
                 style: TextStyle(
                   color: Colors.white,
@@ -95,7 +104,6 @@ class _LoginFormState extends State<LoginForm> {
               FlatButton(
                 onPressed: (){
                   Navigator.pushNamed(context, 'sign_up');
-                  
                 }, 
                 child: Text(
                   'Sign Up',
@@ -110,6 +118,12 @@ class _LoginFormState extends State<LoginForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget> [
+              // Text(
+              // //   'Forgot password?',
+              // //   style: TextStyle(
+              // //     fontFamily: 'FredokaOne'
+              // //   ),
+              // // ),
               FlatButton(
                 onPressed: (){
                   Navigator.pushNamed(context, 'forgot_password');

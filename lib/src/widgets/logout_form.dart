@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
 class LogoutForm extends StatefulWidget {
@@ -13,10 +14,10 @@ class _LogoutFormState extends State<LogoutForm> {
   String _name = '';
   String _email = '';
   String _password = '';
-  _submit(){
-    final isRegister = _formKey.currentState?.validate();
-    print('IsRegister Form $isRegister');
-  }
+  // _submit(){
+  //   final isLogin = _formKey.currentState?.validate();
+  //   print('IsLogin Form $isLogin');
+  // }
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -88,7 +89,16 @@ class _LogoutFormState extends State<LogoutForm> {
                           ),
                         ),
                       ),
-              onPressed: this._submit,
+              // onPressed: this._submit,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => HomePage(),
+                    ),
+                  );
+                }
+              },
               child: Text('Register',
                 style: TextStyle(
                   color: Colors.white,
