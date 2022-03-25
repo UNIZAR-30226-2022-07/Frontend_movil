@@ -154,17 +154,17 @@ class _LogoutFormState extends State<LogoutForm> {
 // }
 
   Future RegistrationUser() async{
-    var uri = Uri.http("/t/38wlv-1648165302/post","");
+    var uri = Uri.http("192.168.1.213:2000","");
 
     Map mapeddate ={
-      'name':_name,
-      'email':_email,
-      'password':_password
+      'service':'credentials',
+      'login':_email,
+      'passwd':_password
     };
     print("JSON DATA: ${mapeddate}");
 
     http.Response response = await http.post(uri,body:mapeddate);
-
+    // print(response);
     var data = jsonDecode(response.body);
 
     print("DATA: ${data}");
