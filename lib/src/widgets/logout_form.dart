@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
@@ -92,6 +95,7 @@ class _LogoutFormState extends State<LogoutForm> {
               // onPressed: this._submit,
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
+                  RegistrationUser();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => HomePage(),
@@ -134,5 +138,36 @@ class _LogoutFormState extends State<LogoutForm> {
         ],
       )
     );
+  }
+
+//   Future<http.Response> createAlbum(String title) {
+//     return http.post(
+//       Uri.parse('https://jsonplaceholder.typicode.com/albums'),
+//       headers: <String, String>{
+//         'Content-Type': 'application/json; charset=UTF-8',
+//       },
+//       body: jsonEncode(<String, String>{
+//         'title': title,
+//       }),
+//     );
+//   }
+// }
+
+  Future RegistrationUser() async{
+    var uri = Uri.http("/t/38wlv-1648165302/post","");
+
+    Map mapeddate ={
+      'name':_name,
+      'email':_email,
+      'password':_password
+    };
+    print("JSON DATA: ${mapeddate}");
+
+    http.Response response = await http.post(uri,body:mapeddate);
+
+    var data = jsonDecode(response.body);
+
+    print("DATA: ${data}");
+
   }
 }
