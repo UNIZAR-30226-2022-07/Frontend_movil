@@ -7,7 +7,6 @@ import 'package:flutter_unogame/src/pages/sign_up.dart';
 import 'package:flutter_unogame/src/pages/forgot_password.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -23,6 +22,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme:
+            const AppBarTheme(color: Color.fromARGB(255, 255, 155, 147)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: 'Login',
@@ -34,8 +35,7 @@ class MyApp extends StatelessWidget {
         'partida': (BuildContext context) => Partida(),
         'home_page': (BuildContext context) => HomePage(),
         'lista_amigos': (BuildContext context) => SearchBar(),
-
-      }
+      },
     );
   }
 }
