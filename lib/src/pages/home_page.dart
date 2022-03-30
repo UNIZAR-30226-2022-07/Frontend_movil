@@ -2,8 +2,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
+import 'package:flutter_unogame/src/pages/search.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
-import 'search_players.dart';
+import 'search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.list),
               onPressed: () {
                 final route =
-                    MaterialPageRoute(builder: (context) => SearchBar());
+                    MaterialPageRoute(builder: (context) => SearchPlayers());
                 Navigator.push(context, route);
               },
             ),

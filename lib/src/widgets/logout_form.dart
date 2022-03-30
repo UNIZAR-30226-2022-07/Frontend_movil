@@ -171,7 +171,7 @@ class _LogoutFormState extends State<LogoutForm> {
 // }
 
   Future RegistrationUser() async{
-    var uri = Uri.http("192.168.1.213:2000","");
+    var uri = Uri.http("localhost:2000","");
 
     Map mapeddate ={
       'service':'credentials',
