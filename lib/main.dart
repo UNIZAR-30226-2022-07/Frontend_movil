@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
@@ -29,12 +30,13 @@ class MyApp extends StatelessWidget {
       initialRoute: 'Login',
       routes: <String, WidgetBuilder>{
         'Login': (BuildContext context) => LoginPage(),
-        'sign_in': (BuildContext context) => SignIn(),
-        'sign_up': (BuildContext context) => SignUp(),
-        'forgot_password': (BuildContext context) => forgotPassword(),
-        'partida': (BuildContext context) => Partida(),
-        'home_page': (BuildContext context) => HomePage(),
-        'lista_amigos': (BuildContext context) => SearchBar(),
+        'sign_in': (BuildContext context) => const SignIn(),
+        'sign_up': (BuildContext context) => const SignUp(),
+        'forgot_password': (BuildContext context) => const forgotPassword(),
+        'partida': (BuildContext context) => const Partida(),
+        'home_page': (BuildContext context) => const HomePage(),
+        'lista_amigos': (BuildContext context) => const SearchBar(),
+        'clasification': (BuildContext context) => const Clasification(),
       },
     );
   }
