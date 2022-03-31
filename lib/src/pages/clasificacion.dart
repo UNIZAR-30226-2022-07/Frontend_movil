@@ -7,66 +7,81 @@ class Clasification extends StatelessWidget {
   Widget build(BuildContext context) {
     const double sizeIcons = 50.0;
     int number = 5;
+
     const textStyle =
         TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 30.0);
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            backgroundColor: const Color.fromARGB(255, 255, 155, 147),
-            //toolbarHeight: 0,
-            titleSpacing: 1.0,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                IconButton(
-                  iconSize: sizeIcons,
-                  icon: const Icon(Icons.people_alt),
-                  onPressed: () {},
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: ListView(
+          children: [
+            Container(
+              color: const Color.fromARGB(255, 255, 155, 147),
+              child: IntrinsicHeight(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      width: width / 3 - 12,
+                      color: Colors.black12,
+                      child: IconButton(
+                        iconSize: sizeIcons,
+                        color: Colors.white,
+                        icon: const Icon(Icons.people_alt),
+                        onPressed: () {},
+                      ),
+                    ),
+                    const VerticalDivider(
+                      color: Colors.white,
+                      thickness: 3,
+                    ),
+                    Container(
+                        width: width / 3 - 12,
+                        color: Colors.black12,
+                        child: IconButton(
+                          iconSize: sizeIcons,
+                          color: Colors.white,
+                          icon: const Icon(Icons.flag_rounded),
+                          onPressed: () {},
+                        )),
+                    const VerticalDivider(
+                      color: Colors.white,
+                      thickness: 3,
+                      width: 20.0,
+                    ),
+                    Container(
+                        width: width / 3 - 12,
+                        color: Colors.black12,
+                        child: IconButton(
+                          iconSize: sizeIcons,
+                          color: Colors.white,
+                          icon: const Icon(Icons.public),
+                          onPressed: () {},
+                        )),
+                  ],
                 ),
-                const VerticalDivider(
-                  color: Colors.white,
-                  thickness: 10,
-                ),
-                IconButton(
-                  iconSize: sizeIcons,
-                  icon: const Icon(Icons.flag_rounded),
-                  onPressed: () {},
-                ),
-                const VerticalDivider(
-                  color: Colors.white,
-                  thickness: 10,
-                  width: 20.0,
-                ),
-                IconButton(
-                  iconSize: sizeIcons,
-                  icon: const Icon(Icons.public),
-                  onPressed: () {},
-                ),
-              ],
-            )),
-      ),
-      body: ListView(
-        children: [
-          //El primero va a ser el usuario en cuestión
-          Card(
-            child: ListTile(
-              tileColor: const Color.fromARGB(255, 97, 184, 255),
-              leading: Text(
-                '$number',
-                style: textStyle,
               ),
-              title: const Text(
-                'Tú',
-                style: textStyle,
-              ),
-              trailing: const Icon(Icons.emoji_events, size: 40),
             ),
-          )
-        ],
+            //El primero va a ser el usuario en cuestión
+            Card(
+              child: ListTile(
+                tileColor: const Color.fromARGB(255, 97, 184, 255),
+                leading: Text(
+                  '$number',
+                  style: textStyle,
+                ),
+                title: const Text(
+                  'Tú',
+                  style: textStyle,
+                ),
+                trailing: const Icon(Icons.emoji_events, size: 40),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
