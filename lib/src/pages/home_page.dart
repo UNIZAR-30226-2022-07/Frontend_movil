@@ -4,6 +4,8 @@ import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
 
+import 'crear_partida.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -135,8 +137,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
-                      final route =
-                          MaterialPageRoute(builder: (context) => Partida());
+                      final route = MaterialPageRoute(
+                          builder: (context) => const CreatePage());
                       Navigator.push(context, route);
                     },
                     child: const Text(
