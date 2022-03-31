@@ -17,6 +17,7 @@ class _LogoutFormState extends State<LogoutForm> {
   String _name = '';
   String _email = '';
   String _password = '';
+  String _country = '';
   // _submit(){
   //   final isLogin = _formKey.currentState?.validate();
   //   print('IsLogin Form $isLogin');
@@ -81,6 +82,23 @@ class _LogoutFormState extends State<LogoutForm> {
           Divider(
             height: 25.0,
           ),
+                    InputText(
+            hint: 'Country',
+            label: 'Country',
+            icono: Icon(Icons.flag),
+            onChanged: (data) {
+              _country = (data);
+            },
+            validator: (data) {
+              if (data!.trim().isEmpty) {
+                return "Country field is empty";
+              }
+              return null;
+            },
+          ),
+          Divider(
+            height: 25.0,
+          ),
           SizedBox(
             width: double.infinity,
             child: TextButton(
@@ -92,7 +110,6 @@ class _LogoutFormState extends State<LogoutForm> {
                           ),
                         ),
                       ),
-              // onPressed: this._submit,
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   RegistrationUser();
@@ -154,7 +171,7 @@ class _LogoutFormState extends State<LogoutForm> {
 // }
 
   Future RegistrationUser() async{
-    var uri = Uri.http("192.168.1.213:2000","");
+    var uri = Uri.http("localhost:2000","");
 
     Map mapeddate ={
       'service':'credentials',

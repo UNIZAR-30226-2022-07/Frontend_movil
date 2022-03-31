@@ -1,82 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_unogame/src/utils/players.dart';
+import 'package:flutter_unogame/src/pages/search.dart';
+import '../utils/user_model.dart';
+import 'API_service.dart';
 
-class SearchBar extends StatefulWidget {
-  const SearchBar({ Key? key }) : super(key: key);
-
+class SearchPlayers extends StatefulWidget {
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  _SearchPlayersState createState() => _SearchPlayersState();
 }
 
-class _SearchBarState extends State<SearchBar> {
-  final controller = TextEditingController();
-  List<Player> players = allPlayers;
-
-  void searchBar(String query) {
-    final suggestions = allPlayers.where((player) {
-      final playerName = player.name.toLowerCase();
-      final input = query.toLowerCase();
-
-      return playerName.contains(input);
-    }).toList();
-
-    setState(() => players = suggestions);
-  }
+class _SearchPlayersState extends State<SearchPlayers> {
+  FetchUserList _userList = FetchUserList();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar (
-        title: const Text('Search'),
-        backgroundColor: Color.fromARGB(255, 255, 155, 147),
-      ),
-      backgroundColor: Color.fromARGB(255, 255, 155, 147),
-      body: Column( 
-
-
-        children: <Widget> [
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: 'Player name',
-                fillColor: Colors.red,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: Color.fromARGB(255, 255, 71, 71)),
-                )
-              ),
-              onChanged: searchBar,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Search players'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: SearchUser());
+              },
+              icon: Icon(Icons.search_sharp),
+            )
+          ],
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: <Color>[
+                Color.fromARGB(255, 252, 125, 125),
+                Color.fromARGB(0, 255, 123, 123)
+              ],
+              begin: Alignment.topCenter
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: players.length,
-              itemBuilder: (context, index) {
-                final player = players[index];
-
-                return ListTile(
-                  leading: Image.network(
-                    player.image,
-                    fit: BoxFit.cover,
-                    width: 50,
-                    height: 50,
-                  ),
-                  title: Text(player.name),
-                  // onTap: //=> Navigator.push(
-                  // //   context,
-                  // //   MaterialPageRoute(
-                  //     // builder: (context) => PlayerPage(player : player),
-                  //   ),
-                  // ),
-                );
-              },
-            )
-          ),
-        ],
-      )
+          padding: EdgeInsets.all(20),
+          child: FutureBuilder<List<Userlist>>(
+              future: _userList.getuserList(),
+              builder: (context, snapshot) {
+                var data = snapshot.data;
+                return ListView.builder(
+                    itemCount: data?.length,
+                    itemBuilder: (context, index) {
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                SizedBox(width: 20),
+                                Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${data?[index].name}',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        '${data?[index].email}',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ])
+                              ],
+                            ),
+                            // trailing: Text('More Info'),
+                          ),
+                        ),
+                      );
+                    });
+              }),
+        ),
+      ),
     );
   }
 }
