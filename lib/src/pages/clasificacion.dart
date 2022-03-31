@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/models/player.dart';
 import 'package:flutter_unogame/src/widgets/player_card.dart';
+
+import '../models/players_api.dart';
 
 class ClasificationPage extends StatefulWidget {
   @override
@@ -7,6 +10,22 @@ class ClasificationPage extends StatefulWidget {
 }
 
 class _ClasificationPageState extends State<ClasificationPage> {
+  // late List<Player> _players;
+  // bool _isLoading = true;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getPlayers();
+  // }
+
+  // Future<void> getPlayers() async {
+  //   _players = await PlayerApi.getRecipe();
+  //   setState(() {
+  //     _isLoading = false;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) => DefaultTabController(
       length: 3,
@@ -37,6 +56,18 @@ class _ClasificationPageState extends State<ClasificationPage> {
           ),
           body: const TabBarView(
               children: [FriendsPage(), NationalPage(), WorldPage()])));
+  // body: _isLoading
+  //   ? const Center(child: CircularProgressIndicator())
+  //   : ListView.builder(
+  //       itemCount: _players.length,
+  //       itemBuilder: (context, index) {
+  //         return PlayerCard(
+  //             userName: 'juliferre09',
+  //             rating: '3º',
+  //             trophies: '400',
+  //             ownUser: true);
+  //       },
+  //     ));
 }
 
 class FriendsPage extends StatelessWidget {
@@ -122,70 +153,3 @@ class WorldPage extends StatelessWidget {
     ));
   }
 }
-
-// class ClasificationBar extends State<ClasificationPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     const double sizeIcons = 50.0;
-
-//     double width = MediaQuery.of(context).size.width;
-//     return Scaffold(
-//       body: Container(
-//         width: double.infinity,
-//         height: double.infinity,
-//         child: ListView(
-//           children: [
-//             Container(
-//               color: const Color.fromARGB(255, 255, 155, 147),
-//               child: IntrinsicHeight(
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                   //crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: <Widget>[
-//                     Container(
-//                       width: width / 3 - 12,
-//                       color: Colors.black12,
-//                       child: IconButton(
-//                         iconSize: sizeIcons,
-//                         color: Colors.white,
-//                         icon: const Icon(Icons.people_alt),
-//                         onPressed: () {},
-//                       ),
-//                     ),
-//                     const VerticalDivider(
-//                       color: Colors.white,
-//                       thickness: 3,
-//                     ),
-//                     Container(
-//                         width: width / 3 - 12,
-//                         color: Colors.black12,
-//                         child: IconButton(
-//                           iconSize: sizeIcons,
-//                           color: Colors.white,
-//                           icon: const Icon(Icons.flag_rounded),
-//                           onPressed: () {},
-//                         )),
-//                     const VerticalDivider(
-//                       color: Colors.white,
-//                       thickness: 3,
-//                       width: 20.0,
-//                     ),
-//                     Container(
-//                         width: width / 3 - 12,
-//                         color: Colors.black12,
-//                         child: IconButton(
-//                           iconSize: sizeIcons,
-//                           color: Colors.white,
-//                           icon: const Icon(Icons.public),
-//                           onPressed: () {},
-//                         )),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
