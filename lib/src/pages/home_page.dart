@@ -2,9 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
-import 'package:flutter_unogame/src/pages/search.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
-import 'search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,29 +19,59 @@ class _HomePageState extends State<HomePage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.emoji_events),
-            onPressed: () {
-              final route =
-                  MaterialPageRoute(builder: (context) => ClasificationPage());
-              Navigator.push(context, route);
-            },
+          title: const Text(
+            'Home',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
+          centerTitle: true,
+          leading: Align(
+              alignment: Alignment.bottomLeft,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.emoji_events,
+                  size: 40,
+                  color: Colors.yellow,
+                ),
+                onPressed: () {
+                  final route = MaterialPageRoute(
+                      builder: (context) => ClasificationPage());
+                  Navigator.push(context, route);
+                },
+              )),
           backgroundColor: const Color.fromARGB(255, 255, 155, 147),
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              // tooltip: 'Show Snackbar',
-              onPressed: () {},
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.notifications,
+                  size: 40,
+                  color: Colors.yellow,
+                ),
+                onPressed: () {},
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.list),
-              onPressed: () {
-                final route =
-                    MaterialPageRoute(builder: (context) => SearchPlayers());
-                Navigator.push(context, route);
-              },
+            const SizedBox(
+              width: 15,
             ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: const Icon(
+                  Icons.list,
+                  size: 40,
+                  color: Colors.yellow,
+                ),
+                onPressed: () {
+                  final route =
+                      MaterialPageRoute(builder: (context) => SearchPlayers());
+                  Navigator.push(context, route);
+                },
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            )
           ],
         ),
       ),
@@ -68,8 +96,8 @@ class _HomePageState extends State<HomePage> {
                   height: 60.0,
                   child: TextButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(230, 0, 0, 0)),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black54),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
@@ -98,8 +126,8 @@ class _HomePageState extends State<HomePage> {
                   height: 60.0,
                   child: TextButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(230, 0, 0, 0)),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black54),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
@@ -128,8 +156,8 @@ class _HomePageState extends State<HomePage> {
                   height: 60.0,
                   child: TextButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(230, 0, 0, 0)),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black54),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
@@ -137,8 +165,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
-                      final route =
-                          MaterialPageRoute(builder: (context) => Partida());
+                      final route = MaterialPageRoute(
+                          builder: (context) => const Partida());
                       Navigator.push(context, route);
                     },
                     child: const Text(
