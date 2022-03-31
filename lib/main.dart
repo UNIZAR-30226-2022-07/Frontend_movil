@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         'partida': (BuildContext context) => const Partida(),
         'home_page': (BuildContext context) => const HomePage(),
         'lista_amigos': (BuildContext context) => SearchPlayers(),
-        'clasification': (BuildContext context) => const Clasification(),
+        'clasification': (BuildContext context) => ClasificationPage(),
       },
     );
   }

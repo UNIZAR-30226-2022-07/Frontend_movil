@@ -24,8 +24,8 @@ class _HomePageState extends State<HomePage> {
           leading: IconButton(
             icon: const Icon(Icons.emoji_events),
             onPressed: () {
-              final route = MaterialPageRoute(
-                  builder: (context) => const Clasification());
+              final route =
+                  MaterialPageRoute(builder: (context) => ClasificationPage());
               Navigator.push(context, route);
             },
           ),
