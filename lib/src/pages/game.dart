@@ -14,67 +14,161 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
+    const textStyle = TextStyle(
+        fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold);
     return Scaffold(
         appBar: AppBar(),
         body: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+              Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 22, vertical: 10),
-                    width: 90,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  const SizedBox(
+                    height: 10,
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 22, vertical: 10),
-                    width: 90,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 22, vertical: 10),
+                            width: 90,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '5',
+                                style: textStyle,
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            'jugador1',
+                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          )
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 22, vertical: 10),
+                            width: 90,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '5',
+                                style: textStyle,
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            'jugador2',
+                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 22, vertical: 10),
+                        width: 90,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 22, vertical: 10),
+                        width: 90,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
+                width: 90,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 22, vertical: 10),
-                    width: 90,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15),
+                  Row(children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 10),
+                      width: 90,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 22, vertical: 10),
-                    width: 90,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(15),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 10),
+                      width: 90,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                     ),
-                  ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 10),
+                      width: 90,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 10),
+                      width: 90,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    )
+                  ]),
                 ],
               ),
-            ],
-          ),
-        ));
+            ])));
   }
 }
