@@ -18,64 +18,61 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: AppBar(
-          title: const Text(
-            'Home',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-          leading: Align(
-              alignment: Alignment.bottomLeft,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.emoji_events,
-                  size: 40,
-                  color: Colors.yellow,
-                ),
-                onPressed: () {
-                  final route = MaterialPageRoute(
-                      builder: (context) => ClasificationPage());
-                  Navigator.push(context, route);
-                },
-              )),
-          backgroundColor: const Color.fromARGB(255, 255, 155, 147),
-          actions: <Widget>[
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.notifications,
-                  size: 40,
-                  color: Colors.yellow,
-                ),
-                onPressed: () {},
-              ),
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.list,
-                  size: 40,
-                  color: Colors.yellow,
-                ),
-                onPressed: () {
-                  final route =
-                      MaterialPageRoute(builder: (context) => SearchPlayers());
-                  Navigator.push(context, route);
-                },
-              ),
-            ),
-            const SizedBox(
-              width: 15,
-            )
-          ],
+      appBar: AppBar(
+        title: const Text(
+          'Home',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
+        leading: Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: const Icon(
+                Icons.emoji_events,
+                size: 40,
+                color: Colors.yellow,
+              ),
+              onPressed: () {
+                final route = MaterialPageRoute(
+                    builder: (context) => ClasificationPage());
+                Navigator.push(context, route);
+              },
+            )),
+        backgroundColor: const Color.fromARGB(255, 255, 155, 147),
+        actions: <Widget>[
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(
+                Icons.notifications,
+                size: 40,
+                color: Colors.yellow,
+              ),
+              onPressed: () {},
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(
+                Icons.list,
+                size: 40,
+                color: Colors.yellow,
+              ),
+              onPressed: () {
+                final route =
+                    MaterialPageRoute(builder: (context) => SearchPlayers());
+                Navigator.push(context, route);
+              },
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          )
+        ],
       ),
       body: Container(
         width: double.infinity,

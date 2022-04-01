@@ -13,9 +13,16 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Crear partida',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Container(
-          width: double.infinity,
+          width: width - 80,
           height: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(colors: <Color>[
@@ -25,14 +32,14 @@ class _CreatePageState extends State<CreatePage> {
           ),
           child: ListView(
             padding:
-                const EdgeInsets.symmetric(horizontal: 200.0, vertical: 100),
+                const EdgeInsets.symmetric(horizontal: 200.0, vertical: 80),
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Text(
                         'Número de Personas',
@@ -92,7 +99,7 @@ class _CreatePageState extends State<CreatePage> {
                   const SizedBox(
                     height: 15,
                   ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                     const Text(
                       'Tiempo de turno',
                       style:
@@ -134,7 +141,7 @@ class _CreatePageState extends State<CreatePage> {
                     height: 15,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Text(
                         'Reglas de la partida',
@@ -173,7 +180,12 @@ class _CreatePageState extends State<CreatePage> {
                         },
                       )
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  ElevatedButton(
+                      onPressed: () => {}, child: const Text('Crear'))
                 ],
               )
             ],
@@ -184,6 +196,7 @@ class _CreatePageState extends State<CreatePage> {
 
 Widget _buildPopupDialog(BuildContext context) {
   return AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     title: const Text('Popup example'),
     content: Column(
       mainAxisSize: MainAxisSize.min,
