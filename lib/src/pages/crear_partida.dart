@@ -13,7 +13,6 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -22,7 +21,7 @@ class _CreatePageState extends State<CreatePage> {
         ),
       ),
       body: Container(
-          width: width - 80,
+          width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(colors: <Color>[

@@ -9,31 +9,32 @@ class SearchPlayers extends StatefulWidget {
 }
 
 class _SearchPlayersState extends State<SearchPlayers> {
-  FetchUserList _userList = FetchUserList();
+  final FetchUserList _userList = FetchUserList();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Search players'),
+          title: const Text('Search players',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           actions: [
             IconButton(
               onPressed: () {
                 showSearch(context: context, delegate: SearchUser());
               },
-              icon: Icon(Icons.search_sharp),
+              icon: const Icon(Icons.search_sharp),
             )
           ],
         ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(colors: <Color>[
               Color.fromARGB(255, 252, 125, 125),
               Color.fromARGB(0, 255, 123, 123)
             ], begin: Alignment.topCenter),
           ),
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
               future: _userList.getuserList(),
               builder: (context, snapshot) {
@@ -42,7 +43,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
                     itemCount: data?.length,
                     itemBuilder: (context, index) {
                       if (!snapshot.hasData) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
                       return Card(
                         child: Padding(
@@ -50,21 +51,21 @@ class _SearchPlayersState extends State<SearchPlayers> {
                           child: ListTile(
                             title: Row(
                               children: [
-                                SizedBox(width: 20),
+                                const SizedBox(width: 20),
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         '${data?[index].name}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      SizedBox(height: 10),
+                                      const SizedBox(height: 10),
                                       Text(
                                         '${data?[index].email}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
