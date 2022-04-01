@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/search.dart';
-import '../utils/user_model.dart';
+import '../models/user_model.dart';
 import 'API_service.dart';
 
 class SearchPlayers extends StatefulWidget {
@@ -28,13 +28,10 @@ class _SearchPlayersState extends State<SearchPlayers> {
         ),
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                Color.fromARGB(255, 252, 125, 125),
-                Color.fromARGB(0, 255, 123, 123)
-              ],
-              begin: Alignment.topCenter
-            ),
+            gradient: LinearGradient(colors: <Color>[
+              Color.fromARGB(255, 252, 125, 125),
+              Color.fromARGB(0, 255, 123, 123)
+            ], begin: Alignment.topCenter),
           ),
           padding: EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(

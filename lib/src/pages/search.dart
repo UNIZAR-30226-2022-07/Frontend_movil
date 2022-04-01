@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/user_model.dart';
+import '../models/user_model.dart';
 import 'API_service.dart';
 
 class SearchUser extends SearchDelegate {
