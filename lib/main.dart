@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/clasificacion.dart';
+import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
+import 'package:flutter_unogame/src/pages/partida.dart';
+import 'package:flutter_unogame/src/pages/search_players.dart';
 import 'package:flutter_unogame/src/pages/sign_in.dart';
 import 'package:flutter_unogame/src/pages/sign_up.dart';
+import 'package:flutter_unogame/src/pages/forgot_password.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,17 +20,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+            color: Color.fromARGB(255, 255, 155, 147), centerTitle: true),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: 'Login',
       routes: <String, WidgetBuilder>{
         'Login': (BuildContext context) => LoginPage(),
-        'sign_in': (BuildContext context) => SignIn(),
-        'sign_up': (BuildContext context) => SignUp(),
-
-      }
+        'sign_in': (BuildContext context) => const SignIn(),
+        'sign_up': (BuildContext context) => const SignUp(),
+        'forgot_password': (BuildContext context) => const forgotPassword(),
+        'partida': (BuildContext context) => const Partida(),
+        'home_page': (BuildContext context) => const HomePage(),
+        'lista_amigos': (BuildContext context) => SearchPlayers(),
+        'clasification': (BuildContext context) => ClasificationPage(),
+      },
     );
   }
 }

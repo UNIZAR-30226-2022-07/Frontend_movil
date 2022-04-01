@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/icon_container.dart';
-import 'package:flutter_unogame/src/widgets/login_form.dart';
-import 'package:flutter_unogame/src/widgets/logout_form.dart';
+import 'package:flutter_unogame/src/widgets/forgotpassword_form.dart';
 
-
-
-class SignUp extends StatefulWidget {
-  const SignUp({ Key? key }) : super(key: key);
+class forgotPassword extends StatefulWidget {
+  const forgotPassword({ Key? key }) : super(key: key);
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<forgotPassword> createState() => _forgotPasswordState();
 }
 
-
-class _SignUpState extends State<SignUp> {
+class _forgotPasswordState extends State<forgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,7 +29,7 @@ class _SignUpState extends State<SignUp> {
           child: ListView(
             padding: EdgeInsets.symmetric(
               horizontal: 40.0,
-              vertical: 90
+              vertical: 100
             ),
             children: <Widget>  [
               Column(
@@ -43,14 +39,14 @@ class _SignUpState extends State<SignUp> {
                     url: 'images/uno.jpg',
                   ),
                   Text(
-                    'Register',
+                    'Get a new password',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
-                      fontSize: 38.0
+                      fontSize: 25.0
                     ),
                   ),
                   Text(
-                    'Welcome!',
+                    'Type in your email so we can do this!',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 15.0
@@ -60,24 +56,21 @@ class _SignUpState extends State<SignUp> {
                     height: 10.0,
                   ),
                   // Formulario 
-                  LogoutForm(),
-                  Divider(
-                    height: 20.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>  [
-                      FloatingActionButton(
-                        backgroundColor: Colors.red[900],
-                        child: Icon(Icons.settings_backup_restore),
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  )
+                  ForgotPasswordForm()
                 ],
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>  [
+                  FloatingActionButton(
+                    backgroundColor: Colors.red[900],
+                    child: Icon(Icons.settings_backup_restore),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
