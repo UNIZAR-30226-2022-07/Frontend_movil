@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
+import 'package:flutter_unogame/src/pages/game.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
 import 'crear_partida.dart';
@@ -104,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route =
-                          MaterialPageRoute(builder: (context) => Partida());
+                          MaterialPageRoute(builder: (context) => GamePage());
                       Navigator.push(context, route);
                     },
                     child: const Text(
