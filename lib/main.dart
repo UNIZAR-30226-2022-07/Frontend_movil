@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        appBarTheme:
-            const AppBarTheme(color: Color.fromARGB(255, 255, 155, 147)),
+        appBarTheme: const AppBarTheme(
+            color: Color.fromARGB(255, 255, 155, 147), centerTitle: true),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: 'Login',
