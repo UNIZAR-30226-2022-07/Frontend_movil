@@ -28,3 +28,21 @@ class FetchUserList {
     return results;
   }
 }
+
+  Future RegistrationUser() async{
+    var uri = Uri.http("localhost:2000","");
+
+    Map mapeddate ={
+      'service':'credentials',
+      'login':_email,
+      'passwd':_password
+    };
+    print("JSON DATA: ${mapeddate}");
+
+    http.Response response = await http.post(uri,body:mapeddate);
+    // print(response);
+    var data = jsonDecode(response.body);
+
+    print("DATA: ${data}");
+
+  }
