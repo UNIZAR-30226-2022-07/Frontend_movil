@@ -37,12 +37,12 @@ class _SignInState extends State<SignIn> {
                     height: 20.0,
                   ),
                   Text(
-                    'Sign In',
+                    'Iniciar sesión',
                     style: TextStyle(
                         fontFamily: 'PermanentMarker', fontSize: 38.0),
                   ),
 
-                  Text('Hi there! Nice to see you again.',
+                  Text('!Hola! ¡Qué bien verte de nuevo!',
                       style: TextStyle(
                           fontFamily: 'PermanentMarker', fontSize: 20.0)),
                   SizedBox(

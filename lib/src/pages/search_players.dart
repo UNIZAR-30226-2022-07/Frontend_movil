@@ -10,6 +10,7 @@ class SearchPlayers extends StatefulWidget {
 
 class _SearchPlayersState extends State<SearchPlayers> {
   final FetchUserList _userList = FetchUserList();
+  final FetchFriendList _friendList = FetchFriendList();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
           ),
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
-              future: _userList.getuserList(),
+              future: _friendList.getFriendList(),
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(
@@ -63,14 +64,6 @@ class _SearchPlayersState extends State<SearchPlayers> {
                                             fontWeight: FontWeight.w600),
                                       ),
                                       const SizedBox(height: 10),
-                                      Text(
-                                        '${data?[index].email}',
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
                                     ])
                               ],
                             ),

@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
                   url: 'images/uno.jpg',
                 ),
                 const Text(
-                  'Welcome!',
+                  '¡Bienvenido!',
                   style:
                       TextStyle(fontFamily: 'PermanentMarker', fontSize: 38.0),
                 ),
@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(context, route);
                     },
                     child: const Text(
-                      'Sign in',
+                      'Iniciar sesión',
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(context, route);
                     },
                     child: const Text(
-                      'Sign up',
+                      'Regístrate',
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',

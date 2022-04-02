@@ -19,10 +19,10 @@ class _HomePageState extends State<HomePage> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-        ),
+        // title: const Text(
+        //   'Home',
+        //   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        // ),
         centerTitle: true,
         leading: Align(
             alignment: Alignment.centerLeft,
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(
                 Icons.emoji_events,
                 size: 40,
-                color: Colors.yellow,
+                color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {
                 final route = MaterialPageRoute(
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(
                 Icons.notifications,
                 size: 40,
-                color: Colors.yellow,
+                color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {},
             ),
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(
                 Icons.list,
                 size: 40,
-                color: Colors.yellow,
+                color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {
                 final route =

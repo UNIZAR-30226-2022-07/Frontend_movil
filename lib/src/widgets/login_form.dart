@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 import '../pages/home_page.dart';
 
@@ -12,7 +15,7 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _email = '';
+  String _name = '';
   String _password = '';
   // _submit(){
   //   final isLogin = _formKey.currentState?.validate();
@@ -25,27 +28,31 @@ class _LoginFormState extends State<LoginForm> {
         child: Column(
           children: <Widget>[
             InputText(
-              hint: 'example@mail.com',
-              label: 'Email Adress',
+              hint: 'usuario123',
+              label: 'Nombre de usuario',
               keyboard: TextInputType.emailAddress,
               icono: const Icon(Icons.verified_user),
               onChanged: (data) {
-                _email = data;
+                _name = data;
               },
               validator: (data) {
-                String pattern =
-                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                RegExp regExp = RegExp(pattern);
+                // String pattern =
+                //     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                // RegExp regExp = RegExp(pattern);
 
-                return regExp.hasMatch(data ?? '') ? null : 'Correo inválido';
+                // return regExp.hasMatch(data ?? '') ? null : 'Correo inválido';
+                if (data!.trim().isEmpty) {
+                  return "Usuario inválido";
+                }
+                return null;
               },
             ),
             const SizedBox(
               height: 25.0,
             ),
             InputText(
-              hint: 'Password',
-              label: 'Password',
+              hint: 'Contraseña',
+              label: 'Contraseña',
               obsecure: true,
               icono: const Icon(Icons.lock_outline),
               onChanged: (data) {
@@ -53,7 +60,7 @@ class _LoginFormState extends State<LoginForm> {
               },
               validator: (data) {
                 if (data!.trim().isEmpty) {
-                  return "Invalid password";
+                  return "Contraseña inválida";
                 }
                 return null;
               },
@@ -84,7 +91,7 @@ class _LoginFormState extends State<LoginForm> {
                   }
                 },
                 child: const Text(
-                  'Sign In',
+                  'Inicia sesión',
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'FredokaOne',
@@ -96,7 +103,7 @@ class _LoginFormState extends State<LoginForm> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 const Text(
-                  'New here?',
+                  '¿Tu primera vez aquí?',
                   style: TextStyle(fontFamily: 'FredokaOne'),
                 ),
                 TextButton(
@@ -104,7 +111,7 @@ class _LoginFormState extends State<LoginForm> {
                     Navigator.pushNamed(context, 'sign_up');
                   },
                   child: const Text(
-                    'Sign Up',
+                    'Iniciar sesión',
                     style:
                         TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
@@ -125,7 +132,7 @@ class _LoginFormState extends State<LoginForm> {
                     Navigator.pushNamed(context, 'forgot_password');
                   },
                   child: const Text(
-                    'Forgot password',
+                    'Recuperar contraseña',
                     style:
                         TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
@@ -135,4 +142,27 @@ class _LoginFormState extends State<LoginForm> {
           ],
         ));
   }
+
+
+    Future LoginUser() async{
+    var uri = Uri.http("localhost:2000","");
+
+    Map mapeddate ={
+      'service':'credentials',
+      'login':_name,
+      'passwd':_password
+    };
+    print("JSON DATA: ${mapeddate}");
+
+    http.Response response = await http.post(uri,body:mapeddate);
+    // print(response);
+    var data = jsonDecode(response.body);
+
+    print("DATA: ${data}");
+
+  }
+
+
+
+
 }

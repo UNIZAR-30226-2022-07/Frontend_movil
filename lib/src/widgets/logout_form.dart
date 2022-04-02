@@ -29,8 +29,8 @@ class _LogoutFormState extends State<LogoutForm> {
       child: Column(
         children: <Widget> [
           InputText(
-            hint: 'User Name',
-            label: 'User Name',
+            hint: 'Nombre de usuario',
+            label: 'Nombre de usuario',
             keyboard: TextInputType.name,
             icono: Icon(Icons.supervised_user_circle),
             onChanged: (data) {
@@ -38,7 +38,7 @@ class _LogoutFormState extends State<LogoutForm> {
             },
             validator: (data) {
               if (data!.trim().isEmpty) {
-                return "Invalid user name";
+                return "Nombre de usuario incorrecto";
               }
               return null;
             },
@@ -47,8 +47,8 @@ class _LogoutFormState extends State<LogoutForm> {
             height: 25.0,
           ),
           InputText(
-            hint: 'Email address',
-            label: 'Email address',
+            hint: 'Email',
+            label: 'Email',
             keyboard: TextInputType.emailAddress,
             icono: Icon(Icons.verified_user),
             onChanged: (data) {
@@ -56,7 +56,7 @@ class _LogoutFormState extends State<LogoutForm> {
             },
             validator: (data) {
               if (!data!.contains('@')) {
-                return "Invalid email";
+                return "Email incorrecto";
               }
               return null;
             },
@@ -65,8 +65,8 @@ class _LogoutFormState extends State<LogoutForm> {
             height: 25.0,
           ),
           InputText(
-            hint: 'Password',
-            label: 'Password',
+            hint: 'Contraseña',
+            label: 'Contraseña',
             obsecure: true,
             icono: Icon(Icons.lock_outline),
             onChanged: (data) {
@@ -74,7 +74,7 @@ class _LogoutFormState extends State<LogoutForm> {
             },
             validator: (data) {
               if (data!.trim().isEmpty) {
-                return "Invalid password";
+                return "Contraseña inválida";
               }
               return null;
             },
@@ -83,15 +83,15 @@ class _LogoutFormState extends State<LogoutForm> {
             height: 25.0,
           ),
                     InputText(
-            hint: 'Country',
-            label: 'Country',
+            hint: 'País',
+            label: 'País',
             icono: Icon(Icons.flag),
             onChanged: (data) {
               _country = (data);
             },
             validator: (data) {
               if (data!.trim().isEmpty) {
-                return "Country field is empty";
+                return "No ha introducido ningún país";
               }
               return null;
             },
@@ -120,7 +120,7 @@ class _LogoutFormState extends State<LogoutForm> {
                   );
                 }
               },
-              child: Text('Register',
+              child: Text('Regístrate',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'FredokaOne',
@@ -133,7 +133,7 @@ class _LogoutFormState extends State<LogoutForm> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget> [
               Text(
-                'Already have an account?',
+                '¿Ya tienes cuenta?',
                 style: TextStyle(
                   fontFamily: 'FredokaOne'
                 ),
@@ -143,7 +143,7 @@ class _LogoutFormState extends State<LogoutForm> {
                   Navigator.pushNamed(context, 'sign_in');
                 }, 
                 child: Text(
-                  'Sign In',
+                  'Iniciar sesión',
                   style: TextStyle(
                     color: Colors.teal,
                     fontFamily: 'FredokaOne'
@@ -171,16 +171,17 @@ class _LogoutFormState extends State<LogoutForm> {
 // }
 
   Future RegistrationUser() async{
-    var uri = Uri.http("localhost:2000","");
+    var uri = Uri.parse("https://onep1.herokuapp.com/auth/api/signup");
 
     Map mapeddate ={
-      'service':'credentials',
-      'login':_email,
-      'passwd':_password
+      'username':_name,
+      'email':_email,
+      'pais':_country,
+      'password': _password,
     };
     print("JSON DATA: ${mapeddate}");
 
-    http.Response response = await http.post(uri,body:mapeddate);
+    final response = await http.get(uri);
     // print(response);
     var data = jsonDecode(response.body);
 

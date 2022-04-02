@@ -24,8 +24,8 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       child: Column(
         children: <Widget> [
           InputText(
-            hint: 'Email address',
-            label: 'Email address',
+            hint: 'Email',
+            label: 'Email',
             keyboard: TextInputType.emailAddress,
             icono: Icon(Icons.verified_user),
             onChanged: (data) {
@@ -33,10 +33,10 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
             },
             validator: (data) {
               if (!data!.contains('@')) {
-                return "Invalid email";
+                return "Email inválido";
               }
               else if (data.trim().isEmpty){
-                return "Invalid email";
+                return "Email inválido";
               }
               return null;
             },
@@ -56,7 +56,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                         ),
                       ),
               onPressed: _submit,  // poner lo de la pagina que han dicho estos,
-              child: Text('Send email',
+              child: Text('Enviar email de recuperación',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'FredokaOne',

@@ -43,14 +43,14 @@ class _SignUpState extends State<SignUp> {
                     url: 'images/uno.jpg',
                   ),
                   Text(
-                    'Register',
+                    'Regístrate',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 38.0
                     ),
                   ),
                   Text(
-                    'Welcome!',
+                    '¡Bienvenido!',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 15.0

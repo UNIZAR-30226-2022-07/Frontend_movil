@@ -42,15 +42,34 @@ class SearchUser extends SearchDelegate {
               itemCount: data?.length,
               itemBuilder: (context, index) {
                 return ListTile(
+                  trailing: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(230, 21, 179, 50)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      // final route = MaterialPageRoute(
+                      //     builder: (context) => const SignUp());
+                      // Navigator.push(context, route);
+                    },
+                    child: const Text(
+                      'Añadir amigo',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'FredokaOne',
+                          fontSize: 15.0),
+                    ),
+                  ),
                   title: Row(
                     children: [
                       Container(
                         width: 60,
                         height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.deepPurpleAccent,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         child: Center(
                           child: Text(
                             '${data?[index].name}',
@@ -72,14 +91,6 @@ class SearchUser extends SearchDelegate {
                                   fontSize: 18, fontWeight: FontWeight.w600),
                             ),
                             SizedBox(height: 10),
-                            Text(
-                              '${data?[index].email}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
                           ])
                     ],
                   ),
@@ -91,7 +102,7 @@ class SearchUser extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return Center(
-      child: Text('Search User'),
+      child: Text('Buscar jugadores'),
     );
   }
 }
