@@ -6,7 +6,7 @@ import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
 class LogoutForm extends StatefulWidget {
-  const LogoutForm({ Key? key }) : super(key: key);
+  const LogoutForm({Key? key}) : super(key: key);
 
   @override
   _LogoutFormState createState() => _LogoutFormState();
@@ -25,163 +25,168 @@ class _LogoutFormState extends State<LogoutForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget> [
-          InputText(
-            hint: 'Nombre de usuario',
-            label: 'Nombre de usuario',
-            keyboard: TextInputType.name,
-            icono: Icon(Icons.supervised_user_circle),
-            onChanged: (data) {
-              _name = data;
-            },
-            validator: (data) {
-              if (data!.trim().isEmpty) {
-                return "Nombre de usuario incorrecto";
-              }
-              return null;
-            },
-          ),
-          Divider(
-            height: 25.0,
-          ),
-          InputText(
-            hint: 'Email',
-            label: 'Email',
-            keyboard: TextInputType.emailAddress,
-            icono: Icon(Icons.verified_user),
-            onChanged: (data) {
-              _email = (data);
-            },
-            validator: (data) {
-              if (!data!.contains('@')) {
-                return "Email incorrecto";
-              }
-              return null;
-            },
-          ),
-          Divider(
-            height: 25.0,
-          ),
-          InputText(
-            hint: 'Contraseña',
-            label: 'Contraseña',
-            obsecure: true,
-            icono: Icon(Icons.lock_outline),
-            onChanged: (data) {
-              _password = (data);
-            },
-            validator: (data) {
-              if (data!.trim().isEmpty) {
-                return "Contraseña inválida";
-              }
-              return null;
-            },
-          ),
-          Divider(
-            height: 25.0,
-          ),
-                    InputText(
-            hint: 'País',
-            label: 'País',
-            icono: Icon(Icons.flag),
-            onChanged: (data) {
-              _country = (data);
-            },
-            validator: (data) {
-              if (data!.trim().isEmpty) {
-                return "No ha introducido ningún país";
-              }
-              return null;
-            },
-          ),
-          Divider(
-            height: 25.0,
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            InputText(
+              hint: 'Nombre de usuario',
+              label: 'Nombre de usuario',
+              keyboard: TextInputType.name,
+              icono: Icon(Icons.supervised_user_circle),
+              onChanged: (data) {
+                _name = data;
+              },
+              validator: (data) {
+                if (data!.trim().isEmpty) {
+                  return "Nombre de usuario incorrecto";
+                }
+                return null;
+              },
+            ),
+            Divider(
+              height: 25.0,
+            ),
+            InputText(
+              hint: 'Email',
+              label: 'Email',
+              keyboard: TextInputType.emailAddress,
+              icono: Icon(Icons.verified_user),
+              onChanged: (data) {
+                _email = (data);
+              },
+              validator: (data) {
+                if (!data!.contains('@')) {
+                  return "Email incorrecto";
+                }
+                return null;
+              },
+            ),
+            Divider(
+              height: 25.0,
+            ),
+            InputText(
+              hint: 'Contraseña',
+              label: 'Contraseña',
+              obsecure: true,
+              icono: Icon(Icons.lock_outline),
+              onChanged: (data) {
+                _password = (data);
+              },
+              validator: (data) {
+                if (data!.trim().isEmpty) {
+                  return "Contraseña inválida";
+                }
+                return null;
+              },
+            ),
+            Divider(
+              height: 25.0,
+            ),
+            InputText(
+              hint: 'País',
+              label: 'País',
+              icono: Icon(Icons.flag),
+              onChanged: (data) {
+                _country = (data);
+              },
+              validator: (data) {
+                if (data!.trim().isEmpty) {
+                  return "No ha introducido ningún país";
+                }
+                return null;
+              },
+            ),
+            Divider(
+              height: 25.0,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                      ),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  RegistrationUser();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => HomePage(),
                     ),
-                  );
-                }
-              },
-              child: Text('Regístrate',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'FredokaOne',
-                  fontSize: 25.0
+                  ),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    RegistrationUser();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => HomePage(),
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  'Regístrate',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'FredokaOne',
+                      fontSize: 25.0),
                 ),
               ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget> [
-              Text(
-                '¿Ya tienes cuenta?',
-                style: TextStyle(
-                  fontFamily: 'FredokaOne'
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '¿Ya tienes cuenta?',
+                  style: TextStyle(fontFamily: 'FredokaOne'),
                 ),
-              ),
-              FlatButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, 'sign_in');
-                }, 
-                child: Text(
-                  'Iniciar sesión',
-                  style: TextStyle(
-                    color: Colors.teal,
-                    fontFamily: 'FredokaOne'
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'sign_in');
+                  },
+                  child: Text(
+                    'Iniciar sesión',
+                    style:
+                        TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
-                ),
-              )
-            ],
-          )
-        ],
-      )
-    );
+                )
+              ],
+            )
+          ],
+        ));
   }
 
+  Future RegistrationUser() async {
+    String _baseURL = 'onep1.herokuapp.com';
+    final url = Uri.https(_baseURL, '/api/auth/signup');
+    //var uri = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
 
-  Future RegistrationUser() async{
-    var uri = Uri.parse("https://onep1.herokuapp.com/auth/api/signup");
-
-    Map mapeddate ={
-      'username':_name,
-      'email':_email,
-      'pais':_country,
-      'password': _password
+    Map<String, String> mapeddate = {
+      '"username"': _name,
+      '"email"': _email,
+      '"pais"': _country,
+      '"password"': _password
     };
-    print("JSON DATA: ${mapeddate}");
 
-    final response = await http.post(uri,headers: {"Accept":"application/json"},body:mapeddate);
+    // Map<String, String> mapeddate = {
+    //   '"username"': '"julian"',
+    //   '"email"': '"juli@gmail.com"',
+    //   '"pais"': '"espagna"',
+    //   '"password"': '"test123"'
+    // };
+
+    final response = await http.post(url, body: json.encode(mapeddate));
+    print(url);
+    print(json.encode(mapeddate));
     if (response.statusCode == 200) {
+      print('Ha funcionado y se ha recibido la respuesta');
       print(json.decode(response.body));
     } else {
+      print('No ha funcionado y no se ha recibido la respuesta');
       print(response.statusCode);
     }
 
-    
     // print(response);
     var data = jsonDecode(response.body);
 
     print("DATA: ${data}");
-
   }
 
 //   Future<http.Response> createAlbum(String title) {
