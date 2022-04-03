@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
@@ -78,11 +82,12 @@ class _LoginFormState extends State<LoginForm> {
                 // onPressed: this._submit,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const HomePage(),
-                      ),
-                    );
+                    LoginUser();
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const HomePage(),
+                    //   ),
+                    // );
                   }
                 },
                 child: const Text(
@@ -138,26 +143,30 @@ class _LoginFormState extends State<LoginForm> {
         ));
   }
 
-
-    Future LoginUser() async{
-    var uri = Uri.http("localhost:2000","");
-
-    Map mapeddate ={
-      'service':'credentials',
-      'login':_name,
-      'passwd':_password
+  Future LoginUser() async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
-    print("JSON DATA: ${mapeddate}");
+    // Map mapeddate = {
+    //   'service': 'credentials',
+    //   'login': _name,
+    //   'passwd': _password
+    // };
+    Map mapeddate = {'username': _name, 'password': _password};
 
-    http.Response response = await http.post(uri,body:mapeddate);
-    // print(response);
-    var data = jsonDecode(response.body);
-
-    print("DATA: ${data}");
-
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Navigator.pushReplacementNamed(context, 'home_page');
+      print(response);
+    } else {
+      print('Contraseña incorrecta');
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text(respuesta['message']),
+      //   backgroundColor: Colors.red,
+      //   width: 30,
+      // ));
+    }
   }
-
-
-
-
 }

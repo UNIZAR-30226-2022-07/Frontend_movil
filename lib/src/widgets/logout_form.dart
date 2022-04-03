@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
 class LogoutForm extends StatefulWidget {
@@ -13,6 +12,8 @@ class LogoutForm extends StatefulWidget {
   @override
   _LogoutFormState createState() => _LogoutFormState();
 }
+
+bool _valido = false;
 
 class _LogoutFormState extends State<LogoutForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
@@ -34,7 +35,7 @@ class _LogoutFormState extends State<LogoutForm> {
               hint: 'Nombre de usuario',
               label: 'Nombre de usuario',
               keyboard: TextInputType.name,
-              icono: Icon(Icons.supervised_user_circle),
+              icono: const Icon(Icons.supervised_user_circle),
               onChanged: (data) {
                 _name = data;
               },
@@ -45,14 +46,14 @@ class _LogoutFormState extends State<LogoutForm> {
                 return null;
               },
             ),
-            Divider(
+            const SizedBox(
               height: 25.0,
             ),
             InputText(
               hint: 'Email',
               label: 'Email',
               keyboard: TextInputType.emailAddress,
-              icono: Icon(Icons.verified_user),
+              icono: const Icon(Icons.verified_user),
               onChanged: (data) {
                 _email = (data);
               },
@@ -64,14 +65,14 @@ class _LogoutFormState extends State<LogoutForm> {
                 return regExp.hasMatch(data ?? '') ? null : 'Correo inválido';
               },
             ),
-            Divider(
+            const SizedBox(
               height: 25.0,
             ),
             InputText(
               hint: 'Contraseña',
               label: 'Contraseña',
               obsecure: true,
-              icono: Icon(Icons.lock_outline),
+              icono: const Icon(Icons.lock_outline),
               onChanged: (data) {
                 _password = (data);
               },
@@ -82,13 +83,13 @@ class _LogoutFormState extends State<LogoutForm> {
                 return null;
               },
             ),
-            Divider(
+            const SizedBox(
               height: 25.0,
             ),
             InputText(
               hint: 'País',
               label: 'País',
-              icono: Icon(Icons.flag),
+              icono: const Icon(Icons.flag),
               onChanged: (data) {
                 _country = (data);
               },
@@ -99,7 +100,7 @@ class _LogoutFormState extends State<LogoutForm> {
                 return null;
               },
             ),
-            Divider(
+            const SizedBox(
               height: 25.0,
             ),
             SizedBox(
@@ -107,7 +108,7 @@ class _LogoutFormState extends State<LogoutForm> {
               child: TextButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xE6CC0E08)),
+                      MaterialStateProperty.all<Color>(const Color(0xE6CC0E08)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
@@ -116,15 +117,12 @@ class _LogoutFormState extends State<LogoutForm> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    _valido = false;
                     RegistrationUser();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => HomePage(),
-                      ),
-                    );
+                    if (!_valido) {}
                   }
                 },
-                child: Text(
+                child: const Text(
                   'Regístrate',
                   style: TextStyle(
                       color: Colors.white,
@@ -136,85 +134,85 @@ class _LogoutFormState extends State<LogoutForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text(
+                const Text(
                   '¿Ya tienes cuenta?',
-                  style: TextStyle(fontFamily: 'FredokaOne'),
+                  style: const TextStyle(fontFamily: 'FredokaOne'),
                 ),
                 FlatButton(
                   onPressed: () {
                     Navigator.pushNamed(context, 'sign_in');
                   },
-                  child: Text(
+                  child: const Text(
                     'Iniciar sesión',
                     style:
                         TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
                 )
               ],
+            ),
+            const SizedBox(
+              height: 25.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FloatingActionButton(
+                  backgroundColor: Colors.red[900],
+                  child: const Icon(Icons.settings_backup_restore),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             )
           ],
         ));
   }
 
-  // Future RegistrationUser() async {
-  //   // String _baseURL = 'onep1.herokuapp.com';
-  //   // final url = Uri.https(_baseURL, '/api/auth/signup');
-  //   final uri = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
-  //   final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-  //   Map json= {"username": "Hello", "email": "hola@", "pais": "espama", "password": "hola"};
-  //   // Map<String, String> mapeddate = {
-  //   //   'username': _name,
-  //   //   'email': _email,
-  //   //   'pais': _country,
-  //   //   'password': _password
-  //   // };
+//   Future RegistrationUser() async {
+//     Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
 
-  //   // Map<String, String> mapeddate = {
-  //   //   '"username"': '"julian"',
-  //   //   '"email"': '"juli@gmail.com"',
-  //   //   '"pais"': '"espagna"',
-  //   //   '"password"': '"test123"'
-  //   // };
-  //   // print(uri);
-  //   final response = await http.post(uri,headers: headers, body: jsonEncode(json));
-  //   // print(json.encode(json));
-  //   if (response.statusCode == 200) {
-  //     print('Ha funcionado y se ha recibido la respuesta');
-  //     // print(json.decode(response.body));
-  //   } else {
-  //     print('No ha funcionado y no se ha recibido la respuesta');
-  //     print(response.statusCode);
-  //   }
-
-  //   // print(response);
-  //   var data = jsonDecode(response.body);
-
-  //   print("DATA: ${data}");
-  // }
-
-//   Future<http.Response> createAlbum(String title) {
-//   return http.post(
-//     Uri.parse('https://jsonplaceholder.typicode.com/albums'),
-//     headers: <String, String>{
-//       'Content-Type': 'application/json; charset=UTF-8',
-//     },
-//     body: jsonEncode(<String, String>{
-//       'title': title,
-//     }),
-//   );
+//     final client = HttpClient();
+//     final request = await client.postUrl(url);
+//     request.headers
+//         .set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
+//     request.write(
+//         '{"username": "Hello2", "email": "hola@gmail.com", "pais": "espama", "password": "haaaaaaaaaaaaola"}');
+//     print(request);
+//     final response = await request.close();
+//     response.transform(utf8.decoder).listen((contents) {
+//       print(contents);
+//     });
+//     return response;
+//   }
 // }
+
   Future RegistrationUser() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map<String, String> mapeddate = {
+      'username': _name,
+      'email': _email,
+      'pais': _country,
+      'password': _password
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(mapeddate));
 
-    final client = HttpClient();
-    final request = await client.postUrl(url);
-    request.headers.set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
-    request.write('{"username": "Hello", "email": "hola@gmail.com", "pais": "espama", "password": "haaaaaaaaaaaaola"}');
-    print(request);
-    final response = await request.close();
-    response.transform(utf8.decoder).listen((contents) {
-      print(contents);
-    });
-  return response;
+    if (response.statusCode == 200) {
+      _valido = true;
+      Navigator.pushReplacementNamed(context, 'home_page');
+    } else {
+      _valido = false;
+      var respuesta = json.decode(response.body);
+      print(respuesta['message']);
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text(respuesta['message']),
+      //   backgroundColor: Colors.red,
+      //   width: 30,
+      // ));
+    }
   }
 }
