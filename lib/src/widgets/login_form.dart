@@ -36,11 +36,6 @@ class _LoginFormState extends State<LoginForm> {
                 _name = data;
               },
               validator: (data) {
-                // String pattern =
-                //     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                // RegExp regExp = RegExp(pattern);
-
-                // return regExp.hasMatch(data ?? '') ? null : 'Correo inválido';
                 if (data!.trim().isEmpty) {
                   return "Usuario inválido";
                 }
@@ -59,7 +54,7 @@ class _LoginFormState extends State<LoginForm> {
                 _password = (data);
               },
               validator: (data) {
-                if (data!.trim().isEmpty) {
+                if (data!.length < 6) {
                   return "Contraseña inválida";
                 }
                 return null;

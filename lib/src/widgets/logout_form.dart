@@ -57,10 +57,11 @@ class _LogoutFormState extends State<LogoutForm> {
                 _email = (data);
               },
               validator: (data) {
-                if (!data!.contains('@')) {
-                  return "Email incorrecto";
-                }
-                return null;
+                String pattern =
+                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp = RegExp(pattern);
+
+                return regExp.hasMatch(data ?? '') ? null : 'Correo inválido';
               },
             ),
             Divider(
@@ -75,7 +76,7 @@ class _LogoutFormState extends State<LogoutForm> {
                 _password = (data);
               },
               validator: (data) {
-                if (data!.trim().isEmpty) {
+                if (data!.trim().isEmpty || data.length < 6) {
                   return "Contraseña inválida";
                 }
                 return null;
