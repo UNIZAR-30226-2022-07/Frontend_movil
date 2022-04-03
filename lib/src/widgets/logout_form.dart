@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -153,40 +155,41 @@ class _LogoutFormState extends State<LogoutForm> {
         ));
   }
 
-  Future RegistrationUser() async {
-    // String _baseURL = 'onep1.herokuapp.com';
-    // final url = Uri.https(_baseURL, '/api/auth/signup');
-    var uri = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
+  // Future RegistrationUser() async {
+  //   // String _baseURL = 'onep1.herokuapp.com';
+  //   // final url = Uri.https(_baseURL, '/api/auth/signup');
+  //   final uri = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
+  //   final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+  //   Map json= {"username": "Hello", "email": "hola@", "pais": "espama", "password": "hola"};
+  //   // Map<String, String> mapeddate = {
+  //   //   'username': _name,
+  //   //   'email': _email,
+  //   //   'pais': _country,
+  //   //   'password': _password
+  //   // };
 
-    Map<String, String> mapeddate = {
-      'username': _name,
-      'email': _email,
-      'pais': _country,
-      'password': _password
-    };
+  //   // Map<String, String> mapeddate = {
+  //   //   '"username"': '"julian"',
+  //   //   '"email"': '"juli@gmail.com"',
+  //   //   '"pais"': '"espagna"',
+  //   //   '"password"': '"test123"'
+  //   // };
+  //   // print(uri);
+  //   final response = await http.post(uri,headers: headers, body: jsonEncode(json));
+  //   // print(json.encode(json));
+  //   if (response.statusCode == 200) {
+  //     print('Ha funcionado y se ha recibido la respuesta');
+  //     // print(json.decode(response.body));
+  //   } else {
+  //     print('No ha funcionado y no se ha recibido la respuesta');
+  //     print(response.statusCode);
+  //   }
 
-    // Map<String, String> mapeddate = {
-    //   '"username"': '"julian"',
-    //   '"email"': '"juli@gmail.com"',
-    //   '"pais"': '"espagna"',
-    //   '"password"': '"test123"'
-    // };
-    print(uri);
-    final response = await http.post(uri, body: json.encode(mapeddate));
-    print(json.encode(mapeddate));
-    if (response.statusCode == 200) {
-      print('Ha funcionado y se ha recibido la respuesta');
-      print(json.decode(response.body));
-    } else {
-      print('No ha funcionado y no se ha recibido la respuesta');
-      print(response.statusCode);
-    }
+  //   // print(response);
+  //   var data = jsonDecode(response.body);
 
-    // print(response);
-    var data = jsonDecode(response.body);
-
-    print("DATA: ${data}");
-  }
+  //   print("DATA: ${data}");
+  // }
 
 //   Future<http.Response> createAlbum(String title) {
 //   return http.post(
@@ -199,4 +202,18 @@ class _LogoutFormState extends State<LogoutForm> {
 //     }),
 //   );
 // }
+  Future RegistrationUser() async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
+
+    final client = HttpClient();
+    final request = await client.postUrl(url);
+    request.headers.set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
+    request.write('{"username": "Hello", "email": "hola@gmail.com", "pais": "espama", "password": "haaaaaaaaaaaaola"}');
+    print(request);
+    final response = await request.close();
+    response.transform(utf8.decoder).listen((contents) {
+      print(contents);
+    });
+  return response;
+  }
 }
