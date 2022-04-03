@@ -157,18 +157,6 @@ class _LogoutFormState extends State<LogoutForm> {
     );
   }
 
-//   Future<http.Response> createAlbum(String title) {
-//     return http.post(
-//       Uri.parse('https://jsonplaceholder.typicode.com/albums'),
-//       headers: <String, String>{
-//         'Content-Type': 'application/json; charset=UTF-8',
-//       },
-//       body: jsonEncode(<String, String>{
-//         'title': title,
-//       }),
-//     );
-//   }
-// }
 
   Future RegistrationUser() async{
     var uri = Uri.parse("https://onep1.herokuapp.com/auth/api/signup");
@@ -177,15 +165,34 @@ class _LogoutFormState extends State<LogoutForm> {
       'username':_name,
       'email':_email,
       'pais':_country,
-      'password': _password,
+      'password': _password
     };
     print("JSON DATA: ${mapeddate}");
 
-    final response = await http.get(uri);
+    final response = await http.post(uri,headers: {"Accept":"application/json"},body:mapeddate);
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+    } else {
+      print(response.statusCode);
+    }
+
+    
     // print(response);
     var data = jsonDecode(response.body);
 
     print("DATA: ${data}");
 
   }
+
+//   Future<http.Response> createAlbum(String title) {
+//   return http.post(
+//     Uri.parse('https://jsonplaceholder.typicode.com/albums'),
+//     headers: <String, String>{
+//       'Content-Type': 'application/json; charset=UTF-8',
+//     },
+//     body: jsonEncode(<String, String>{
+//       'title': title,
+//     }),
+//   );
+// }
 }
