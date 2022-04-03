@@ -154,15 +154,15 @@ class _LogoutFormState extends State<LogoutForm> {
   }
 
   Future RegistrationUser() async {
-    String _baseURL = 'onep1.herokuapp.com';
-    final url = Uri.https(_baseURL, '/api/auth/signup');
-    //var uri = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
+    // String _baseURL = 'onep1.herokuapp.com';
+    // final url = Uri.https(_baseURL, '/api/auth/signup');
+    var uri = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
 
     Map<String, String> mapeddate = {
-      '"username"': _name,
-      '"email"': _email,
-      '"pais"': _country,
-      '"password"': _password
+      'username': _name,
+      'email': _email,
+      'pais': _country,
+      'password': _password
     };
 
     // Map<String, String> mapeddate = {
@@ -171,9 +171,8 @@ class _LogoutFormState extends State<LogoutForm> {
     //   '"pais"': '"espagna"',
     //   '"password"': '"test123"'
     // };
-
-    final response = await http.post(url, body: json.encode(mapeddate));
-    print(url);
+    print(uri);
+    final response = await http.post(uri, body: json.encode(mapeddate));
     print(json.encode(mapeddate));
     if (response.statusCode == 200) {
       print('Ha funcionado y se ha recibido la respuesta');
