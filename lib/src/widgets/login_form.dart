@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../pages/home_page.dart';
 
 class LoginForm extends StatefulWidget {
@@ -47,7 +45,7 @@ class _LoginFormState extends State<LoginForm> {
               },
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
             InputText(
               hint: 'Contraseña',
@@ -65,7 +63,7 @@ class _LoginFormState extends State<LoginForm> {
               },
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
             SizedBox(
               width: double.infinity,
@@ -83,15 +81,10 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     LoginUser();
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (_) => const HomePage(),
-                    //   ),
-                    // );
                   }
                 },
                 child: const Text(
-                  'Inicia sesión',
+                  'Iniciar sesión',
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'FredokaOne',
@@ -111,7 +104,7 @@ class _LoginFormState extends State<LoginForm> {
                     Navigator.pushNamed(context, 'sign_up');
                   },
                   child: const Text(
-                    'Iniciar sesión',
+                    '¡Regístrate!',
                     style:
                         TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
@@ -119,14 +112,7 @@ class _LoginFormState extends State<LoginForm> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                // Text(
-                // //   'Forgot password?',
-                // //   style: TextStyle(
-                // //     fontFamily: 'FredokaOne'
-                // //   ),
-                // // ),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, 'forgot_password');

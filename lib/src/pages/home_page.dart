@@ -19,10 +19,10 @@ class _HomePageState extends State<HomePage> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Scaffold(
       appBar: AppBar(
-        // title: const Text(
-        //   'Home',
-        //   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-        // ),
+        title: const Text(
+          'Home',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         leading: Align(
             alignment: Alignment.centerLeft,
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(
                 Icons.emoji_events,
                 size: 40,
-                color: Color.fromARGB(255, 157, 13, 13),
+                color: Colors.yellow,
               ),
               onPressed: () {
                 final route = MaterialPageRoute(
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
           ], begin: Alignment.topCenter),
         ),
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 200.0, vertical: 100),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
           children: <Widget>[
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 SizedBox(
                   width: double.infinity,
-                  height: 60.0,
+                  height: 50.0,
                   child: TextButton(
                     style: ButtonStyle(
                       backgroundColor:
@@ -118,11 +118,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 35,
+                  height: 15,
                 ),
                 SizedBox(
                   width: double.infinity,
-                  height: 60.0,
+                  height: 50.0,
                   child: TextButton(
                     style: ButtonStyle(
                       backgroundColor:
@@ -148,11 +148,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 35,
+                  height: 15,
                 ),
                 SizedBox(
                   width: double.infinity,
-                  height: 60.0,
+                  height: 50.0,
                   child: TextButton(
                     style: ButtonStyle(
                       backgroundColor:
@@ -170,6 +170,36 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: const Text(
                       'Unirse a partida privada',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'FredokaOne',
+                          fontSize: 30.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50.0,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black54),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      final route = MaterialPageRoute(
+                          builder: (context) => const Partida());
+                      Navigator.push(context, route);
+                    },
+                    child: const Text(
+                      'Torneos',
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',

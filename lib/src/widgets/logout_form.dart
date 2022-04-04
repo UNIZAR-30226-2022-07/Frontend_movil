@@ -47,7 +47,7 @@ class _LogoutFormState extends State<LogoutForm> {
               },
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
             InputText(
               hint: 'Email',
@@ -66,7 +66,7 @@ class _LogoutFormState extends State<LogoutForm> {
               },
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
             InputText(
               hint: 'Contraseña',
@@ -84,7 +84,7 @@ class _LogoutFormState extends State<LogoutForm> {
               },
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
             InputText(
               hint: 'País',
@@ -101,7 +101,7 @@ class _LogoutFormState extends State<LogoutForm> {
               },
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
             SizedBox(
               width: double.infinity,
@@ -143,7 +143,7 @@ class _LogoutFormState extends State<LogoutForm> {
                     Navigator.pushNamed(context, 'sign_in');
                   },
                   child: const Text(
-                    'Iniciar sesión',
+                    '¡Inicia sesión!',
                     style:
                         TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
@@ -151,20 +151,20 @@ class _LogoutFormState extends State<LogoutForm> {
               ],
             ),
             const SizedBox(
-              height: 25.0,
+              height: 10.0,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                FloatingActionButton(
-                  backgroundColor: Colors.red[900],
-                  child: const Icon(Icons.settings_backup_restore),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            )
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: <Widget>[
+            //     FloatingActionButton(
+            //       backgroundColor: Colors.red[900],
+            //       child: const Icon(Icons.settings_backup_restore),
+            //       onPressed: () {
+            //         Navigator.pop(context);
+            //       },
+            //     ),
+            //   ],
+            // )
           ],
         ));
   }

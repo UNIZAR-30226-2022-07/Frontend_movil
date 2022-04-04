@@ -24,8 +24,7 @@ class _SignInState extends State<SignIn> {
             ], begin: Alignment.topCenter),
           ),
           child: ListView(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 40.0, vertical: 100),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 50),
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -33,37 +32,33 @@ class _SignInState extends State<SignIn> {
                   IconContainer(
                     url: 'images/uno.jpg',
                   ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
                   Text(
                     'Iniciar sesión',
                     style: TextStyle(
-                        fontFamily: 'PermanentMarker', fontSize: 38.0),
+                        fontFamily: 'PermanentMarker', fontSize: 32.0),
                   ),
-
                   Text('!Hola! ¡Qué bien verte de nuevo!',
                       style: TextStyle(
-                          fontFamily: 'PermanentMarker', fontSize: 20.0)),
+                          fontFamily: 'PermanentMarker', fontSize: 14.0)),
                   SizedBox(
-                    height: 15.0,
+                    height: 10.0,
                   ),
                   // Formulario
-                  LoginForm()
+                  LoginForm(),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FloatingActionButton(
-                    backgroundColor: Colors.red[900],
-                    child: const Icon(Icons.settings_backup_restore),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: <Widget>[
+              //     FloatingActionButton(
+              //       backgroundColor: Colors.red[900],
+              //       child: const Icon(Icons.settings_backup_restore),
+              //       onPressed: () {
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

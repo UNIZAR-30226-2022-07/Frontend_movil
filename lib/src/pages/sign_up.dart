@@ -25,7 +25,7 @@ class _SignUpState extends State<SignUp> {
             ], begin: Alignment.topCenter),
           ),
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 90),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 50),
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -36,11 +36,11 @@ class _SignUpState extends State<SignUp> {
                   Text(
                     'Regístrate',
                     style: TextStyle(
-                        fontFamily: 'PermanentMarker', fontSize: 38.0),
+                        fontFamily: 'PermanentMarker', fontSize: 32.0),
                   ),
                   Text('¡Bienvenido!',
                       style: TextStyle(
-                          fontFamily: 'PermanentMarker', fontSize: 15.0)),
+                          fontFamily: 'PermanentMarker', fontSize: 14.0)),
                   SizedBox(
                     height: 10.0,
                   ),

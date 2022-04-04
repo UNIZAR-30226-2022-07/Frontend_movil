@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
           ], begin: Alignment.topCenter),
         ),
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 60),
           children: <Widget>[
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
