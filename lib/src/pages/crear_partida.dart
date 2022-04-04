@@ -14,6 +14,7 @@ class _CreatePageState extends State<CreatePage> {
   bool regla1 = false;
   bool regla2 = false;
   bool regla3 = false;
+  bool regla4 = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,26 +204,45 @@ class _CreatePageState extends State<CreatePage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(children: [
-                        const Text("Regla 1"),
-                        const SizedBox(
-                          width: 5,
+                      Expanded(
+                        child: CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: const Text('Regla 1'),
+                          value: regla1,
+                          onChanged: (regla1) =>
+                              setState(() => this.regla1 = regla1!),
                         ),
-                        // CheckboxListTile(
-                        //   controlAffinity: ListTileControlAffinity.leading,
-                        //   title: const Text('Regla 1'),
-                        //   value: regla1,
-                        //   onChanged: (regla1) =>
-                        //       setState(() => this.regla1 = regla1!),
-                        // )
-                        // Switch.adaptive(
-                        //     value: regla1,
-                        //     onChanged: (regla1) => setState(() => regla1 = true))
-                      ]),
-                      Text("Regla 2"),
-                      Text("Regla 3"),
-                      Text("Regla 4"),
-                      Text("Regla 5"),
+                      ),
+                      Expanded(
+                        child: CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: const Text('Regla 2'),
+                          value: regla2,
+                          onChanged: (regla2) =>
+                              setState(() => this.regla2 = regla2!),
+                        ),
+                      ),
+                      Expanded(
+                        child: CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: const Text('Regla 3'),
+                          value: regla3,
+                          onChanged: (regla3) =>
+                              setState(() => this.regla3 = regla3!),
+                        ),
+                      ),
+                      Expanded(
+                        child: CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: const Text('Regla 4'),
+                          value: regla4,
+                          onChanged: (regla4) =>
+                              setState(() => this.regla4 = regla4!),
+                        ),
+                      ),
+                      // Switch.adaptive(
+                      //     value: regla1,
+                      //     onChanged: (regla1) => setState(() => regla1 = true))
                     ],
                   ),
                   actions: <Widget>[

@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => const Partida());
+                          builder: (context) => const GamePage());
                       Navigator.push(context, route);
                     },
                     child: const Text(
