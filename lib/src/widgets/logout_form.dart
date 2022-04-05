@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
+
+
 class LogoutForm extends StatefulWidget {
   const LogoutForm({Key? key}) : super(key: key);
 
@@ -14,19 +16,28 @@ class LogoutForm extends StatefulWidget {
 }
 
 bool _valido = false;
+class ColorItem {
+  ColorItem(this.name, this.color);  final String name;
+  final Color color;
+}
 
 class _LogoutFormState extends State<LogoutForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
   String _name = '';
   String _email = '';
   String _password = '';
-  String _country = '';
-  // _submit(){
-  //   final isLogin = _formKey.currentState?.validate();
-  //   print('IsLogin Form $isLogin');
-  // }
+  String _passwordR = '';
+  final List<String> items = ['España','Francia','Alemania','Rumanía','Bélgica','Irlanda'];  
+  late String _country;
+
+
   @override
+  void initState() {
+    _country = items[0];
+    super.initState();
+  }
   Widget build(BuildContext context) {
+    var value2;
     return Form(
         key: _formKey,
         child: Column(
@@ -87,22 +98,56 @@ class _LogoutFormState extends State<LogoutForm> {
               height: 10.0,
             ),
             InputText(
-              hint: 'País',
-              label: 'País',
-              icono: const Icon(Icons.flag),
+              hint: 'Repetir contraseña',
+              label: 'Repetir contraseña',
+              obsecure: true,
+              icono: const Icon(Icons.lock_outline),
               onChanged: (data) {
-                _country = (data);
+                _passwordR = (data);
               },
               validator: (data) {
-                if (data!.trim().isEmpty) {
-                  return "No ha introducido ningún país";
+                if (data! != _password) {
+                  return "Contraseña inválida";
                 }
                 return null;
               },
             ),
             const SizedBox(
               height: 10.0,
+            ),       
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  border: Border.all(
+                      color: Color.fromARGB(255, 96, 95, 95),
+                      width: 1,
+                      style: BorderStyle.solid
+                  )
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  DropdownButton(
+                    isExpanded: true,
+                    style: Theme.of(context).textTheme.headline6,
+                    value: _country,
+                    items: items.map<DropdownMenuItem<String>>(
+                            (String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Center(child: Text(item)),
+                                ))
+                        .toList(),
+                    onChanged: (String? value) =>
+                        setState(() => _country = value!),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(
+              height: 10.0,
+            ), 
             SizedBox(
               width: double.infinity,
               child: TextButton(
