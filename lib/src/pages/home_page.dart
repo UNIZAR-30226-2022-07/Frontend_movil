@@ -4,6 +4,8 @@ import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/game.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
+import 'package:flutter_unogame/src/widgets/insertCode_form.dart';
+import '../widgets/input_text.dart';
 import 'crear_partida.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey<FormState> _formKey = GlobalKey();
+  String _code = '';
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
@@ -164,9 +168,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
-                      final route = MaterialPageRoute(
-                          builder: (context) => const Partida());
-                      Navigator.push(context, route);
+                      popUpCodigo(context);
+                      // final route = MaterialPageRoute(
+                      //     builder: (context) => const Partida());
+                      // Navigator.push(context, route);
                     },
                     child: const Text(
                       'Unirse a partida privada',
@@ -214,4 +219,37 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Future<dynamic> popUpCodigo(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            
+            builder: ((context, setState) => AlertDialog(
+                  
+                  shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+                  title: const Text('Introducir código de partida:'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      CodeForm(),
+                      // Switch.adaptive(
+                      //     value: regla1,
+                      //     onChanged: (regla1) => setState(() => regla1 = true))
+                    ],
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ))));
+  }
+
+
 }
