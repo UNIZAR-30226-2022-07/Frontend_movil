@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route =
-                          MaterialPageRoute(builder: (context) => GamePage());
+                          MaterialPageRoute(builder: (context) => Partida());
                       Navigator.push(context, route);
                     },
                     child: const Text(
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => const GamePage());
+                          builder: (context) => const Partida());
                       Navigator.push(context, route);
                     },
                     child: const Text(
