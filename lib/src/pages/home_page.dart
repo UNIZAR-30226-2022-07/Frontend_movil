@@ -4,7 +4,6 @@ import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/game.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
-import 'package:flutter_unogame/src/widgets/insertCode_form.dart';
 import '../widgets/input_text.dart';
 import 'crear_partida.dart';
 
@@ -16,8 +15,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late TextEditingController controller;
+
+
   GlobalKey<FormState> _formKey = GlobalKey();
-  String _code = '';
+  String code = '';
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController();
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
@@ -167,11 +179,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      popUpCodigo(context);
-                      // final route = MaterialPageRoute(
-                      //     builder: (context) => const Partida());
-                      // Navigator.push(context, route);
+                    onPressed: () async {
+                      final code = await openDialog();
+                      if (code == null || code.isEmpty) return;
+                      setState(() => this.code = code);
                     },
                     child: const Text(
                       'Unirse a partida privada',
@@ -219,37 +230,31 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  Future<String?> openDialog() => showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Inserta el codigo de partida:'),
+      content: TextField(
+        autofocus: true,
+        // decoration: InputDecoration(hintText: 'Enter code'),
+        controller: controller, // para acceder al codigo que introducimos
+        onSubmitted: (_) => submit(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: submit, 
+          child: Text('Submit')
+        ),
+      ],
+    )
+  );
 
-  Future<dynamic> popUpCodigo(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-            
-            builder: ((context, setState) => AlertDialog(
-                  
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-                  title: const Text('Introducir código de partida:'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      CodeForm(),
-                      // Switch.adaptive(
-                      //     value: regla1,
-                      //     onChanged: (regla1) => setState(() => regla1 = true))
-                    ],
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ))));
+  void submit() {
+    Navigator.of(context).pop(controller.text);
+    controller.clear();
   }
+
+
 
 
 }
