@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/pantalla_anadir_jugadores.dart';
 
 int count = 2;
 bool tiempoA10 = false;
@@ -184,7 +185,15 @@ class _CreatePageState extends State<CreatePage> {
                     ],
                   ),
                   ElevatedButton(
-                      onPressed: () => {}, child: const Text('Crear'))
+                      onPressed: () {
+                      final route =
+                          MaterialPageRoute(builder: (context) => AnadirJugadores());
+                      Navigator.push(context, route);
+                    },
+                    child: const Text('Crear'),
+                      
+                      //onPressed: () => {}, child: const Text('Crear'))
+                  ),
                 ],
               )
             ],

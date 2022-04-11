@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const IconContainer(
-                  url: 'images/uno.jpg',
+                  url: 'images/one-red.png',
                 ),
                 const Text(
                   '¡Bienvenido!',

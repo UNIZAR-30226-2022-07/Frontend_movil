@@ -94,10 +94,14 @@ class _HomePageState extends State<HomePage> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: <Color>[
-            Color.fromARGB(255, 255, 244, 244),
-            Color.fromARGB(0, 255, 70, 70)
-          ], begin: Alignment.topCenter),
+          // gradient: LinearGradient(colors: <Color>[
+          //   Color.fromARGB(255, 255, 244, 244),
+          //   Color.fromARGB(0, 255, 70, 70)
+          // ], begin: Alignment.topCenter),
+          image: DecorationImage(
+            image: AssetImage('images/fondo.png'),
+            fit: BoxFit.fill
+          )
         ),
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
@@ -121,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route =
-                          MaterialPageRoute(builder: (context) => Partida());
+                          MaterialPageRoute(builder: (context) => GamePage());
                       Navigator.push(context, route);
                     },
                     child: const Text(

@@ -30,7 +30,7 @@ class _SignInState extends State<SignIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const <Widget>[
                   IconContainer(
-                    url: 'images/uno.jpg',
+                    url: 'images/one-red.png',
                   ),
                   Text(
                     'Iniciar sesión',
