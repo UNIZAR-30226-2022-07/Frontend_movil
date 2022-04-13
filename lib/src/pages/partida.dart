@@ -80,7 +80,7 @@ class _PartidaState extends State<Partida> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    buildCard('images/azul.jpg'),
+                    buildCard('images/azul.jpg'), // esta es la ultima carta que han puesto
                   ]
                 ),
                 SizedBox(
@@ -90,7 +90,7 @@ class _PartidaState extends State<Partida> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    cartaRobar(20),
+                    cartaRobar(20), //esto es el monton de cartas para robar
                   ]
                 )
               ],
@@ -135,7 +135,6 @@ class _PartidaState extends State<Partida> {
                 ],
               ),
             )
-
           ],
         )
       );
