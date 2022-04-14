@@ -49,46 +49,33 @@ class _PartidaState extends State<Partida> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color.fromARGB(255, 6, 104, 16),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-              height: 80,
-              width: 20,
+            const SizedBox(
+              height: 60,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SizedBox(
-                  width: 350,
-                ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      buildCard(
-                          'images/azul.jpg'), // esta es la ultima carta que han puesto
-                    ]),
-                SizedBox(
+                buildCard('images/azul.jpg'),
+                const SizedBox(
                   width: 20,
                 ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      cartaRobar(20), //esto es el monton de cartas para robar
-                    ])
+                cartaRobar(20),
+                const SizedBox(
+                  width: 80,
+                )
               ],
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.fromLTRB(12, 0, 0, 2),
               child: Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: 25,
-                  ),
                   Row(children: [
                     buildCard('images/azul.jpg'),
                     const SizedBox(width: 12),
