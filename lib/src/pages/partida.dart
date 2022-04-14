@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../widgets/card.dart';
-import '../widgets/icon_container.dart';
+import 'package:flutter_unogame/src/widgets/rival_card.dart';
 
 class Partida extends StatefulWidget {
   const Partida({Key? key}) : super(key: key);
@@ -11,11 +9,43 @@ class Partida extends StatefulWidget {
   State<Partida> createState() => _PartidaState();
 }
 
+List<String> veggies = ['Broccoli', 'Carrot', 'Cucumber'];
+
 class _PartidaState extends State<Partida> {
+  @override
+  Widget rivalsCards(int nRivals) => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        // padding: const EdgeInsets.all(80),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: [
+            Column(
+              children: [
+                RivalCard(userName: 'Player 1', cards: 5),
+              ],
+            ),
+          ],
+        ),
+        // child: ListView.builder(
+        //   itemCount: nRivals,
+        //   itemBuilder: (BuildContext context, int index) {
+        //     return const Card(
+        //       elevation: 5,
+        //       child: ListTile(
+        //         title: Text('Jugador'),
+        //       ),
+        //     );
+        //   },
+        // ),
+      );
+
   @override
   Widget buildCard(String carta) => GestureDetector(
       onTap: () {
-        print("Container clicked");
+        print("Container buildCard clicked");
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
@@ -31,14 +61,14 @@ class _PartidaState extends State<Partida> {
   @override
   Widget cartaRobar(int index) => GestureDetector(
       onTap: () {
-        print("Container clicked");
+        print("Container cartaRobar clicked");
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
         width: 70,
         height: 120,
         decoration: BoxDecoration(
-          image: DecorationImage(
+          image: const DecorationImage(
               image: AssetImage('images/uno.jpg'), fit: BoxFit.fill),
           borderRadius: BorderRadius.circular(15),
         ),
@@ -55,20 +85,28 @@ class _PartidaState extends State<Partida> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(
-              height: 60,
-            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                buildCard('images/azul.jpg'),
-                const SizedBox(
-                  width: 20,
-                ),
-                cartaRobar(20),
-                const SizedBox(
-                  width: 80,
-                )
+                rivalsCards(5),
+                Column(children: [
+                  const SizedBox(
+                    height: 60,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      buildCard('images/azul.jpg'),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      cartaRobar(20),
+                      const SizedBox(
+                        width: 80,
+                      )
+                    ],
+                  ),
+                ]),
               ],
             ),
             SingleChildScrollView(
