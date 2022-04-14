@@ -10,14 +10,18 @@ class RivalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 25,
-      fontWeight: FontWeight.bold,
-    );
+        color: Colors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        decoration: TextDecoration.none);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 5),
-      width: MediaQuery.of(context).size.width / 2.1,
-      height: 30,
+      width: 100,
+      height: 25,
+      decoration: BoxDecoration(
+        color: Colors.black87,
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: Align(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

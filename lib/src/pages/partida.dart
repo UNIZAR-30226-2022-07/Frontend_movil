@@ -9,38 +9,34 @@ class Partida extends StatefulWidget {
   State<Partida> createState() => _PartidaState();
 }
 
-List<String> veggies = ['Broccoli', 'Carrot', 'Cucumber'];
+//Esta será la lista de jugadores de la partida
+List<Map<String, dynamic>> mapa = [
+  {'username': 'Julián', 'cartas': 5},
+  {'username': 'Paula', 'cartas': 5},
+  {'username': 'Nerea', 'cartas': 5},
+  {'username': 'Victor', 'cartas': 5},
+  {'username': 'César', 'cartas': 5},
+];
 
 class _PartidaState extends State<Partida> {
   @override
-  Widget rivalsCards(int nRivals) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        // padding: const EdgeInsets.all(80),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(15),
+  Widget rivalsCards() => Container(
+      height: 210,
+      width: 200,
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      //decoration: BoxDecoration(color: Colors.red),
+      child: SingleChildScrollView(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: mapa.length,
+          itemBuilder: (BuildContext context, int index) {
+            return RivalCard(
+                userName: mapa[index]['username'],
+                cards: mapa[index]['cartas']);
+          },
         ),
-        child: Column(
-          children: [
-            Column(
-              children: [
-                RivalCard(userName: 'Player 1', cards: 5),
-              ],
-            ),
-          ],
-        ),
-        // child: ListView.builder(
-        //   itemCount: nRivals,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     return const Card(
-        //       elevation: 5,
-        //       child: ListTile(
-        //         title: Text('Jugador'),
-        //       ),
-        //     );
-        //   },
-        // ),
-      );
+      ));
 
   @override
   Widget buildCard(String carta) => GestureDetector(
@@ -88,7 +84,7 @@ class _PartidaState extends State<Partida> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                rivalsCards(5),
+                rivalsCards(),
                 Column(children: [
                   const SizedBox(
                     height: 60,
