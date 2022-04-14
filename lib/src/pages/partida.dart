@@ -38,7 +38,7 @@ class _PartidaState extends State<Partida> {
         width: 70,
         height: 120,
         decoration: BoxDecoration(
-          image: const DecorationImage(
+          image: DecorationImage(
               image: AssetImage('images/uno.jpg'), fit: BoxFit.fill),
           borderRadius: BorderRadius.circular(15),
         ),
@@ -49,34 +49,35 @@ class _PartidaState extends State<Partida> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Color.fromARGB(255, 6, 104, 16),
         ),
         child: Column(
           children: [
-            const SizedBox(
+            SizedBox(
               height: 80,
               width: 20,
             ),
             Row(
               children: [
-                const SizedBox(
+                SizedBox(
                   width: 350,
                 ),
                 Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      buildCard('images/azul.jpg'),
+                      buildCard(
+                          'images/azul.jpg'), // esta es la ultima carta que han puesto
                     ]),
-                const SizedBox(
+                SizedBox(
                   width: 20,
                 ),
                 Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      cartaRobar(20),
+                      cartaRobar(20), //esto es el monton de cartas para robar
                     ])
               ],
             ),
@@ -85,7 +86,7 @@ class _PartidaState extends State<Partida> {
               padding: const EdgeInsets.all(12),
               child: Column(
                 children: <Widget>[
-                  const SizedBox(
+                  SizedBox(
                     height: 25,
                   ),
                   Row(children: [
