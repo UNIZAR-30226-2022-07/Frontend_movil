@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_unogame/src/models/carta.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 
 class Partida extends StatefulWidget {
@@ -19,6 +20,14 @@ List<Map<String, dynamic>> mapa = [
 ];
 
 class _PartidaState extends State<Partida> {
+  bool comprobarMov(Carta seleccionada, Carta cima) {
+    bool sePuede = false;
+    sePuede = seleccionada.numero == cima.numero ||
+        seleccionada.color == cima.color ||
+        seleccionada.esEspecial == true;
+    return sePuede;
+  }
+
   @override
   Widget rivalsCards() => Container(
       height: 210,
@@ -42,6 +51,10 @@ class _PartidaState extends State<Partida> {
   Widget buildCard(String carta) => GestureDetector(
       onTap: () {
         print("Container buildCard clicked");
+        // if (comprobarMov(carta, cima)) {
+        //   moverCarta(carta);
+        //   eliminarCarta(carta);
+        // }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
@@ -58,6 +71,8 @@ class _PartidaState extends State<Partida> {
   Widget cartaRobar(int index) => GestureDetector(
       onTap: () {
         print("Container cartaRobar clicked");
+        //Pedir carta al backend y cuando llegue:
+        //Añadir carta a la mano del jugador
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
