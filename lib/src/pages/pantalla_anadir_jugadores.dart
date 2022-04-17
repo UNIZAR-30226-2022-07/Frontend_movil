@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:clipboard/clipboard.dart';
 
 class AnadirJugadores extends StatefulWidget {
   const AnadirJugadores({ Key? key }) : super(key: key);
@@ -127,22 +128,20 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
               Container(
                 width: 240.0,
                 height: 42.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24.0),
-                  color: const Color(0xff2c2c2c),
-                ),
-                child: Center(
-                  child: Text(
-                    'aqui el codigo',
-                    style: TextStyle(
-                      fontFamily: 'FredokaOne',
-                      fontSize: 18,
-                      color: Colors.white,
-                      height: 1,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 25,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                    ElevatedButton(
+                      child: Text('Copiar código de partida'),
+                      onPressed: () {
+                        final data = ClipboardData(text: '25342756374');
+                        Clipboard.setData(data);
+                      },
+                    ),
+                  ],
+                )
               ),
             ],
           ),
