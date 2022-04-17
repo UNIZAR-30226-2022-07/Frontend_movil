@@ -107,6 +107,7 @@ class _PartidaState extends State<Partida> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      
                       buildCard('images/azul.jpg'),
                       const SizedBox(
                         width: 20,
@@ -119,6 +120,40 @@ class _PartidaState extends State<Partida> {
                   ),
                 ]),
               ],
+            ),
+            Row(
+                  children: [ 
+                    SizedBox(
+                      width: 370,
+                    ),
+                    SizedBox(
+                      height: 40,
+                      width: 150,
+                      child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Color.fromARGB(250, 199, 9, 9)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () async {
+                        },
+                        child: const Text(
+                          'UNO',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'FredokaOne',
+                              fontSize: 25.0),
+                        ),
+                      ),
+                    ),
+                ]
+            ),
+            SizedBox(
+              height:10,
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -155,6 +190,7 @@ class _PartidaState extends State<Partida> {
               ),
             )
           ],
-        ));
+        )
+      );
   }
 }

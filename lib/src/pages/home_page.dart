@@ -186,6 +186,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final code = await openDialog();
                       if (code == null || code.isEmpty) return;
+                      
                       setState(() => this.code = code);
                     },
                     child: const Text(
@@ -246,7 +247,10 @@ class _HomePageState extends State<HomePage> {
       ),
       actions: [
         TextButton(
-          onPressed: submit, 
+          onPressed: () {
+            
+            submit();          
+          }, 
           child: Text('Submit')
         ),
       ],
