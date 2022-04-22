@@ -18,6 +18,8 @@ List<Carta> cartasJugador = [
   Carta(color: 'rojo', numero: '5', url: 'images/cartas/rojo-5.png'),
   Carta(color: 'verde', numero: '5', url: 'images/cartas/verde-5.png'),
   Carta(esEspecial: true, especialidad: 'wild', url: 'images/cartas/wild.png'),
+  Carta(
+      esEspecial: true, especialidad: 'draw4', url: 'images/cartas/draw4.png'),
 ];
 
 class _PartidaState extends State<Partida> {
@@ -71,19 +73,17 @@ class _PartidaState extends State<Partida> {
               //Caso de las wild y el draw4
               switch (carta.especialidad) {
                 case 'draw4':
-                //Avisar al backend de chupate 4 al sig jugador
-                case 'wild':
-                  popUpWild(context).then((_) => setState(() {}));
+                  popUpDraw(context, carta).then((_) => setState(() {}));
                   break;
-                default:
+                case 'wild':
+                  popUpWild(context, carta).then((_) => setState(() {}));
+                  break;
               }
             } else {
-              if (carta.esEspecial == true) {
-                //Avisar de la acción de la especialidad a Backend
-              }
               cima = carta; //Cambia la cima
+              mano.del(carta); //Se elimina la carta de la mano del jugador
             }
-            mano.del(carta); //Se elimina la carta de la mano del jugador
+
             //Avisar al backend de la jugada
           } else {
             print('No se puede realizar ese movimiento');
@@ -100,7 +100,6 @@ class _PartidaState extends State<Partida> {
               DecorationImage(image: AssetImage(carta.url), fit: BoxFit.fill),
           borderRadius: BorderRadius.circular(15),
         ),
-        // child: Center(child: Text('$index')),
       ));
 
   Widget ultimaCarta(Carta carta) => Container(
@@ -221,14 +220,17 @@ class _PartidaState extends State<Partida> {
         ));
   }
 
-  Future<dynamic> popUpWild(BuildContext context) {
+  Future<dynamic> popUpWild(BuildContext context, Carta carta) {
     return showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
             builder: ((context, setState) => AlertDialog(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
-                  title: const Text('Popup example'),
+                  title: const Text(
+                    'Elige un color',
+                    style: TextStyle(fontSize: 24, color: Colors.black),
+                  ),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,33 +240,141 @@ class _PartidaState extends State<Partida> {
                             cima = Carta(
                                 color: 'azul',
                                 url: 'images/cartas/azul-wild.png');
+                            mano.del(carta);
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Azul')),
+                          child: const Text(
+                            'Azul',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          )),
                       TextButton(
                           onPressed: () {
                             cima = Carta(
                                 color: 'rojo',
                                 url: 'images/cartas/rojo-wild.png');
+                            mano.del(carta);
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Rojo')),
+                          child: const Text(
+                            'Rojo',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold),
+                          )),
                       TextButton(
                           onPressed: () {
                             cima = Carta(
                                 color: 'verde',
                                 url: 'images/cartas/verde-wild.png');
+                            mano.del(carta);
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Verde')),
+                          child: const Text(
+                            'Verde',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold),
+                          )),
                       TextButton(
                           onPressed: () {
                             cima = Carta(
                                 color: 'amarillo',
                                 url: 'images/cartas/amarillo-wild.png');
+                            mano.del(carta);
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Amarillo')),
+                          child: const Text(
+                            'Amarillo',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ],
+                  ),
+                ))));
+  }
+
+  Future<dynamic> popUpDraw(BuildContext context, Carta carta) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Elige un color',
+                    style: TextStyle(fontSize: 24, color: Colors.black),
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TextButton(
+                          onPressed: () {
+                            cima = Carta(
+                                color: 'azul',
+                                url: 'images/cartas/azul-draw4.png');
+                            mano.del(carta);
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Azul',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            cima = Carta(
+                                color: 'rojo',
+                                url: 'images/cartas/rojo-draw4.png');
+                            mano.del(carta);
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Rojo',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            cima = Carta(
+                                color: 'verde',
+                                url: 'images/cartas/verde-draw4.png');
+                            mano.del(carta);
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Verde',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            cima = Carta(
+                                color: 'amarillo',
+                                url: 'images/cartas/amarillo-draw4.png');
+                            mano.del(carta);
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Amarillo',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.bold),
+                          )),
                     ],
                   ),
                 ))));

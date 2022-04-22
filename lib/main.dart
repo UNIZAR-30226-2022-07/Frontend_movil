@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
+import 'package:flutter_unogame/src/pages/crear_partida.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
 import 'package:flutter_unogame/src/pages/pantalla_anadir_jugadores.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
             color: Color.fromARGB(255, 255, 155, 147), centerTitle: true),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: 'partida',
+      initialRoute: 'Login',
       routes: <String, WidgetBuilder>{
         'Login': (BuildContext context) => LoginPage(),
         'sign_in': (BuildContext context) => const SignIn(),
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         'lista_amigos': (BuildContext context) => SearchPlayers(),
         'clasification': (BuildContext context) => ClasificationPage(),
         'anadir_jugadores': (BuildContext context) => AnadirJugadores(),
+        'crear_partida': (BuildContext context) => CreatePage()
       },
     );
   }
