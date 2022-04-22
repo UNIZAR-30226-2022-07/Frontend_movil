@@ -232,6 +232,21 @@ class _LogoutFormState extends State<LogoutForm> {
 //   }
 // }
 
+  Future<dynamic> popUpError(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Nombre de usuario no disponible',
+                    style: TextStyle(fontSize: 17, color: Colors.black),
+                  ),
+                ))));
+  }
+  
+  
   Future RegistrationUser() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signup');
     final headers = {
@@ -250,6 +265,7 @@ class _LogoutFormState extends State<LogoutForm> {
       _valido = true;
       Navigator.pushReplacementNamed(context, 'home_page');
     } else {
+      popUpError(context);
       _valido = false;
       var respuesta = json.decode(response.body);
       print(respuesta['message']);

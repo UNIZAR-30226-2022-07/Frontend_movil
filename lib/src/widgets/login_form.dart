@@ -129,6 +129,20 @@ class _LoginFormState extends State<LoginForm> {
         ));
   }
 
+  Future<dynamic> popUpError(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'El nombre de usuario o la contraseña son incorrectos',
+                    style: TextStyle(fontSize: 17, color: Colors.black),
+                  ),
+                ))));
+  }
+
   Future LoginUser() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
     final headers = {
@@ -148,6 +162,9 @@ class _LoginFormState extends State<LoginForm> {
       print(response);
     } else {
       print('Contraseña incorrecta');
+      if ( response.statusCode != 200) {
+        popUpError(context);
+      }
       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       //   content: Text(respuesta['message']),
       //   backgroundColor: Colors.red,

@@ -54,7 +54,7 @@ class SearchUser extends SearchDelegate {
                     ),
                     onPressed: () {
                       // final route = MaterialPageRoute(
-                      //     builder: (context) => const SignUp());
+                      //     builder: (context) => const SignUp()); //aqui habr que enviar al backend a quien hemos añadido de amigo
                       // Navigator.push(context, route);
                     },
                     child: const Text(
