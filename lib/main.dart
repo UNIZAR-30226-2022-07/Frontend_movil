@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
             color: Color.fromARGB(255, 255, 155, 147), centerTitle: true),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: 'Login',
+      initialRoute: 'partida',
       routes: <String, WidgetBuilder>{
         'Login': (BuildContext context) => LoginPage(),
         'sign_in': (BuildContext context) => const SignIn(),

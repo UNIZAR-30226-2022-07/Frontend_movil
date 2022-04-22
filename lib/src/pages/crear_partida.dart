@@ -185,14 +185,14 @@ class _CreatePageState extends State<CreatePage> {
                     ],
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                      final route =
-                          MaterialPageRoute(builder: (context) => AnadirJugadores());
+                    onPressed: () {
+                      final route = MaterialPageRoute(
+                          builder: (context) => AnadirJugadores());
                       Navigator.push(context, route);
                     },
                     child: const Text('Crear'),
-                      
-                      //onPressed: () => {}, child: const Text('Crear'))
+
+                    //onPressed: () => {}, child: const Text('Crear'))
                   ),
                 ],
               )
@@ -264,78 +264,4 @@ class _CreatePageState extends State<CreatePage> {
                   ],
                 ))));
   }
-
-  Future openDialog() => showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-          builder: ((context, setState) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                title: const Text('Popup example'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(children: [
-                      const Text("Regla 1"),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Checkbox(
-                          value: regla1,
-                          onChanged: (regla1) => setState(() => regla1 = true))
-                      // Switch.adaptive(
-                      //     value: regla1,
-                      //     onChanged: (regla1) => setState(() => regla1 = true))
-                    ]),
-                    Text("Regla 2"),
-                    Text("Regla 3"),
-                    Text("Regla 4"),
-                    Text("Regla 5"),
-                  ],
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
-              ))));
 }
-
-
-
-// Widget _buildPopupDialog(BuildContext context) {
- 
-//   return AlertDialog(
-//     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//     title: const Text('Popup example'),
-//     content: Column(
-//       mainAxisSize: MainAxisSize.min,
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: <Widget>[
-//         Row(children: [
-//           const Text("Regla 1"),
-//           const SizedBox(
-//             width: 5,
-//           ),
-//           Switch.adaptive(value: regla1, onChanged: (value) => value = !value)
-//         ]),
-//         Text("Regla 2"),
-//         Text("Regla 3"),
-//         Text("Regla 4"),
-//         Text("Regla 5"),
-//       ],
-//     ),
-//     actions: <Widget>[
-//       TextButton(
-//         onPressed: () {
-//           Navigator.of(context).pop();
-//         },
-//         child: const Text('Close'),
-//       ),
-//     ],
-//   );
-// }
