@@ -17,6 +17,7 @@ class _notificationsState extends State<Notifications> {
   List<Notificacion> notificaciones = [
     Notificacion(
         title: 'Julián te ha enviado una solicitud de amistad',
+        accion: 'amistad',
         body:
             '¿Deseas agregar a Julián como amigo?aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
     a,
@@ -47,13 +48,14 @@ class _notificationsState extends State<Notifications> {
             itemCount: notificaciones.length,
             itemBuilder: (BuildContext context, int index) {
               return Dismissible(
-                //key: Key("Key $index"),
                 key: UniqueKey(),
                 direction: DismissDirection.horizontal,
-                //onDismissed: () => (),
                 child: GestureDetector(
                   onTap: () {
                     print('Pulsado');
+                    if (notificaciones[index].accion == 'amistad') {
+                      popUpAmistad(context, index).then((_) => setState(() {}));
+                    } else if (notificaciones[index].accion == 'partida') {}
                     setState(() {});
                   },
                   child: Container(
@@ -112,5 +114,61 @@ class _notificationsState extends State<Notifications> {
             },
           ),
         ));
+  }
+
+  Future<dynamic> popUpAmistad(BuildContext context, int index) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    '¿Aceptar la solicitud?',
+                    style: TextStyle(fontSize: 24, color: Colors.black),
+                  ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                            onPressed: () {
+                              //Enviar a Backend: Aceptar solicitud
+                              notificaciones.removeAt(index);
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                            )),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                            onPressed: () {
+                              //Enviar a Backend: denegar solicitud
+                              notificaciones.removeAt(index);
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            )),
+                      )
+                    ],
+                  ),
+                ))));
   }
 }
