@@ -1,10 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
-import 'package:flutter_unogame/src/pages/game.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
-import '../widgets/input_text.dart';
 import 'crear_partida.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,7 +15,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late TextEditingController controller;
 
-
   GlobalKey<FormState> _formKey = GlobalKey();
   String code = '';
   @override
@@ -25,11 +22,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     controller = TextEditingController();
   }
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
@@ -94,15 +93,12 @@ class _HomePageState extends State<HomePage> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          // gradient: LinearGradient(colors: <Color>[
-          //   Color.fromARGB(255, 255, 244, 244),
-          //   Color.fromARGB(0, 255, 70, 70)
-          // ], begin: Alignment.topCenter),
-          image: DecorationImage(
-            image: AssetImage('images/fondo.png'),
-            fit: BoxFit.fill
-          )
-        ),
+            // gradient: LinearGradient(colors: <Color>[
+            //   Color.fromARGB(255, 255, 244, 244),
+            //   Color.fromARGB(0, 255, 70, 70)
+            // ], begin: Alignment.topCenter),
+            image: DecorationImage(
+                image: AssetImage('images/fondo.png'), fit: BoxFit.fill)),
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
           children: <Widget>[
@@ -124,8 +120,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
-                      final route =
-                          MaterialPageRoute(builder: (context) => GamePage());
+                      final route = MaterialPageRoute(
+                          builder: (context) => const Partida());
                       Navigator.push(context, route);
                     },
                     child: const Text(
@@ -186,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final code = await openDialog();
                       if (code == null || code.isEmpty) return;
-                      
+
                       setState(() => this.code = code);
                     },
                     child: const Text(
@@ -235,34 +231,28 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
   Future<String?> openDialog() => showDialog<String>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text('Inserta el codigo de partida:'),
-      content: TextField(
-        autofocus: true,
-        // decoration: InputDecoration(hintText: 'Enter code'),
-        controller: controller, // para acceder al codigo que introducimos
-        onSubmitted: (_) => submit(),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            
-            submit();          
-          }, 
-          child: Text('Submit')
-        ),
-      ],
-    )
-  );
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text('Inserta el codigo de partida:'),
+            content: TextField(
+              autofocus: true,
+              // decoration: InputDecoration(hintText: 'Enter code'),
+              controller: controller, // para acceder al codigo que introducimos
+              onSubmitted: (_) => submit(),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    submit();
+                  },
+                  child: Text('Submit')),
+            ],
+          ));
 
   void submit() {
     Navigator.of(context).pop(controller.text);
     controller.clear();
   }
-
-
-
-
 }

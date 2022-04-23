@@ -19,10 +19,6 @@ class _LoginFormState extends State<LoginForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
   String _name = '';
   String _password = '';
-  // _submit(){
-  //   final isLogin = _formKey.currentState?.validate();
-  //   print('IsLogin Form $isLogin');
-  // }
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -77,7 +73,6 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                 ),
-                // onPressed: this._submit,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     LoginUser();
@@ -138,7 +133,12 @@ class _LoginFormState extends State<LoginForm> {
                       borderRadius: BorderRadius.circular(20)),
                   title: const Text(
                     'El nombre de usuario o la contraseña son incorrectos',
-                    style: TextStyle(fontSize: 17, color: Colors.black),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ))));
   }
@@ -148,11 +148,6 @@ class _LoginFormState extends State<LoginForm> {
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
-    // Map mapeddate = {
-    //   'service': 'credentials',
-    //   'login': _name,
-    //   'passwd': _password
-    // };
     Map mapeddate = {'username': _name, 'password': _password};
 
     final response = await http.post(url,
@@ -162,14 +157,9 @@ class _LoginFormState extends State<LoginForm> {
       print(response);
     } else {
       print('Contraseña incorrecta');
-      if ( response.statusCode != 200) {
+      if (response.statusCode != 200) {
         popUpError(context);
       }
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //   content: Text(respuesta['message']),
-      //   backgroundColor: Colors.red,
-      //   width: 30,
-      // ));
     }
   }
 }

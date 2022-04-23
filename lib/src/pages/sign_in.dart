@@ -47,18 +47,6 @@ class _SignInState extends State<SignIn> {
                   LoginForm(),
                 ],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: <Widget>[
-              //     FloatingActionButton(
-              //       backgroundColor: Colors.red[900],
-              //       child: const Icon(Icons.settings_backup_restore),
-              //       onPressed: () {
-              //         Navigator.pop(context);
-              //       },
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ),
