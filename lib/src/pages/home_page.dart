@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
+import 'package:flutter_unogame/src/pages/notifications_page.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
 import 'crear_partida.dart';
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(context, route);
               },
             )),
-        backgroundColor: const Color.fromARGB(255, 255, 155, 147),
+        //backgroundColor: const Color.fromARGB(255, 255, 155, 147),
         actions: <Widget>[
           Align(
             alignment: Alignment.centerRight,
@@ -63,7 +64,11 @@ class _HomePageState extends State<HomePage> {
                 size: 40,
                 color: Color.fromARGB(255, 157, 13, 13),
               ),
-              onPressed: () {},
+              onPressed: () {
+                final route =
+                    MaterialPageRoute(builder: (context) => Notifications());
+                Navigator.push(context, route);
+              },
             ),
           ),
           const SizedBox(

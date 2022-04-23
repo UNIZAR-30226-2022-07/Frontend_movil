@@ -3,6 +3,7 @@ import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/crear_partida.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/pages/login_page.dart';
+import 'package:flutter_unogame/src/pages/notifications_page.dart';
 import 'package:flutter_unogame/src/pages/pantalla_anadir_jugadores.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
         'lista_amigos': (BuildContext context) => SearchPlayers(),
         'clasification': (BuildContext context) => ClasificationPage(),
         'anadir_jugadores': (BuildContext context) => AnadirJugadores(),
-        'crear_partida': (BuildContext context) => CreatePage()
+        'crear_partida': (BuildContext context) => CreatePage(),
+        'notificaciones': (BuildContext context) => Notifications(),
       },
     );
   }

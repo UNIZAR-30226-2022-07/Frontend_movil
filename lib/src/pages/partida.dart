@@ -49,7 +49,7 @@ class _PartidaState extends State<Partida> {
 
   Widget rivalsCards() => Container(
       height: 210,
-      width: 200,
+      width: 280,
       margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: SingleChildScrollView(
         child: ListView.builder(
@@ -116,12 +116,14 @@ class _PartidaState extends State<Partida> {
 
   Widget cartaRobar() => GestureDetector(
       onTap: () {
-        //Pedir carta al backend y cuando llegue:
-        Carta c =
-            Carta(color: 'rojo', numero: '3', url: 'images/cartas/rojo-3.png');
-        mano.add(c);
-        //Añadir carta a la mano del jugador
-        setState(() {});
+        if (miTurno) {
+          //Pedir carta al backend y cuando llegue:
+          Carta c = Carta(
+              color: 'rojo', numero: '3', url: 'images/cartas/rojo-3.png');
+          mano.add(c);
+          //Añadir carta a la mano del jugador
+          setState(() {});
+        }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 10),
@@ -183,7 +185,10 @@ class _PartidaState extends State<Partida> {
                               ),
                             ),
                           ),
-                          onPressed: () async {},
+                          onPressed: () async {
+                            //Acciones a realizar al apretar el botón UNO
+                            //Avisar al Backend
+                          },
                           child: const Text(
                             'UNO',
                             style: TextStyle(
