@@ -55,7 +55,9 @@ class _notificationsState extends State<Notifications> {
                     print('Pulsado');
                     if (notificaciones[index].accion == 'amistad') {
                       popUpAmistad(context, index).then((_) => setState(() {}));
-                    } else if (notificaciones[index].accion == 'partida') {}
+                    } else if (notificaciones[index].accion == 'partida') {
+                      popUpPartida(context, index);
+                    }
                     setState(() {});
                   },
                   child: Container(
@@ -125,6 +127,62 @@ class _notificationsState extends State<Notifications> {
                       borderRadius: BorderRadius.circular(20)),
                   title: const Text(
                     '¿Aceptar la solicitud?',
+                    style: TextStyle(fontSize: 24, color: Colors.black),
+                  ),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                            onPressed: () {
+                              //Enviar a Backend: Aceptar solicitud
+                              notificaciones.removeAt(index);
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                            )),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                            onPressed: () {
+                              //Enviar a Backend: denegar solicitud
+                              notificaciones.removeAt(index);
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            )),
+                      )
+                    ],
+                  ),
+                ))));
+  }
+
+  Future<dynamic> popUpPartida(BuildContext context, int index) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    '¿Quieres unirte a la partida?',
                     style: TextStyle(fontSize: 24, color: Colors.black),
                   ),
                   content: Row(
