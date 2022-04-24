@@ -19,11 +19,8 @@ class _SignUpState extends State<SignUp> {
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: <Color>[
-              Color.fromARGB(255, 252, 125, 125),
-              Color.fromARGB(0, 255, 123, 123)
-            ], begin: Alignment.topCenter),
-          ),
+            image: DecorationImage(
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 50),
             children: <Widget>[

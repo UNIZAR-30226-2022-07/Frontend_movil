@@ -17,8 +17,8 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 237, 150, 150),
-      ),
+        image: DecorationImage(
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
       child: Column (
         children: <Widget>[
           SizedBox(

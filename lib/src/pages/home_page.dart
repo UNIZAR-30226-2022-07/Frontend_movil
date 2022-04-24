@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
             //   Color.fromARGB(0, 255, 70, 70)
             // ], begin: Alignment.topCenter),
             image: DecorationImage(
-                image: AssetImage('images/fondo.png'), fit: BoxFit.fill)),
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
           children: <Widget>[

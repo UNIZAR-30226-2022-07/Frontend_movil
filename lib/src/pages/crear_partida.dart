@@ -29,11 +29,8 @@ class _CreatePageState extends State<CreatePage> {
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: <Color>[
-              Color.fromARGB(255, 255, 244, 244),
-              Color.fromARGB(0, 255, 70, 70)
-            ], begin: Alignment.topCenter),
-          ),
+            image: DecorationImage(
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
             children: [

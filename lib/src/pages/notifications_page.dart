@@ -43,7 +43,7 @@ class _notificationsState extends State<Notifications> {
           height: double.infinity,
           decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('images/fondo.png'), fit: BoxFit.fill)),
+                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           child: ListView.builder(
             itemCount: notificaciones.length,
             itemBuilder: (BuildContext context, int index) {
