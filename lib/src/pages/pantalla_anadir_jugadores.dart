@@ -16,9 +16,9 @@ class AnadirJugadores extends StatefulWidget {
     final String idPagina;
   AnadirJugadores({required this.idPagina });
   
-  String cogerID() {
-    return this.idPagina;
-  }
+  // String cogerID() {
+  //   return this.idPagina;
+  // }
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
@@ -149,9 +149,10 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                       width: 25,
                     ),
                     ElevatedButton(
-                      child: Text('Aqui va el codigo'),
+                      
+                      child: Text('Aqui va el codigo, no cabe'),
                       onPressed: () {
-                        final data = ClipboardData(text: '25342756374');
+                        final data = ClipboardData(text: widget.idPagina);
                         Clipboard.setData(data);
                       },
                     ),
