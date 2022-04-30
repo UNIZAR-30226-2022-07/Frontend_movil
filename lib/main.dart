@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         'home_page': (BuildContext context) => const HomePage(),
         'lista_amigos': (BuildContext context) => SearchPlayers(),
         'clasification': (BuildContext context) => ClasificationPage(),
-        'anadir_jugadores': (BuildContext context) => AnadirJugadores(),
+        'anadir_jugadores': (BuildContext context) => AnadirJugadores(idPagina: '',),
         'crear_partida': (BuildContext context) => CreatePage(),
         'notificaciones': (BuildContext context) => Notifications(),
       },

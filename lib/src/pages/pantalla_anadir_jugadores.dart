@@ -1,19 +1,34 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:clipboard/clipboard.dart';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/widgets/input_text.dart';
+import 'dart:convert';
+
+import '../pages/home_page.dart';
+
 
 class AnadirJugadores extends StatefulWidget {
-  const AnadirJugadores({ Key? key }) : super(key: key);
+    final String idPagina;
+  AnadirJugadores({required this.idPagina });
+  
+  String cogerID() {
+    return this.idPagina;
+  }
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
 }
 
 class _AnadirJugadoresState extends State<AnadirJugadores> {
+  
   @override
   Widget build(BuildContext context) {
+      
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
       decoration: BoxDecoration(
@@ -134,7 +149,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                       width: 25,
                     ),
                     ElevatedButton(
-                      child: Text('Copiar código de partida'),
+                      child: Text('Aqui va el codigo'),
                       onPressed: () {
                         final data = ClipboardData(text: '25342756374');
                         Clipboard.setData(data);
@@ -166,9 +181,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                           ),
                         ),
                         onPressed: () {
-                          // final route =
-                          //     MaterialPageRoute(builder: (context) => Partida());
-                          // Navigator.push(context, route);
+                          // CrearPartida();
                         },
                         child: const Text(
                           'Crear',
@@ -185,4 +198,5 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       )
     );
   }
+  
 }

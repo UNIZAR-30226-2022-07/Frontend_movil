@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/pantalla_anadir_jugadores.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:clipboard/clipboard.dart';
+import 'dart:io';
 
+import 'package:http/http.dart' as http;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/widgets/input_text.dart';
+import 'dart:convert';
+
+import '../pages/home_page.dart';
 int count = 2;
 bool tiempoA10 = false;
 
@@ -16,6 +27,7 @@ class _CreatePageState extends State<CreatePage> {
   bool regla2 = false;
   bool regla3 = false;
   bool regla4 = false;
+  int tiempo = 5;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,9 +149,14 @@ class _CreatePageState extends State<CreatePage> {
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 25),
                                   ),
-                                  onPressed: () =>
-                                      setState(() => tiempoA10 = true),
-                                ))
+                                  // onPressed: () =>
+                                  //     setState(() => tiempoA10 = true),
+                                  onPressed: () {
+                                    setState(() => tiempoA10 = true);
+                                    tiempo = 10;
+                                  }
+                                )
+                              )
                           ],
                         ),
                       ]),
@@ -183,9 +200,10 @@ class _CreatePageState extends State<CreatePage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      final route = MaterialPageRoute(
-                          builder: (context) => AnadirJugadores());
-                      Navigator.push(context, route);
+                      CrearPartida();
+                      // final route = MaterialPageRoute(
+                      //     builder: (context) => AnadirJugadores());
+                      // Navigator.push(context, route);
                     },
                     child: const Text('Crear'),
 
@@ -260,5 +278,53 @@ class _CreatePageState extends State<CreatePage> {
                     ),
                   ],
                 ))));
+  }
+
+  Future<dynamic> popUpError(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'No se ha podido crear la partida',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
+  Future CrearPartida() async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/game/create');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'playername': "paula", 'nplayers': count, 'tturn': tiempo};
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      
+      Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      print(respuesta['id']);
+      final route = MaterialPageRoute(
+                          builder: (context) => AnadirJugadores(idPagina: respuesta['id'],));
+                      Navigator.push(context, route);
+      // respuesta.keys.forEach((key) {
+      //   print(key);
+      //   print(respuesta['id']);
+      // });
+      // print("me han mandado cositas");
+    } else {
+      print('No se ha creado');
+      if (response.statusCode != 200) {
+        popUpError(context);
+      }
+    }
   }
 }

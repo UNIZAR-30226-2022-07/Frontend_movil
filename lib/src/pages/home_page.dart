@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final code = await openDialog();
                       if (code == null || code.isEmpty) return;
-
+                        
                       setState(() => this.code = code);
                     },
                     child: const Text(
