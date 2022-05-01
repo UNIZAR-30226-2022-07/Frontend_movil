@@ -10,7 +10,6 @@ class SearchPlayers extends StatefulWidget {
 }
 
 class _SearchPlayersState extends State<SearchPlayers> {
-  final FetchUserList _userList = FetchUserList();
   final FetchFriendList _friendList = FetchFriendList();
 
   @override
@@ -23,14 +22,13 @@ class _SearchPlayersState extends State<SearchPlayers> {
           actions: [
             IconButton(
               onPressed: () {
-                // showSearch(context: context, delegate: SearchUser());
                 final route = MaterialPageRoute(
                           builder: (context) => AnadirAmigos());
                       Navigator.push(context, route);
               },
               icon: const Icon(Icons.search_sharp),
             )
-          ],
+          ], 
         ),
         body: Container(
           decoration: const BoxDecoration(
@@ -68,7 +66,6 @@ class _SearchPlayersState extends State<SearchPlayers> {
                                     ])
                               ],
                             ),
-                            // trailing: Text('More Info'),
                           ),
                         ),
                       );

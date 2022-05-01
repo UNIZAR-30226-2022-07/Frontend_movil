@@ -1,5 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/widgets/input_text.dart';
+import 'dart:convert';
+
+import '../pages/home_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
@@ -13,7 +22,7 @@ class SearchFriendForm extends StatefulWidget {
 
 class _SearchFriendFormState extends State<SearchFriendForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
-  String username = '';
+  String friendname = '';
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -25,7 +34,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
               label: 'Friend username',
               icono: const Icon(Icons.search),
               onChanged: (data) {
-                username = data;
+                friendname = data;
               },
               validator: (data) {
                 if (data!.trim().isEmpty) {
@@ -53,9 +62,9 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                   ),
                 ),
                 onPressed: () {
-                  // if (_formKey.currentState!.validate()) {
-                  //   SearchFriend();
-                  // }
+                  if (_formKey.currentState!.validate()) {
+                    SearchFriend();
+                  }
                   
                 },
                 child: const Text(
@@ -80,7 +89,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   title: const Text(
-                    'El nombre de usuario o la contraseña son incorrectos',
+                    'No existe ningún usuario con este nombre de usuario',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -90,29 +99,48 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                   ),
                 ))));
   }
-  
-  // Future SearchFriend() async {
-  //   Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
-  //   final headers = {
-  //     HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
-  //   };
-  //   Map mapeddate = {'username': _name, 'password': _password};
 
-  //   final response = await http.post(url,
-  //       headers: headers, body: jsonEncode(mapeddate)); // print(response);
-  //   if (response.statusCode == 200) {
-  //     Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
-  //     print(respuesta['accessToken']);
-  //     final route = MaterialPageRoute(
-  //                         builder: (context) => HomePage(autorization: respuesta['accessToken'],));
-  //                     Navigator.push(context, route);
-  //     // Navigator.pushReplacementNamed(context, 'home_page');
-  //     print(response);
-  //   } else {
-  //     print('No existe el usuario');
-  //     if (response.statusCode != 200) {
-  //       popUpError(context);
-  //     }
-  //   }
-  // }
+  Future<dynamic> popUpCorrecto(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Has añadido a un nuevo amigo',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 25, 170, 49),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+  
+  Future SearchFriend() async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/friends/send/friend-request');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    print(friendname);
+    Map mapeddate = {'username': "paulapruebas", 'friendname': friendname};
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      // print(respuesta['accessToken']);
+      // final route = MaterialPageRoute(
+      //                     builder: (context) => HomePage(autorization: respuesta['accessToken'],));
+      //                 Navigator.push(context, route);
+      // Navigator.pushReplacementNamed(context, 'home_page');
+      popUpCorrecto(context);
+      print(response);
+    } else {
+      print('No existe el usuario');
+      popUpError(context);
+      print(response.statusCode);
+    }
+  }
 }
