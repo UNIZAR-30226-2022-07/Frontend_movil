@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/anadir_amigos.dart';
 import 'package:flutter_unogame/src/pages/search.dart';
 import '../models/user_model.dart';
 import 'API_service.dart';
@@ -22,7 +23,10 @@ class _SearchPlayersState extends State<SearchPlayers> {
           actions: [
             IconButton(
               onPressed: () {
-                showSearch(context: context, delegate: SearchUser());
+                // showSearch(context: context, delegate: SearchUser());
+                final route = MaterialPageRoute(
+                          builder: (context) => AnadirAmigos());
+                      Navigator.push(context, route);
               },
               icon: const Icon(Icons.search_sharp),
             )
@@ -55,7 +59,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${data?[index].name}',
+                                        '${data?[index].username}',
                                         style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),

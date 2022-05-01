@@ -7,7 +7,8 @@ import 'package:flutter_unogame/src/pages/search_players.dart';
 import 'crear_partida.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String autorization;
+  const HomePage({Key? key, required this.autorization}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -156,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => const CreatePage());
+                          builder: (context) => CreatePage(autorization: widget.autorization,));
                       Navigator.push(context, route);
                     },
                     child: const Text(

@@ -72,7 +72,7 @@ class SearchUser extends SearchDelegate {
                         height: 60,
                         child: Center(
                           child: Text(
-                            '${data?[index].name}',
+                            '${data?[index].username}',
                             style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class SearchUser extends SearchDelegate {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${data?[index].name}',
+                              '${data?[index].username}',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w600),
                             ),

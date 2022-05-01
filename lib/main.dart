@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/anadir_amigos.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/crear_partida.dart';
 import 'package:flutter_unogame/src/pages/home_page.dart';
@@ -37,12 +38,13 @@ class MyApp extends StatelessWidget {
         'sign_up': (BuildContext context) => const SignUp(),
         'forgot_password': (BuildContext context) => const forgotPassword(),
         'partida': (BuildContext context) => const Partida(),
-        'home_page': (BuildContext context) => const HomePage(),
+        'home_page': (BuildContext context) => const HomePage(autorization: '' ,),
         'lista_amigos': (BuildContext context) => SearchPlayers(),
         'clasification': (BuildContext context) => ClasificationPage(),
-        'anadir_jugadores': (BuildContext context) => AnadirJugadores(idPagina: '',),
-        'crear_partida': (BuildContext context) => CreatePage(),
+        'anadir_jugadores': (BuildContext context) => AnadirJugadores(autorization: '',idPagina: '',),
+        'crear_partida': (BuildContext context) => CreatePage(autorization: '',),
         'notificaciones': (BuildContext context) => Notifications(),
+        'search_friend': (BuildContext context) => AnadirAmigos(),
       },
     );
   }

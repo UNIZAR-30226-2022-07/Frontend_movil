@@ -16,7 +16,8 @@ int count = 2;
 bool tiempoA10 = false;
 
 class CreatePage extends StatefulWidget {
-  const CreatePage({Key? key}) : super(key: key);
+  final String autorization;
+  const CreatePage({Key? key,required this.autorization}) : super(key: key);
 
   @override
   State<CreatePage> createState() => _CreatePageState();
@@ -313,7 +314,7 @@ class _CreatePageState extends State<CreatePage> {
       Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
       print(respuesta['id']);
       final route = MaterialPageRoute(
-                          builder: (context) => AnadirJugadores(idPagina: respuesta['id'],));
+                          builder: (context) => AnadirJugadores(autorization: widget.autorization, idPagina: respuesta['id'],));
                       Navigator.push(context, route);
       // respuesta.keys.forEach((key) {
       //   print(key);

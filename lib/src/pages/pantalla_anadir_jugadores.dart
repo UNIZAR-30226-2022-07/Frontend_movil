@@ -1,31 +1,95 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:clipboard/clipboard.dart';
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
-
-import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
 
 import '../pages/home_page.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+import 'dart:async';
 
 
 class AnadirJugadores extends StatefulWidget {
     final String idPagina;
-  AnadirJugadores({required this.idPagina });
-  
-  // String cogerID() {
-  //   return this.idPagina;
-  // }
+    final String autorization;
+  AnadirJugadores({required this.autorization,required this.idPagina });
+
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
 }
 
 class _AnadirJugadoresState extends State<AnadirJugadores> {
+  // late StompClient stompClient;
+  // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
+  String message = '';
   
+  @override
+  void onConnect(StompFrame frame) {
+    stompClient.subscribe(
+      destination: '/topic/connect/<id>',
+      callback: (frame) {
+        List<dynamic>? result = json.decode(frame.body!);
+        print(result);
+      },
+    );
+
+    Timer.periodic(Duration(seconds: 10), (_) {
+      stompClient.send(
+        destination: '/game/connect', body: "hola"
+      );
+    });
+    // stompClient.send(
+    //     destination: '/game/connect', body: "hola"
+    //   );
+  }
+
+  
+  late StompClient stompClient = StompClient(
+    config: StompConfig(
+      url: 'ws://onep1.herokuapp.com/onep1-game',
+      onConnect: onConnect,
+      beforeConnect: () async {
+        print('waiting to connect...');
+        await Future.delayed(Duration(milliseconds: 200));
+        print('connecting...');
+      },
+      onWebSocketError: (dynamic error) => print(error.toString()),
+      stompConnectHeaders: {'Authorization': widget.autorization},
+      webSocketConnectHeaders: {'Authorization': widget.autorization},
+    ),
+  );
+  // void initState() {
+  //   super.initState();
+  //   if (stompClient == null) {
+  //     StompFrame frame;
+  //     StompClient client = StompClient(
+  //         config: StompConfig(
+  //           url: socketUrl,
+  //           onConnect: onConnect,
+  //         ),
+  //     );
+  //     stompClient.activate();
+  //   }
+  // }
+  
+
+
+  // @override
+  // void onConnect(StompFrame frame) {
+  //   stompClient.subscribe(
+  //       destination: '/topic/connect/<id>',
+  //       callback: (frame) {
+  //         print(frame.body);
+  //       }
+        
+  //   );
+  //   stompClient.activate();
+  //   stompClient.send(destination: '/game/connect', body: "hola");
+  // }
+  
+
   @override
   Widget build(BuildContext context) {
       
@@ -183,6 +247,9 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                         ),
                         onPressed: () {
                           // CrearPartida();
+                          // initState();
+                          print(widget.autorization);
+                          stompClient.activate();
                         },
                         child: const Text(
                           'Crear',
@@ -198,6 +265,13 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         ]
       )
     );
+  }
+
+  @override
+  void dispose() {
+    if (stompClient != null) {
+      stompClient.deactivate();
+    }super.dispose();
   }
   
 }

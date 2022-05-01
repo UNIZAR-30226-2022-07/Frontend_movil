@@ -1,26 +1,26 @@
-// import 'package:web_socket_channel/web_socket_channel.dart';
-// import 'package:web_socket_channel/io.dart';
-// import 'package:web_socket_channel/status.dart' as status;
+// // import 'package:web_socket_channel/web_socket_channel.dart';
+// // import 'package:web_socket_channel/io.dart';
+// // import 'package:web_socket_channel/status.dart' as status;
 
-// // StompClient client = StompClient(
-// //     config: StompConfig(
-// //         url: 'wss://yourserver',
-// //         onConnect: onConnectCallback
-// //     )
-// // );
+// // // StompClient client = StompClient(
+// // //     config: StompConfig(
+// // //         url: 'wss://yourserver',
+// // //         onConnect: onConnectCallback
+// // //     )
+// // // );
 
-// main() async {
-//   var channel = IOWebSocketChannel.connect(Uri.parse('ws://localhost:1234'));
+// // main() async {
+// //   var channel = IOWebSocketChannel.connect(Uri.parse('ws://localhost:1234'));
 
-//   channel.stream.listen((message) {
-//     channel.sink.add('received!');
-//     channel.sink.close(status.goingAway);
-//   });
-// }
+// //   channel.stream.listen((message) {
+// //     channel.sink.add('received!');
+// //     channel.sink.close(status.goingAway);
+// //   });
+// // }
 
 // import 'package:flutter/material.dart';
-// import 'package:stock_ui/stock.dart';
-// import 'package:stock_ui/stock_list.dart';
+// // import 'package:stock_ui/stock.dart';
+// // import 'package:stock_ui/stock_list.dart';
 // import 'package:intl/intl.dart';
 // import 'package:stomp_dart_client/stomp.dart';
 // import 'package:stomp_dart_client/stomp_config.dart';
@@ -34,25 +34,30 @@
 //   @override
 //   _MyHomePageState createState() => _MyHomePageState();
 // }class _MyHomePageState extends State<HomeStockSocket> {
-//   StompClient stompClient;
+//   late StompClient stompClient;
 //   final socketUrl = 'http://localhost:8080/ws-message';String message = '';
-//   List<Stock> stockList;void onConnect(StompClient client, StompFrame frame) {
+//   // List<Stock> stockList;
+//   void onConnect(StompClient client, StompFrame frame) {
 //     client.subscribe(
 //         destination: '/topic/message',
 //         callback: (StompFrame frame) {
 //           if (frame.body != null) {
 //             Map<String, dynamic> obj = json.decode(frame.body);
-//             List<Stock> stocks = new List<Stock>();for (int i = 0; i < obj['stock'].length; i++) {
-//               Stock stock = new Stock(
-//                   company: obj['stock'][i]['name'],
-//                   symbol: obj['stock'][i]['symbol'],
-//                   price: obj['stock'][i]['price'],
-//                   chg: obj['stock'][i]['chg']);
-//               stocks.add(stock);
-//             }setState(() => stockList = stocks);
+//             // List<Stock> stocks = new List<Stock>();for (int i = 0; i < obj['stock'].length; i++) {
+//             //   Stock stock = new Stock(
+//             //       company: obj['stock'][i]['name'],
+//             //       symbol: obj['stock'][i]['symbol'],
+//             //       price: obj['stock'][i]['price'],
+//             //       chg: obj['stock'][i]['chg']);
+//             //   stocks.add(stock);
+//             // }setState(() => stockList = stocks);
 //           }
-//         });client.send(destination: '/app/hello', body: "dimuthu");
-//   }@override
+//         }
+//       );
+//     client.send(destination: '/app/hello', body: "dimuthu");
+//   }
+  
+//   @override
 //   void initState() {
 //     super.initState();if (stompClient == null) {
 //       stompClient = StompClient(
