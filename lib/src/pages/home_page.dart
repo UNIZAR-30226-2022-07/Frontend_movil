@@ -8,7 +8,9 @@ import 'crear_partida.dart';
 
 class HomePage extends StatefulWidget {
   final String autorization;
-  const HomePage({Key? key, required this.autorization}) : super(key: key);
+  final String username;
+  const HomePage({Key? key, required this.autorization, required this.username})
+      : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -66,8 +68,9 @@ class _HomePageState extends State<HomePage> {
                 color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {
-                final route =
-                    MaterialPageRoute(builder: (context) => Notifications());
+                final route = MaterialPageRoute(
+                    builder: (context) =>
+                        Notifications(username: widget.username));
                 Navigator.push(context, route);
               },
             ),
@@ -157,7 +160,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => CreatePage(autorization: widget.autorization,));
+                          builder: (context) => CreatePage(
+                                autorization: widget.autorization,
+                              ));
                       Navigator.push(context, route);
                     },
                     child: const Text(
@@ -188,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final code = await openDialog();
                       if (code == null || code.isEmpty) return;
-                        
+
                       setState(() => this.code = code);
                     },
                     child: const Text(

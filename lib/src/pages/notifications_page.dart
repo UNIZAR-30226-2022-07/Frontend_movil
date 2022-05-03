@@ -1,25 +1,28 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'package:http/http.dart' as http;
 import '../models/notificacion.dart';
+import '../models/notificaciones_api.dart';
 
 class Notifications extends StatefulWidget {
-  Notifications({Key? key}) : super(key: key);
+  String username;
+  Notifications({Key? key, required this.username}) : super(key: key);
 
   @override
   State<Notifications> createState() => _notificationsState();
 }
 
-dynamic a = Notificacion(
-    title: 'Julián te ha enviado una solicitud de amistad',
-    body: '¿Deseas agregar a Julián como amigo?aaaaaaaaaaaaaaaaaaaaaaaaa');
+dynamic a = Notificacion(person: 'Julián', body: 'Quiere ser tu amigo');
 
 class _notificationsState extends State<Notifications> {
   List<Notificacion> notificaciones = [
     Notificacion(
-        title: 'Julián te ha enviado una solicitud de amistad',
+        person: 'Julián',
         accion: 'amistad',
-        body:
-            '¿Deseas agregar a Julián como amigo?aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'),
+        body: 'te ha invitado a una partida'),
     a,
     a,
     a,
@@ -28,9 +31,11 @@ class _notificationsState extends State<Notifications> {
     a,
     a
   ];
+  //final notis = NotisApi.getNotifications(widget.username);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -44,189 +49,168 @@ class _notificationsState extends State<Notifications> {
           decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
-          child: ListView.builder(
-            itemCount: notificaciones.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Dismissible(
-                key: UniqueKey(),
-                direction: DismissDirection.horizontal,
-                child: GestureDetector(
-                  onTap: () {
-                    print('Pulsado');
-                    if (notificaciones[index].accion == 'amistad') {
-                      popUpAmistad(context, index).then((_) => setState(() {}));
-                    } else if (notificaciones[index].accion == 'partida') {
-                      popUpPartida(context, index);
-                    }
-                    setState(() {});
-                  },
-                  child: Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Flex(direction: Axis.vertical, children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: notificaciones.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Dismissible(
+                    key: UniqueKey(),
+                    direction: DismissDirection.horizontal,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const SizedBox(
-                                height: 5,
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  notificaciones[index].person,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              Text(
-                                notificaciones[index].title,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                notificaciones[index].body,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                                maxLines: 4,
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
+                              Text(notificaciones[index].body,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  )),
+                              Row(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: IconButton(
+                                        onPressed: () {
+                                          //Enviar a Backend: Aceptar solicitud
+                                          if (notificaciones[index].accion ==
+                                              'amistad') {
+                                            AcceptFriend(
+                                                    widget.username,
+                                                    index,
+                                                    notificaciones[index]
+                                                        .person)
+                                                .then((_) => setState(() {}));
+                                          }
+                                          //notificaciones.removeAt(index);
+                                        },
+                                        icon: const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: IconButton(
+                                        onPressed: () {
+                                          //Enviar a Backend: denegar solicitud
+                                          if (notificaciones[index].accion ==
+                                              'amistad') {
+                                            CancelFriend(
+                                                    widget.username,
+                                                    index,
+                                                    notificaciones[index]
+                                                        .person)
+                                                .then((_) => setState(() {}));
+                                          } else {
+                                            // Cuando sea una invitación a una partida
+                                          }
+                                          //notificaciones.removeAt(index);
+                                          //Navigator.of(context).pop();
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        )
-                      ],
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          //Faltan los iconos
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                onDismissed: (direccion) {
-                  notificaciones.removeAt(index);
-                  print(direccion);
-                  setState(() {});
+                    onDismissed: (direccion) {
+                      notificaciones.removeAt(index);
+                      print(direccion);
+                      setState(() {});
+                    },
+                  );
                 },
-              );
-            },
-          ),
+              ),
+            ),
+          ]),
         ));
   }
 
-  Future<dynamic> popUpAmistad(BuildContext context, int index) {
-    return showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-            builder: ((context, setState) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  title: const Text(
-                    '¿Aceptar la solicitud?',
-                    style: TextStyle(fontSize: 24, color: Colors.black),
-                  ),
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: IconButton(
-                            onPressed: () {
-                              //Enviar a Backend: Aceptar solicitud
-                              notificaciones.removeAt(index);
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            )),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: IconButton(
-                            onPressed: () {
-                              //Enviar a Backend: denegar solicitud
-                              notificaciones.removeAt(index);
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            )),
-                      )
-                    ],
-                  ),
-                ))));
+  Future AcceptFriend(String username, int i, String friend) async {
+    Uri url =
+        Uri.parse('https://onep1.herokuapp.com/friends/accept/friend-request');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'username': username, 'friendname': friend};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(mapeddate));
+    print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      print(respuesta['accessToken']);
+      notificaciones.removeAt(i);
+      // Navigator.pushReplacementNamed(context, 'home_page');
+      print(response);
+    } else {
+      print(response.statusCode);
+      print('Error');
+    }
   }
 
-  Future<dynamic> popUpPartida(BuildContext context, int index) {
-    return showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-            builder: ((context, setState) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  title: const Text(
-                    '¿Quieres unirte a la partida?',
-                    style: TextStyle(fontSize: 24, color: Colors.black),
-                  ),
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: IconButton(
-                            onPressed: () {
-                              //Enviar a Backend: Aceptar solicitud
-                              notificaciones.removeAt(index);
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                            )),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: IconButton(
-                            onPressed: () {
-                              //Enviar a Backend: denegar solicitud
-                              notificaciones.removeAt(index);
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            )),
-                      )
-                    ],
-                  ),
-                ))));
+  Future CancelFriend(String username, int i, String friend) async {
+    Uri url =
+        Uri.parse('https://onep1.herokuapp.com/friends/cancel/friend-request');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'username': username, 'friendname': friend};
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      print(respuesta['accessToken']);
+      notificaciones.removeAt(i);
+      // En este caso hay que borrar la notificación
+      // Navigator.pushReplacementNamed(context, 'home_page');
+      print(response);
+    } else {
+      print('Error');
+    }
   }
 }

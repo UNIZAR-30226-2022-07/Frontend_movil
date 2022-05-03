@@ -38,12 +38,22 @@ class MyApp extends StatelessWidget {
         'sign_up': (BuildContext context) => const SignUp(),
         'forgot_password': (BuildContext context) => const forgotPassword(),
         'partida': (BuildContext context) => const Partida(),
-        'home_page': (BuildContext context) => const HomePage(autorization: '' ,),
+        'home_page': (BuildContext context) => const HomePage(
+              autorization: '',
+              username: '',
+            ),
         'lista_amigos': (BuildContext context) => SearchPlayers(),
         'clasification': (BuildContext context) => ClasificationPage(),
-        'anadir_jugadores': (BuildContext context) => AnadirJugadores(autorization: '',idPagina: '',),
-        'crear_partida': (BuildContext context) => CreatePage(autorization: '',),
-        'notificaciones': (BuildContext context) => Notifications(),
+        'anadir_jugadores': (BuildContext context) => AnadirJugadores(
+              autorization: '',
+              idPagina: '',
+            ),
+        'crear_partida': (BuildContext context) => CreatePage(
+              autorization: '',
+            ),
+        'notificaciones': (BuildContext context) => Notifications(
+              username: '',
+            ),
         'search_friend': (BuildContext context) => AnadirAmigos(),
       },
     );
