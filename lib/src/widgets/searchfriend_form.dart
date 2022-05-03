@@ -21,6 +21,7 @@ class SearchFriendForm extends StatefulWidget {
 }
 
 class _SearchFriendFormState extends State<SearchFriendForm> {
+  String respuestaBackend = '';
   GlobalKey<FormState> _formKey = GlobalKey();
   String friendname = '';
   @override
@@ -89,7 +90,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   title: const Text(
-                    'No existe ningún usuario con este nombre de usuario',
+                    'No existe ningún usuario con este nombre de usuario', //en realidad habria que imprimir respuestaBackend
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -138,7 +139,9 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
       popUpCorrecto(context);
       print(response);
     } else {
-      print('No existe el usuario');
+      Map<String, dynamic> respuesta = json.decode(response.body);
+      print(respuesta);
+      // print('No existe el usuario');
       popUpError(context);
       print(response.statusCode);
     }

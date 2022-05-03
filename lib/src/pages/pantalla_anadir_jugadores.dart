@@ -40,9 +40,6 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         destination: '/game/connect', body: "hola"
       );
     });
-    // stompClient.send(
-    //     destination: '/game/connect', body: "hola"
-    //   );
   }
 
   
@@ -56,7 +53,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         print('connecting...');
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
-      stompConnectHeaders: {'Authorization': widget.autorization},
+      stompConnectHeaders: {'Authorization': 'Bearer $widget.autorization'},
       webSocketConnectHeaders: {'Authorization': widget.autorization},
     ),
   );
@@ -66,7 +63,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   //     StompFrame frame;
   //     StompClient client = StompClient(
   //         config: StompConfig(
-  //           url: socketUrl,
+  //           url: 'ws://onep1.herokuapp.com/onep1-game',
   //           onConnect: onConnect,
   //         ),
   //     );
@@ -248,7 +245,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                         onPressed: () {
                           // CrearPartida();
                           // initState();
-                          print(widget.autorization);
+                          // print(widget.autorization);
                           stompClient.activate();
                         },
                         child: const Text(
