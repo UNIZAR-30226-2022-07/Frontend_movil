@@ -300,12 +300,31 @@ class _CreatePageState extends State<CreatePage> {
                 ))));
   }
 
+  Future<dynamic> popUpCorrecto(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Se ha creado la partida correctamente',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 16, 159, 19),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
   Future CrearPartida() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/game/create');
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
-    Map mapeddate = {'playername': "paula", 'nplayers': count, 'tturn': tiempo};
+    Map mapeddate = {'playername': "paulapruebas", 'nplayers': count, 'tturn': tiempo};
 
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
@@ -316,14 +335,11 @@ class _CreatePageState extends State<CreatePage> {
       final route = MaterialPageRoute(
                           builder: (context) => AnadirJugadores(autorization: widget.autorization, idPagina: respuesta['id'],));
                       Navigator.push(context, route);
-      // respuesta.keys.forEach((key) {
-      //   print(key);
-      //   print(respuesta['id']);
-      // });
-      // print("me han mandado cositas");
+      popUpCorrecto(context);
     } else {
       print('No se ha creado');
       if (response.statusCode != 200) {
+        print(response.statusCode);
         popUpError(context);
       }
     }
