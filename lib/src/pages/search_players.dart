@@ -10,7 +10,7 @@ class SearchPlayers extends StatefulWidget {
 }
 
 class _SearchPlayersState extends State<SearchPlayers> {
-  // final FetchFriendList _friendList = FetchFriendList();
+  final FetchFriendList _friendList = FetchFriendList();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
-              // future: _friendList.getFriendList(),
+              future: _friendList.getFriendList(),
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(

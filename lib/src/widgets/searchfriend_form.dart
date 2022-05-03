@@ -90,7 +90,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   title: const Text(
-                    'No existe ningún usuario con este nombre de usuario', //en realidad habria que imprimir respuestaBackend
+                    'Ha ocurrido un error', //en realidad habria que imprimir respuestaBackend
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -109,7 +109,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   title: const Text(
-                    'Has añadido a un nuevo amigo',
+                    'Has enviado una petición de amistad',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -126,7 +126,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     print(friendname);
-    Map mapeddate = {'username': "paulapruebas", 'friendname': friendname};
+    Map mapeddate = {'username': "nereapruebas", 'friendname': friendname};
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {

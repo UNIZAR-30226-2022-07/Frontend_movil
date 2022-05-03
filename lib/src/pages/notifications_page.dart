@@ -198,7 +198,7 @@ class _notificationsState extends State<Notifications> {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     Map mapeddate = {'username': username, 'friendname': friend};
-
+    
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {
