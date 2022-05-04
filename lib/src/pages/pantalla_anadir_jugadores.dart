@@ -11,13 +11,10 @@ import "dart:async";
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
-
-
 class AnadirJugadores extends StatefulWidget {
-    final String idPagina;
-    final String autorization;
-  AnadirJugadores({required this.autorization,required this.idPagina });
-
+  final String idPagina;
+  final String autorization;
+  AnadirJugadores({required this.autorization, required this.idPagina});
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
@@ -28,47 +25,51 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
   String message = '';
 
-
   @override
   void onConnect(StompFrame frame) {
     print("la url esta bien");
-    stompClient.subscribe(
+    var subscription = stompClient.subscribe(
       destination: '/topic/game/${widget.idPagina}',
-      
-      callback: (frame) {
-        List<dynamic>? result = json.decode(frame.body!);
-        print(result);
+      callback: (StompFrame frame) {
+        if (frame.body != null) {
+          //List<dynamic>? result = json.decode(frame.body!);
+          Map<String, dynamic> result = json.decode(frame.body!);
+          print(result);
+          print('Ha salido del callback');
+        }
       },
     );
-    print(widget.idPagina);
+    print(subscription);
     print("me he suscrito");
-    Timer.periodic(Duration(seconds: 10), (_) {
-      stompClient.send(
-        destination: '/game/connect/${widget.idPagina}', body: "paulapruebas"
-      );
-    });
-    print(widget.idPagina);
+    // Timer.periodic(Duration(seconds: 10), (_) {
+    //   stompClient.send(
+    //       destination: '/game/connect/${widget.idPagina}', body: 'usuario123');
+    // });
+    stompClient.send(
+        destination: '/game/connect/${widget.idPagina}', body: 'usuario123');
     print("lo he mandado");
   }
 
   // const ws = SockJS("https://onep1.herokuapp.com/onep1-game%22)";
   late StompClient stompClient = StompClient(
-    config: StompConfig( 
-      url: 'wss://onep1.herokuapp.com/onep1-game',
+    config: StompConfig.SockJS(
+      url: 'https://onep1.herokuapp.com/onep1-game',
       onConnect: onConnect,
-      // print("he hecho el connect");
       beforeConnect: () async {
         print('waiting to connect...');
         await Future.delayed(Duration(milliseconds: 200));
         print('connecting...');
       },
-      onWebSocketError: (dynamic error) => print(error.toString()),
-      onStompError:(dynamic error) => print(error.toString()),
       stompConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}'},
-      webSocketConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}'},
+      webSocketConnectHeaders: {
+        'Authorization': 'Bearer ${widget.autorization}'
+      },
+      onWebSocketError: (dynamic error) => print(error.toString()),
+      onStompError: (dynamic error) => print(error.toString()),
+      onDisconnect: (f) => print('disconnected'),
     ),
   );
-  
+
   @override
   void initState() {
     super.initState();
@@ -76,197 +77,190 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       StompFrame frame;
       StompClient client = StompClient(
           config: StompConfig.SockJS(
-            url: 'wss://onep1.herokuapp.com/onep1-game',
-            onConnect: onConnect,
-            onWebSocketError: (dynamic error) => print(error.toString()),
-          )
-        );
+        url: 'wss://onep1.herokuapp.com/onep1-game',
+        onConnect: onConnect,
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ));
       stompClient.activate();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-      
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
+        decoration: BoxDecoration(
+            image: DecorationImage(
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
-      child: Column (
-        children: <Widget>[
+        child: Column(children: <Widget>[
           SizedBox(
-            height:80,
+            height: 80,
             width: 20,
-          ), 
+          ),
           Row(
             children: <Widget>[
-                    SizedBox(
-                      width: 150,
-                      height: 150.0,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black54),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          // final route =
-                          //     MaterialPageRoute(builder: (context) => Partida());
-                          // Navigator.push(context, route);
-                        },
-                        child: const Text(
-                          '+',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'FredokaOne',
-                              fontSize: 80.0),
-                        ),
+              SizedBox(
+                width: 150,
+                height: 150.0,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black54),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                    
-                    SizedBox(
-                      width: 20,
-                    ), //SizedBox
-                    SizedBox(
-                      width: 150,
-                      height: 150.0,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black54),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          // final route =
-                          //     MaterialPageRoute(builder: (context) => Partida());
-                          // Navigator.push(context, route);
-                        },
-                        child: const Text(
-                          '+',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'FredokaOne',
-                              fontSize: 80.0),
-                        ),
+                  ),
+                  onPressed: () {
+                    // final route =
+                    //     MaterialPageRoute(builder: (context) => Partida());
+                    // Navigator.push(context, route);
+                  },
+                  child: const Text(
+                    '+',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'FredokaOne',
+                        fontSize: 80.0),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                width: 20,
+              ), //SizedBox
+              SizedBox(
+                width: 150,
+                height: 150.0,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black54),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ), //
-                    SizedBox(
-                      width: 150,
-                      height: 150.0,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black54),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          // final route =
-                          //     MaterialPageRoute(builder: (context) => Partida());
-                          // Navigator.push(context, route);
-                        },
-                        child: const Text(
-                          '+',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'FredokaOne',
-                              fontSize: 80.0),
-                        ),
+                  ),
+                  onPressed: () {
+                    // final route =
+                    //     MaterialPageRoute(builder: (context) => Partida());
+                    // Navigator.push(context, route);
+                  },
+                  child: const Text(
+                    '+',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'FredokaOne',
+                        fontSize: 80.0),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ), //
+              SizedBox(
+                width: 150,
+                height: 150.0,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black54),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-                  ], //<Widget>[]
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  onPressed: () {
+                    // final route =
+                    //     MaterialPageRoute(builder: (context) => Partida());
+                    // Navigator.push(context, route);
+                  },
+                  child: const Text(
+                    '+',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'FredokaOne',
+                        fontSize: 80.0),
+                  ),
+                ),
+              ),
+            ], //<Widget>[]
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
           SizedBox(
-            height:20,
+            height: 20,
             width: 20,
-          ), 
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: 240.0,
-                height: 42.0,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 25,
-                    ),
-                    ElevatedButton(
-                      
-                      child: Text('Aqui va el codigo, no cabe'),
-                      onPressed: () {
-                        final data = ClipboardData(text: widget.idPagina);
-                        Clipboard.setData(data);
-                      },
-                    ),
-                  ],
-                )
-              ),
+                  width: 240.0,
+                  height: 42.0,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 25,
+                      ),
+                      ElevatedButton(
+                        child: Text('Aqui va el codigo, no cabe'),
+                        onPressed: () {
+                          final data = ClipboardData(text: widget.idPagina);
+                          Clipboard.setData(data);
+                        },
+                      ),
+                    ],
+                  )),
             ],
           ),
           SizedBox(
-            height:20,
+            height: 20,
             width: 20,
-          ), 
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                      width: 120,
-                      height: 40.0,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 32, 159, 255)),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          // CrearPartida();
-                          // super.initState();
-                          // print(widget.autorization);
-                          stompClient.activate();
-                        },
-                        child: const Text(
-                          'Crear',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'FredokaOne',
-                              fontSize: 20.0),
-                        ),
+                width: 120,
+                height: 40.0,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromARGB(255, 32, 159, 255)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
+                  ),
+                  onPressed: () {
+                    // CrearPartida();
+                    // super.initState();
+                    // print(widget.autorization);
+                    stompClient.activate();
+                  },
+                  child: const Text(
+                    'Crear',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'FredokaOne',
+                        fontSize: 20.0),
+                  ),
+                ),
+              ),
             ],
           ),
-        ]
-      )
-    );
+        ]));
   }
 
   @override
   void dispose() {
     if (stompClient != null) {
       stompClient.deactivate();
-    }super.dispose();
+    }
+    super.dispose();
   }
-  
 }
