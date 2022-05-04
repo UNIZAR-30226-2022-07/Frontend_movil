@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
+import 'package:flutter_unogame/src/pages/editar_perfil.dart';
 import 'package:flutter_unogame/src/pages/notifications_page.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
@@ -89,6 +90,24 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 final route =
                     MaterialPageRoute(builder: (context) => SearchPlayers());
+                Navigator.push(context, route);
+              },
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: const Icon(
+                Icons.edit,
+                size: 40,
+                color: Color.fromARGB(255, 157, 13, 13),
+              ),
+              onPressed: () {
+                final route =
+                    MaterialPageRoute(builder: (context) => EditPage());
                 Navigator.push(context, route);
               },
             ),
