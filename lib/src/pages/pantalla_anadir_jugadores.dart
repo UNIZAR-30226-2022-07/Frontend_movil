@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
-import 'package:sockjs_client_wrapper/sockjs_client_wrapper.dart';
 import '../pages/home_page.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:async';
+import "dart:async";
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/status.dart' as status;
+
 
 
 class AnadirJugadores extends StatefulWidget {
@@ -24,7 +27,8 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   // late StompClient stompClient;
   // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
   String message = '';
-  
+
+
   @override
   void onConnect(StompFrame frame) {
     print("la url esta bien");
@@ -49,10 +53,8 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
 
   // const ws = SockJS("https://onep1.herokuapp.com/onep1-game%22)";
   late StompClient stompClient = StompClient(
-    
-    config: StompConfig(
-      
-      url: 'http://onep1.herokuapp.com/onep1-game',
+    config: StompConfig( 
+      url: 'wss://onep1.herokuapp.com/onep1-game',
       onConnect: onConnect,
       // print("he hecho el connect");
       beforeConnect: () async {
@@ -61,41 +63,27 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         print('connecting...');
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
+      onStompError:(dynamic error) => print(error.toString()),
       stompConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}'},
       webSocketConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}'},
     ),
   );
-  // void initState() {
-  //   super.initState();
-  //   if (stompClient == null) {
-  //     StompFrame frame;
-  //     StompClient client = StompClient(
-  //         config: StompConfig(
-  //           url: 'ws://onep1.herokuapp.com/onep1-game',
-  //           onConnect: onConnect,
-  //         ),
-  //     );
-  //     stompClient.activate();
-  //   }
-  // }
-  // const ws = new SockJS("https://onep1.herokuapp.com/onep1-game%22);
-  //   this.stompClient = Stomp.over(ws);
   
-
-
-  // @override
-  // void onConnect(StompFrame frame) {
-  //   stompClient.subscribe(
-  //       destination: '/topic/connect/<id>',
-  //       callback: (frame) {
-  //         print(frame.body);
-  //       }
-        
-  //   );
-  //   stompClient.activate();
-  //   stompClient.send(destination: '/game/connect', body: "hola");
-  // }
-  
+  @override
+  void initState() {
+    super.initState();
+    if (stompClient == null) {
+      StompFrame frame;
+      StompClient client = StompClient(
+          config: StompConfig.SockJS(
+            url: 'wss://onep1.herokuapp.com/onep1-game',
+            onConnect: onConnect,
+            onWebSocketError: (dynamic error) => print(error.toString()),
+          )
+        );
+      stompClient.activate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +242,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                         ),
                         onPressed: () {
                           // CrearPartida();
-                          // initState();
+                          // super.initState();
                           // print(widget.autorization);
                           stompClient.activate();
                         },
