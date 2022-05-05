@@ -7,8 +7,9 @@ import '../widgets/icon_container.dart';
 
 
 class AnadirAmigos extends StatefulWidget {
-  const AnadirAmigos({ Key? key }) : super(key: key);
-
+  final String username;
+  const AnadirAmigos({Key? key,required this.username})
+      : super(key: key);
   @override
   State<AnadirAmigos> createState() => _AnadirAmigosState();
 }
@@ -30,11 +31,11 @@ class _AnadirAmigosState extends State<AnadirAmigos> {
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
+                children: <Widget>[
                   SizedBox(
                     height: 50.0,
                   ),
-                  SearchFriendForm(),
+                  SearchFriendForm(username: widget.username),
                 ],
               )
             ],

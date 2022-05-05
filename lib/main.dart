@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
               autorization: '',
               username: '',
             ),
-        'lista_amigos': (BuildContext context) => SearchPlayers(),
+        'lista_amigos': (BuildContext context) => SearchPlayers(username: ''),
         'clasification': (BuildContext context) => ClasificationPage(),
         'anadir_jugadores': (BuildContext context) => AnadirJugadores(
               autorization: '',
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         'notificaciones': (BuildContext context) => Notifications(
               username: '',
             ),
-        'search_friend': (BuildContext context) => AnadirAmigos(),
+        'search_friend': (BuildContext context) => AnadirAmigos(username: ''),
       },
     );
   }

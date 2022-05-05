@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Home',
+          '',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 final route =
-                    MaterialPageRoute(builder: (context) => SearchPlayers());
+                    MaterialPageRoute(builder: (context) => SearchPlayers(username: widget.username));
                 Navigator.push(context, route);
               },
             ),

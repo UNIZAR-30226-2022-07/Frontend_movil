@@ -10,6 +10,9 @@ import 'API_service.dart';
 import 'package:http/http.dart' as http;
 
 class SearchPlayers extends StatefulWidget {
+  final String username;
+  const SearchPlayers({Key? key,required this.username})
+      : super(key: key);
   @override
   _SearchPlayersState createState() => _SearchPlayersState();
 }
@@ -23,13 +26,13 @@ class _SearchPlayersState extends State<SearchPlayers> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('My friends',
+          title: const Text('Mis amigos',
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           actions: [
             IconButton(
               onPressed: () {
                 final route = MaterialPageRoute(
-                          builder: (context) => AnadirAmigos());
+                          builder: (context) => AnadirAmigos(username: widget.username));
                       Navigator.push(context, route);
               },
               iconSize: 38.0,
@@ -43,7 +46,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
-              future: _friendList.getFriendList(), // esta en API_service
+              future: _friendList.getFriendList(widget.username), // esta en API_service
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(
@@ -83,7 +86,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
                                         onPressed: () {
                                           String nom = '${data?[index].username}';
                                           print(nom);
-                                          DeleteFriend(nom);
+                                          DeleteFriend(widget.username,nom);
                                         },
                                         child: const Text(
                                           'Eliminar',
@@ -145,13 +148,13 @@ class _SearchPlayersState extends State<SearchPlayers> {
                 ))));
   }
   
-  Future DeleteFriend(String friendname) async {
+  Future DeleteFriend(String username, String friendname) async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/friends/deleteFriend');
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     print(friendname);
-    Map mapeddate = {'username': "paulapruebas", 'friendname': friendname};
+    Map mapeddate = {'username': username, 'friendname': friendname};
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {

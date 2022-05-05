@@ -14,8 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
 class SearchFriendForm extends StatefulWidget {
-  const SearchFriendForm({ Key? key }) : super(key: key);
-
+  final String username;
+  SearchFriendForm({Key? key,required this.username})
+      : super(key: key);
   @override
   State<SearchFriendForm> createState() => _SearchFriendFormState();
 }
@@ -64,7 +65,7 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    SearchFriend();
+                    SearchFriend(widget.username, friendname);
                   }
                   
                 },
@@ -120,13 +121,17 @@ class _SearchFriendFormState extends State<SearchFriendForm> {
                 ))));
   }
   
-  Future SearchFriend() async {
+  Future SearchFriend(String username, String friendname) async {
+    print(username);
+    print("este era mi nombre");
+    print(friendname);
+    print("este es el nombre de mi amigo");
     Uri url = Uri.parse('https://onep1.herokuapp.com/friends/send/friend-request');
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     print(friendname);
-    Map mapeddate = {'username': "nereapruebas", 'friendname': friendname};
+    Map mapeddate = {'username': username, 'friendname': friendname};
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {

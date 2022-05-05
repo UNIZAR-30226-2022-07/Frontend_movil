@@ -8,7 +8,7 @@ class FetchFriendList {
   var data = [];
   List<Userlist> results = []; //para meter aqui los amigos
   
-  Future<List<Userlist>> getFriendList() async {
+  Future<List<Userlist>> getFriendList(String username) async {
     var url = Uri.parse('https://onep1.herokuapp.com/friends/friendsList');
     try {
       
@@ -16,7 +16,7 @@ class FetchFriendList {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
       };
 
-      Map mapeddate = {'username': "paulapruebas"}; // lo que yo le mando a backend para que me mande la lista de amigos
+      Map mapeddate = {'username': username}; // lo que yo le mando a backend para que me mande la lista de amigos
       
       final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate));

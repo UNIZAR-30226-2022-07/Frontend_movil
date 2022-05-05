@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
 import '../pages/home_page.dart';
@@ -29,12 +30,14 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/user/usuario123/msg',
+        destination: '/user/paulapruebas/msg',
         callback: (StompFrame frame) {
+          print("he entrado al callback");
           if (frame.body != null) {
-            //List<dynamic>? result = json.decode(frame.body!);
-            canalUser = json.decode(frame.body!);
-            print(canalUser);
+            print(frame.body);
+            List<dynamic> result = json.decode(frame.body!);
+            // canalUser = json.decode(frame.body!);
+            // print(canalUser);
             print('Ha salido del callback');
           }
         });
@@ -43,9 +46,10 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       destination: '/topic/game/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
-          //List<dynamic>? result = json.decode(frame.body!);
-          canalGeneral = json.decode(frame.body!);
-          print(canalGeneral);
+          print(frame.body);
+          Map<String, dynamic> result = json.decode(frame.body!);
+          // canalGeneral = json.decode(frame.body!);
+          // print(canalGeneral);
           print('Ha salido del callback');
         }
       },
@@ -57,7 +61,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     //       destination: '/game/connect/${widget.idPagina}', body: 'usuario123');
     // });
     stompClient.send(
-        destination: '/game/connect/${widget.idPagina}', body: 'usuario123');
+        destination: '/game/begin/${widget.idPagina}', body: '', headers: {'Authorization': 'Bearer ${widget.autorization}','username': 'paulapruebas'});
     print("lo he mandado");
   }
 
@@ -70,9 +74,9 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         await Future.delayed(const Duration(milliseconds: 200));
         print('connecting...');
       },
-      stompConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}'},
+      stompConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}','username': 'paulapruebas'},
       webSocketConnectHeaders: {
-        'Authorization': 'Bearer ${widget.autorization}'
+        'Authorization': 'Bearer ${widget.autorization}','username': 'paulapruebas'
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
       onStompError: (dynamic error) => print(error.toString()),
@@ -216,7 +220,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                         width: 25,
                       ),
                       ElevatedButton(
-                        child: const Text('Aqui va el codigo, no cabe'),
+                        child: const Text('Copiar código'),
                         onPressed: () {
                           final data = ClipboardData(text: widget.idPagina);
                           Clipboard.setData(data);
@@ -251,6 +255,11 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                     // super.initState();
                     // print(widget.autorization);
                     stompClient.activate();
+                    print("entro a la partida");
+                    final route = MaterialPageRoute(
+                          builder: (context) => const Partida());
+                      Navigator.push(context, route);
+                    
                   },
                   child: const Text(
                     'Crear',

@@ -159,7 +159,7 @@ class _LoginFormState extends State<LoginForm> {
       final route = MaterialPageRoute(
           builder: (context) => HomePage(
                 autorization: respuesta['accessToken'],
-                username: _name,
+                username: respuesta['username'],
               ));
       Navigator.push(context, route);
       // Navigator.pushReplacementNamed(context, 'home_page');
