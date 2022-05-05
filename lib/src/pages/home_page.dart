@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: const Icon(
                 Icons.edit,
-                size: 40,
+                size: 36,
                 color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {

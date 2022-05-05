@@ -7,7 +7,7 @@ import '../models/user_model.dart';
 class FetchFriendList {
   var data = [];
   List<Userlist> results = []; //para meter aqui los amigos
-
+  
   Future<List<Userlist>> getFriendList() async {
     var url = Uri.parse('https://onep1.herokuapp.com/friends/friendsList');
     try {
@@ -22,20 +22,16 @@ class FetchFriendList {
         headers: headers, body: jsonEncode(mapeddate));
       
       if (response.statusCode == 200) {
-        Map<String, dynamic> respuesta = json.decode(response.body);
-        print(respuesta);
-        // respuesta["username"].forEach((value) {
-        //   // añadir al value a results
-        //   print(value);
-        //   results.add(value);
-        // });
-        // results = data.map((e) => Userlist.fromJson(e)).toList();
-        // if (query != null) {
-        //   results = results
-        //       .where((element) =>
-        //           element.username!.toLowerCase().contains((query.toLowerCase())))
-        //       .toList();
-        // }
+        Map data = jsonDecode(response.body);
+        print(data);
+        var l = data['message'];
+        var laux = json.decode(l);
+        for (var i in laux) {
+          print(i);
+          results.add(Userlist(
+              username: i));
+        }
+        return results;
       } 
       else {
         print("fetch error");

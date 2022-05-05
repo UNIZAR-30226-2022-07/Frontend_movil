@@ -168,6 +168,44 @@ class _notificationsState extends State<Notifications> {
         });
   }
 
+  Future<dynamic> popUpErrorAceptarAmigo(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Ha habido algún error al añadir a tu amigo',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
+  Future<dynamic> popUpCorrectoAceptarAmigo(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Se ha añadido a tu amigo correctamente',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 16, 159, 19),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
   Future AcceptFriend(String username, int i, String friend) async {
     Uri url =
         Uri.parse('https://onep1.herokuapp.com/friends/accept/friend-request');
@@ -182,10 +220,50 @@ class _notificationsState extends State<Notifications> {
       Map<String, dynamic> respuesta = json.decode(response.body);
       // notificaciones.removeAt(i);
       // Navigator.pushReplacementNamed(context, 'home_page');
+      popUpCorrectoAceptarAmigo(context);
     } else {
+      popUpErrorAceptarAmigo(context);
       print(response.statusCode);
       print('Error');
     }
+  }
+
+  Future<dynamic> popUpErrorRechazarAmigo(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Ha habido algún error al rechazar la petición',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
+  Future<dynamic> popUpCorrectoRechazarAmigo(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Has rechazado la petición',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 16, 159, 19),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
   }
 
   Future CancelFriend(String username, int i, String friend) async {

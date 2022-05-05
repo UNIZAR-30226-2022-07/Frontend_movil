@@ -101,15 +101,15 @@ class _editState extends State<EditPage> {
                               ),
                             ])),
                     const SizedBox(
-                      height: 15,
+                      height: 25,
                     ),
                     SizedBox(
                       width: 100,
-                      height: 35.0,
+                      height: 45.0,
                       child: TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.red),
+                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 196, 33, 22)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
@@ -117,13 +117,15 @@ class _editState extends State<EditPage> {
                             ),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          
+                        },
                         child: const Text(
-                          'Editar perfil',
+                          'Guardar',
                           style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'FredokaOne',
-                              fontSize: 14.0),
+                              fontSize: 16.0),
                         ),
                       ),
                     ),
