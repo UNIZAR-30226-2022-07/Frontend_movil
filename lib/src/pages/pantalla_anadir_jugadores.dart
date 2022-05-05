@@ -24,22 +24,33 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   // late StompClient stompClient;
   // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
   String message = '';
+  Map<String, dynamic> canalUser = {};
+  Map<String, dynamic> canalGeneral = {};
 
-  @override
   void onConnect(StompFrame frame) {
-    print("la url esta bien");
-    var subscription = stompClient.subscribe(
+    stompClient.subscribe(
+        destination: '/user/usuario123/msg',
+        callback: (StompFrame frame) {
+          if (frame.body != null) {
+            //List<dynamic>? result = json.decode(frame.body!);
+            canalUser = json.decode(frame.body!);
+            print(canalUser);
+            print('Ha salido del callback');
+          }
+        });
+
+    stompClient.subscribe(
       destination: '/topic/game/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
           //List<dynamic>? result = json.decode(frame.body!);
-          Map<String, dynamic> result = json.decode(frame.body!);
-          print(result);
+          canalGeneral = json.decode(frame.body!);
+          print(canalGeneral);
           print('Ha salido del callback');
         }
       },
     );
-    print(subscription);
+
     print("me he suscrito");
     // Timer.periodic(Duration(seconds: 10), (_) {
     //   stompClient.send(
@@ -50,14 +61,13 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     print("lo he mandado");
   }
 
-  // const ws = SockJS("https://onep1.herokuapp.com/onep1-game%22)";
   late StompClient stompClient = StompClient(
     config: StompConfig.SockJS(
       url: 'https://onep1.herokuapp.com/onep1-game',
       onConnect: onConnect,
       beforeConnect: () async {
         print('waiting to connect...');
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(const Duration(milliseconds: 200));
         print('connecting...');
       },
       stompConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}'},
@@ -89,11 +99,11 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
         child: Column(children: <Widget>[
-          SizedBox(
+          const SizedBox(
             height: 80,
             width: 20,
           ),
@@ -127,7 +137,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                 ),
               ),
 
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ), //SizedBox
               SizedBox(
@@ -157,7 +167,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ), //
               SizedBox(
@@ -190,23 +200,23 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
             ], //<Widget>[]
             mainAxisAlignment: MainAxisAlignment.center,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
             width: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
+              SizedBox(
                   width: 240.0,
                   height: 42.0,
                   child: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
                       ElevatedButton(
-                        child: Text('Aqui va el codigo, no cabe'),
+                        child: const Text('Aqui va el codigo, no cabe'),
                         onPressed: () {
                           final data = ClipboardData(text: widget.idPagina);
                           Clipboard.setData(data);
@@ -216,7 +226,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                   )),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
             width: 20,
           ),
@@ -229,7 +239,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                 child: TextButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(255, 32, 159, 255)),
+                        const Color.fromARGB(255, 32, 159, 255)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
