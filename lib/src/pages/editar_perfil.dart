@@ -1,9 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_unogame/src/pages/login_page.dart';
+import 'package:flutter_unogame/src/pages/sign_in.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
+import 'package:http/http.dart' as http;
 
 class EditPage extends StatefulWidget {
-  EditPage({Key? key}) : super(key: key);
+  final String username;
+  EditPage({Key? key,required this.username}) : super(key: key);
 
   State<EditPage> createState() => _editState();
 }
@@ -68,6 +75,41 @@ class _editState extends State<EditPage> {
                         return null;
                       },
                     ),
+                    SizedBox(height: 30),
+                    SizedBox(
+                      width: 150,
+                      height: 45.0,
+                      child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 196, 33, 22)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_newName.isNotEmpty ) {
+                            EditName(widget.username, _newName);
+                            final route = MaterialPageRoute(
+                              builder: (context) => const SignIn());
+                            Navigator.push(context, route);
+                          }
+                          else {
+                            popUpErrorNombre(context);
+                          }
+                        },
+                        child: const Text(
+                          'Cambiar nombre',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'FredokaOne',
+                              fontSize: 16.0),
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -103,8 +145,9 @@ class _editState extends State<EditPage> {
                     const SizedBox(
                       height: 25,
                     ),
+
                     SizedBox(
-                      width: 100,
+                      width: 150,
                       height: 45.0,
                       child: TextButton(
                         style: ButtonStyle(
@@ -118,10 +161,10 @@ class _editState extends State<EditPage> {
                           ),
                         ),
                         onPressed: () {
-                          
+                          EditCountry(widget.username, _newCountry);
                         },
                         child: const Text(
-                          'Guardar',
+                          'Cambiar país',
                           style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'FredokaOne',
@@ -136,7 +179,12 @@ class _editState extends State<EditPage> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
-                          onPressed: () async {},
+                          onPressed: () {
+                            DeleteAccount(widget.username);
+                            final route = MaterialPageRoute(
+                              builder: (context) => LoginPage());
+                            Navigator.push(context, route);
+                          },
                           child: const Text(
                             'Eliminar cuenta',
                             textAlign: TextAlign.left,
@@ -154,5 +202,190 @@ class _editState extends State<EditPage> {
         ),
       ),
     );
+  }
+
+
+
+  Future<dynamic> popUpErrorNombre(BuildContext context) {
+      return showDialog(
+          context: context,
+          builder: (context) => StatefulBuilder(
+              builder: ((context, setState) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text(
+                      'No ha sido posible editar el nombre de usuario',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ))));
+  }
+  Future<dynamic> popUpCorrectoNombre(BuildContext context) {
+      return showDialog(
+          context: context,
+          builder: (context) => StatefulBuilder(
+              builder: ((context, setState) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text(
+                      'Se ha cambiado el nombre de usuario',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 12, 149, 39),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ))));
+  }
+
+  Future EditName(String username, String new_username) async {
+    print(new_username);
+    print(username);
+    Uri url = Uri.parse('https://onep1.herokuapp.com/user/changeUsername');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'username': username, 'newUsername': new_username};
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      popUpCorrectoNombre(context);
+      print(response);
+    } else {
+      print('Error al editar nombre');
+      if (response.statusCode != 200) {
+        popUpErrorNombre(context);
+      }
+    }
+  }
+
+
+  Future<dynamic> popUpErrorPais(BuildContext context) {
+      return showDialog(
+          context: context,
+          builder: (context) => StatefulBuilder(
+              builder: ((context, setState) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text(
+                      'No ha sido posible editar el país del usuario',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ))));
+  }
+  Future<dynamic> popUpCorrectoPais(BuildContext context) {
+      return showDialog(
+          context: context,
+          builder: (context) => StatefulBuilder(
+              builder: ((context, setState) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text(
+                      'Se ha cambiado el país',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 12, 149, 39),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ))));
+    }
+
+  Future EditCountry(String username, String country) async {
+    print(username);
+    Uri url = Uri.parse('https://onep1.herokuapp.com/user/changePais');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'username': username, 'pais': country};
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      popUpCorrectoPais(context);
+      print(response);
+    } else {
+      print('Error al editar el país');
+      if (response.statusCode != 200) {
+        popUpErrorPais(context);
+      }
+    }
+  }
+
+  Future<dynamic> popUpCorrectoEliminar(BuildContext context) {
+      return showDialog(
+          context: context,
+          builder: (context) => StatefulBuilder(
+              builder: ((context, setState) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text(
+                      'Se ha eliminado la cuenta correctamente',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromARGB(255, 12, 149, 39),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ))));
+    }
+
+  Future<dynamic> popUpErrorEliminar(BuildContext context) {
+      return showDialog(
+          context: context,
+          builder: (context) => StatefulBuilder(
+              builder: ((context, setState) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Text(
+                      'No ha sido posible eliminar la cuenta',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ))));
+  }
+  
+  Future DeleteAccount(String username) async {
+    print(username);
+    Uri url = Uri.parse('https://onep1.herokuapp.com/user/deleteUser');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'username': username};
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      popUpCorrectoEliminar(context);
+      print(response);
+    } else {
+      print('Error al eliminar cuenta');
+      if (response.statusCode != 200) {
+        popUpErrorEliminar(context);
+      }
+    }
   }
 }

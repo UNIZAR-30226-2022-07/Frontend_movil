@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 final route =
-                    MaterialPageRoute(builder: (context) => EditPage());
+                    MaterialPageRoute(builder: (context) => EditPage(username: widget.username));
                 Navigator.push(context, route);
               },
             ),
