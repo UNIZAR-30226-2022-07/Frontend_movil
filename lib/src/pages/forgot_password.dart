@@ -33,14 +33,14 @@ class _forgotPasswordState extends State<forgotPassword> {
                     url: 'images/uno.jpg',
                   ),
                   Text(
-                    'Get a new password',
+                    '¿Has olvidado la contraseña?',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 25.0
                     ),
                   ),
                   Text(
-                    'Type in your email so we can do this!',
+                    'Inserta tu correo electrónico de registro',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 15.0
@@ -53,18 +53,18 @@ class _forgotPasswordState extends State<forgotPassword> {
                   ForgotPasswordForm()
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>  [
-                  FloatingActionButton(
-                    backgroundColor: Colors.red[900],
-                    child: Icon(Icons.settings_backup_restore),
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: <Widget>  [
+              //     FloatingActionButton(
+              //       backgroundColor: Colors.red[900],
+              //       child: Icon(Icons.settings_backup_restore),
+              //       onPressed: (){
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

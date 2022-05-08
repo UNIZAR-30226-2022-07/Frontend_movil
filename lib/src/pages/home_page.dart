@@ -1,7 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
+import 'package:flutter_unogame/src/pages/crear_torneo.dart';
 import 'package:flutter_unogame/src/pages/editar_perfil.dart';
+import 'package:flutter_unogame/src/pages/lista_torneos.dart';
 import 'package:flutter_unogame/src/pages/notifications_page.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
@@ -242,11 +244,41 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => const Partida());
+                          builder: (context) => ListTorneos(username: widget.username));
                       Navigator.push(context, route);
                     },
                     child: const Text(
-                      'Torneos',
+                      'Buscar torneo',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'FredokaOne',
+                          fontSize: 30.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50.0,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black54),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      final route = MaterialPageRoute(
+                          builder: (context) => CreateTournament(autorization: widget.autorization,username: widget.username));
+                      Navigator.push(context, route);
+                    },
+                    child: const Text(
+                      'Crear torneo',
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',
