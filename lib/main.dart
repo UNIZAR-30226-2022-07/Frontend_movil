@@ -37,7 +37,6 @@ class MyApp extends StatelessWidget {
         'sign_in': (BuildContext context) => const SignIn(),
         'sign_up': (BuildContext context) => const SignUp(),
         'forgot_password': (BuildContext context) => const forgotPassword(),
-        'partida': (BuildContext context) => const Partida(),
         'home_page': (BuildContext context) => const HomePage(
               autorization: '',
               username: '',

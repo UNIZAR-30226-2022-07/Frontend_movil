@@ -1,5 +1,7 @@
 // import 'dart:_http';
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
@@ -8,7 +10,11 @@ import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import '../models/mano.dart';
 
 class Partida extends StatefulWidget {
-  const Partida({Key? key}) : super(key: key);
+  final Stream userListener;
+  final Stream gameListener;
+  const Partida(
+      {Key? key, required this.userListener, required this.gameListener})
+      : super(key: key);
 
   @override
   State<Partida> createState() => _PartidaState();
@@ -25,6 +31,21 @@ List<Carta> cartasJugador = [
 ];
 
 class _PartidaState extends State<Partida> {
+  late StreamSubscription userListener;
+  late StreamSubscription gameListener;
+
+  @override
+  void initState() {
+    super.initState();
+    userListener =
+        widget.userListener.listen((event) => gestionarUsuario(event));
+    gameListener = widget.gameListener.listen((event) => gestionarGame(event));
+  }
+
+  void gestionarUsuario(dynamic a) {}
+
+  void gestionarGame(dynamic a) {}
+
   // Última carta echada por cualquiera de los jugadores
   Carta cima =
       Carta(color: 'rojo', numero: '3', url: 'images/cartas/rojo-3.png');

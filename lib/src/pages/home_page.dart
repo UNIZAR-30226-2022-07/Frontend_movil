@@ -90,8 +90,9 @@ class _HomePageState extends State<HomePage> {
                 color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {
-                final route =
-                    MaterialPageRoute(builder: (context) => SearchPlayers(username: widget.username));
+                final route = MaterialPageRoute(
+                    builder: (context) =>
+                        SearchPlayers(username: widget.username));
                 Navigator.push(context, route);
               },
             ),
@@ -108,8 +109,8 @@ class _HomePageState extends State<HomePage> {
                 color: Color.fromARGB(255, 157, 13, 13),
               ),
               onPressed: () {
-                final route =
-                    MaterialPageRoute(builder: (context) => EditPage(username: widget.username));
+                final route = MaterialPageRoute(
+                    builder: (context) => EditPage(username: widget.username));
                 Navigator.push(context, route);
               },
             ),
@@ -150,9 +151,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
-                      final route = MaterialPageRoute(
-                          builder: (context) => const Partida());
-                      Navigator.push(context, route);
+                      // final route = MaterialPageRoute(
+                      //     builder: (context) => const Partida());
+                      // Navigator.push(context, route);
                     },
                     child: const Text(
                       'Partida rápida',
@@ -244,7 +245,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => ListTorneos(username: widget.username));
+                          builder: (context) =>
+                              ListTorneos(username: widget.username));
                       Navigator.push(context, route);
                     },
                     child: const Text(
@@ -274,7 +276,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => CreateTournament(autorization: widget.autorization,username: widget.username));
+                          builder: (context) => CreateTournament(
+                              autorization: widget.autorization,
+                              username: widget.username));
                       Navigator.push(context, route);
                     },
                     child: const Text(

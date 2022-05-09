@@ -25,20 +25,20 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   // late StompClient stompClient;
   // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
   String message = '';
-  Map<String, dynamic> canalUser = {};
-  Map<String, dynamic> canalGeneral = {};
+  bool comenzarPartida = false;
+  final canalUser = StreamController.broadcast();
+  final canalGeneral = StreamController.broadcast();
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/user/paulapruebas/msg',
+        destination: '/user/usuario123/msg',
         callback: (StompFrame frame) {
-          print("he entrado al callback");
           if (frame.body != null) {
+            canalUser.sink.add(json.decode(frame.body!));
             print(frame.body);
-            List<dynamic> result = json.decode(frame.body!);
+            //canalUser = json.decode(frame.body!);
             // canalUser = json.decode(frame.body!);
             // print(canalUser);
-            print('Ha salido del callback');
           }
         });
 
@@ -46,11 +46,12 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       destination: '/topic/game/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
+          canalGeneral.sink.add(json.decode(frame.body!));
+          //print(canalGeneral);
           print(frame.body);
-          Map<String, dynamic> result = json.decode(frame.body!);
+          //Map<String, dynamic> result = json.decode(frame.body!);
           // canalGeneral = json.decode(frame.body!);
           // print(canalGeneral);
-          print('Ha salido del callback');
         }
       },
     );
@@ -61,7 +62,12 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     //       destination: '/game/connect/${widget.idPagina}', body: 'usuario123');
     // });
     stompClient.send(
-        destination: '/game/begin/${widget.idPagina}', body: '', headers: {'Authorization': 'Bearer ${widget.autorization}','username': 'paulapruebas'});
+        destination: '/game/begin/${widget.idPagina}',
+        body: '',
+        headers: {
+          'Authorization': 'Bearer ${widget.autorization}',
+          'username': 'usuario123'
+        });
     print("lo he mandado");
   }
 
@@ -74,9 +80,13 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         await Future.delayed(const Duration(milliseconds: 200));
         print('connecting...');
       },
-      stompConnectHeaders: {'Authorization': 'Bearer ${widget.autorization}','username': 'paulapruebas'},
+      stompConnectHeaders: {
+        'Authorization': 'Bearer ${widget.autorization}',
+        'username': 'usuario123'
+      },
       webSocketConnectHeaders: {
-        'Authorization': 'Bearer ${widget.autorization}','username': 'paulapruebas'
+        'Authorization': 'Bearer ${widget.autorization}',
+        'username': 'usuario123'
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
       onStompError: (dynamic error) => print(error.toString()),
@@ -256,10 +266,20 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                     // print(widget.autorization);
                     stompClient.activate();
                     print("entro a la partida");
+                    // if (comenzarPartida) {
                     final route = MaterialPageRoute(
-                          builder: (context) => const Partida());
-                      Navigator.push(context, route);
-                    
+                        builder: (context) => Partida(
+                              userListener: canalUser.stream,
+                              gameListener: canalGeneral.stream,
+                            ));
+                    Navigator.push(context, route);
+                    // } else {
+                    //   print("Esperando");
+                    //   // final route = const AlertDialog(
+                    //   //   title: Text('Aún faltan jugadores'),
+                    //   // );
+                    //   faltanJugadores(context).then((_) => setState(() {}));
+                    // }
                   },
                   child: const Text(
                     'Crear',
@@ -280,6 +300,21 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     if (stompClient != null) {
       stompClient.deactivate();
     }
+    canalGeneral.close();
+    canalUser.close();
     super.dispose();
+  }
+
+  Future<dynamic> faltanJugadores(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              title: const Text(
+                'Aún no están todos los jugadores',
+                style: TextStyle(fontSize: 24, color: Colors.black),
+              ),
+            ));
   }
 }
