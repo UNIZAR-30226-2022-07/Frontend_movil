@@ -5,6 +5,10 @@ class Mano {
 
   Mano({required this.cartas});
 
+  int length() {
+    return cartas.length;
+  }
+
   void add(Carta carta) {
     cartas.add(carta);
   }

@@ -14,12 +14,14 @@ class Partida extends StatefulWidget {
   final StompClient stompClient;
   final String idPartida;
   final String nomUser;
+  final String authorization;
   const Partida(
       {Key? key,
       required this.idPartida,
       required this.nomUser,
       required this.userListener,
       required this.gameListener,
+      required this.authorization,
       required this.stompClient})
       : super(key: key);
 
@@ -27,18 +29,12 @@ class Partida extends StatefulWidget {
   State<Partida> createState() => _PartidaState();
 }
 
-//Simula la lista de cartas que tendrá el jugador
-// inicialmente proporcionada por el Backend
-List<Carta> cartasJugador = [
-  Carta(color: 'ROJO', numero: 'CINCO', url: 'images/cartas/rojo-5.png'),
-  Carta(color: 'VERDE', numero: 'CINCO', url: 'images/cartas/verde-5.png'),
-];
-
 class _PartidaState extends State<Partida> {
   late StreamSubscription userListener;
   late StreamSubscription gameListener;
   late StompClient stompClient;
   late Carta cima;
+  late Mano mano;
 
   @override
   void initState() {
@@ -48,11 +44,16 @@ class _PartidaState extends State<Partida> {
     gameListener = widget.gameListener.listen((event) => gestionarGame(event));
     stompClient = widget.stompClient;
     cima = Carta(color: '', url: 'images/one.png', numero: '');
+    mano = Mano(cartas: []);
   }
 
   void gestionarUsuario(dynamic a) {
     print("Partida.dart:");
     print(a);
+    setState(() {
+      mano = Mano(cartas: Carta.getCartas(a));
+      print(mano.cartas);
+    });
   }
 
   void gestionarGame(dynamic a) {
@@ -76,7 +77,6 @@ class _PartidaState extends State<Partida> {
     {'username': 'César', 'cartas': 5},
   ];
   bool miTurno = true;
-  Mano mano = Mano(cartas: cartasJugador);
 
   // Esta función dependerá también de las diferentes reglas con las que se juegue
   bool comprobarMov(Carta seleccionada, Carta cima) {
@@ -129,7 +129,7 @@ class _PartidaState extends State<Partida> {
                 destination: '/card/play/${widget.idPartida}',
                 body: carta.buildMessage(),
                 headers: {
-                  //'Authorization': 'Bearer ${widget.autorization}',
+                  'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
           } else {
@@ -262,7 +262,7 @@ class _PartidaState extends State<Partida> {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    itemCount: cartasJugador.length,
+                    itemCount: mano.length(),
                     itemBuilder: (BuildContext context, int index) {
                       return buildCard(mano.cartas[index]);
                     },

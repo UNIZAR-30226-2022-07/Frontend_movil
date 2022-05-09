@@ -88,4 +88,17 @@ class Carta {
     String mensaje = jsonEncode(rtdo);
     return mensaje;
   }
+
+  static List<Carta> getCartas(List<dynamic> mensaje) {
+    List<Carta> rtdo = [];
+    for (dynamic i in mensaje) {
+      if (i != null) {
+        rtdo.add(Carta(
+            color: i['color'],
+            numero: i['numero'],
+            url: Carta.getURL(i['numero'], i['color'])));
+      }
+    }
+    return rtdo;
+  }
 }

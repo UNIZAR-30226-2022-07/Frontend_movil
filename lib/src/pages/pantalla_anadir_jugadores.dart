@@ -273,6 +273,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                               gameListener: canalGeneral.stream,
                               stompClient: stompClient,
                               nomUser: widget.nomUser,
+                              authorization: widget.autorization,
                               idPartida: widget.idPagina,
                             ));
                     Navigator.push(context, route);
