@@ -46,9 +46,11 @@ class MyApp extends StatelessWidget {
         'anadir_jugadores': (BuildContext context) => AnadirJugadores(
               autorization: '',
               idPagina: '',
+              nomUser: '',
             ),
         'crear_partida': (BuildContext context) => CreatePage(
               autorization: '',
+              nomUser: '',
             ),
         'notificaciones': (BuildContext context) => Notifications(
               username: '',
