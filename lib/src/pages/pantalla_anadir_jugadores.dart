@@ -15,7 +15,11 @@ import 'package:web_socket_channel/status.dart' as status;
 class AnadirJugadores extends StatefulWidget {
   final String idPagina;
   final String autorization;
-  AnadirJugadores({required this.autorization, required this.idPagina});
+  final String nomUser;
+  AnadirJugadores(
+      {required this.autorization,
+      required this.idPagina,
+      required this.nomUser});
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
@@ -31,7 +35,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/user/usuario123/msg',
+        destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) {
           if (frame.body != null) {
             canalUser.sink.add(json.decode(frame.body!));
@@ -59,14 +63,14 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     print("me he suscrito");
     // Timer.periodic(Duration(seconds: 10), (_) {
     //   stompClient.send(
-    //       destination: '/game/connect/${widget.idPagina}', body: 'usuario123');
+    //       destination: '/game/connect/${widget.idPagina}', body: 'widget.nomUser');
     // });
     stompClient.send(
         destination: '/game/begin/${widget.idPagina}',
         body: '',
         headers: {
           'Authorization': 'Bearer ${widget.autorization}',
-          'username': 'usuario123'
+          'username': widget.nomUser
         });
     print("lo he mandado");
   }
@@ -82,11 +86,11 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       },
       stompConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorization}',
-        'username': 'usuario123'
+        'username': widget.nomUser
       },
       webSocketConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorization}',
-        'username': 'usuario123'
+        'username': widget.nomUser
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
       onStompError: (dynamic error) => print(error.toString()),
@@ -261,25 +265,17 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                     ),
                   ),
                   onPressed: () {
-                    // CrearPartida();
-                    // super.initState();
-                    // print(widget.autorization);
                     stompClient.activate();
                     print("entro a la partida");
-                    // if (comenzarPartida) {
                     final route = MaterialPageRoute(
                         builder: (context) => Partida(
                               userListener: canalUser.stream,
                               gameListener: canalGeneral.stream,
+                              stompClient: stompClient,
+                              nomUser: widget.nomUser,
+                              idPartida: widget.idPagina,
                             ));
                     Navigator.push(context, route);
-                    // } else {
-                    //   print("Esperando");
-                    //   // final route = const AlertDialog(
-                    //   //   title: Text('Aún faltan jugadores'),
-                    //   // );
-                    //   faltanJugadores(context).then((_) => setState(() {}));
-                    // }
                   },
                   child: const Text(
                     'Crear',

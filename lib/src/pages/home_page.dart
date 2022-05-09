@@ -183,6 +183,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {
                       final route = MaterialPageRoute(
                           builder: (context) => CreatePage(
+                                nomUser: widget.username,
                                 autorization: widget.autorization,
                               ));
                       Navigator.push(context, route);

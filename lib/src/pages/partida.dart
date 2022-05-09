@@ -6,14 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
-
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 import '../models/mano.dart';
 
 class Partida extends StatefulWidget {
   final Stream userListener;
   final Stream gameListener;
+  final StompClient stompClient;
+  final String idPartida;
+  final String nomUser;
   const Partida(
-      {Key? key, required this.userListener, required this.gameListener})
+      {Key? key,
+      required this.idPartida,
+      required this.nomUser,
+      required this.userListener,
+      required this.gameListener,
+      required this.stompClient})
       : super(key: key);
 
   @override
@@ -23,16 +33,15 @@ class Partida extends StatefulWidget {
 //Simula la lista de cartas que tendrá el jugador
 // inicialmente proporcionada por el Backend
 List<Carta> cartasJugador = [
-  Carta(color: 'rojo', numero: '5', url: 'images/cartas/rojo-5.png'),
-  Carta(color: 'verde', numero: '5', url: 'images/cartas/verde-5.png'),
-  Carta(esEspecial: true, especialidad: 'wild', url: 'images/cartas/wild.png'),
-  Carta(
-      esEspecial: true, especialidad: 'draw4', url: 'images/cartas/draw4.png'),
+  Carta(color: 'ROJO', numero: 'CINCO', url: 'images/cartas/rojo-5.png'),
+  Carta(color: 'VERDE', numero: 'CINCO', url: 'images/cartas/verde-5.png'),
 ];
 
 class _PartidaState extends State<Partida> {
   late StreamSubscription userListener;
   late StreamSubscription gameListener;
+  late StompClient stompClient;
+  late Carta cima;
 
   @override
   void initState() {
@@ -40,15 +49,26 @@ class _PartidaState extends State<Partida> {
     userListener =
         widget.userListener.listen((event) => gestionarUsuario(event));
     gameListener = widget.gameListener.listen((event) => gestionarGame(event));
+    stompClient = widget.stompClient;
+    cima = Carta(color: '', url: 'images/one.png', numero: '');
   }
 
-  void gestionarUsuario(dynamic a) {}
+  void gestionarUsuario(dynamic a) {
+    print("Partida.dart:");
+    print(a);
+  }
 
-  void gestionarGame(dynamic a) {}
-
-  // Última carta echada por cualquiera de los jugadores
-  Carta cima =
-      Carta(color: 'rojo', numero: '3', url: 'images/cartas/rojo-3.png');
+  void gestionarGame(dynamic a) {
+    String url = Carta.getURL(a['num'], a['col']);
+    print('Cima de la partida inicial: ' + url);
+    setState(() {
+      cima = Carta(
+        color: a['col'],
+        numero: a['num'],
+        url: url,
+      );
+    });
+  }
 
   //Lista de jugadores de la partida
   List<Map<String, dynamic>> mapa = [
@@ -66,7 +86,8 @@ class _PartidaState extends State<Partida> {
     bool sePuede = false;
     sePuede = seleccionada.numero == cima.numero ||
         seleccionada.color == cima.color ||
-        seleccionada.color == null;
+        seleccionada.numero == 'UNDEFINED' ||
+        seleccionada.numero == 'MAS_CUATRO';
     return sePuede;
   }
 
@@ -106,8 +127,14 @@ class _PartidaState extends State<Partida> {
               cima = carta; //Cambia la cima
               mano.del(carta); //Se elimina la carta de la mano del jugador
             }
-
-            //Avisar al backend de la jugada
+            //Enviar a backend la carta a jugar
+            stompClient.send(
+                destination: '/card/play/${widget.idPartida}',
+                body: carta.buildMessage(),
+                headers: {
+                  //'Authorization': 'Bearer ${widget.autorization}',
+                  'username': widget.nomUser
+                });
           } else {
             print('No se puede realizar ese movimiento');
           }
@@ -142,7 +169,7 @@ class _PartidaState extends State<Partida> {
         if (miTurno) {
           //Pedir carta al backend y cuando llegue:
           Carta c = Carta(
-              color: 'rojo', numero: '3', url: 'images/cartas/rojo-3.png');
+              color: 'ROJO', numero: 'TRES', url: 'images/cartas/rojo-3.png');
           mano.add(c);
           //Añadir carta a la mano del jugador
           setState(() {});
@@ -266,7 +293,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'azul',
+                                color: 'AZUL',
+                                numero: 'UNDEFINED',
                                 url: 'images/cartas/azul-wild.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -281,7 +309,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'rojo',
+                                color: 'ROJO',
+                                numero: 'UNDEFINED',
                                 url: 'images/cartas/rojo-wild.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -296,7 +325,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'verde',
+                                color: 'VERDE',
+                                numero: 'UNDEFINED',
                                 url: 'images/cartas/verde-wild.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -311,7 +341,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'amarillo',
+                                color: 'AMARILLO',
+                                numero: 'UNDEFINED',
                                 url: 'images/cartas/amarillo-wild.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -346,7 +377,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'azul',
+                                color: 'AZUL',
+                                numero: 'MAS_CUATRO',
                                 url: 'images/cartas/azul-draw4.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -361,7 +393,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'rojo',
+                                color: 'ROJO',
+                                numero: 'MAS_CUATRO',
                                 url: 'images/cartas/rojo-draw4.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -376,7 +409,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'verde',
+                                color: 'VERDE',
+                                numero: 'MAS_CUATRO',
                                 url: 'images/cartas/verde-draw4.png');
                             mano.del(carta);
                             Navigator.of(context).pop();
@@ -391,7 +425,8 @@ class _PartidaState extends State<Partida> {
                       TextButton(
                           onPressed: () {
                             cima = Carta(
-                                color: 'amarillo',
+                                color: 'AMARILLO',
+                                numero: 'MAS_CUATRO',
                                 url: 'images/cartas/amarillo-draw4.png');
                             mano.del(carta);
                             Navigator.of(context).pop();

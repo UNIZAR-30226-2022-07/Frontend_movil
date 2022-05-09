@@ -12,12 +12,16 @@ import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
 
 import '../pages/home_page.dart';
+
 int count = 2;
 bool tiempoA10 = false;
 
 class CreatePage extends StatefulWidget {
   final String autorization;
-  const CreatePage({Key? key,required this.autorization}) : super(key: key);
+  final String nomUser;
+  const CreatePage(
+      {Key? key, required this.autorization, required this.nomUser})
+      : super(key: key);
 
   @override
   State<CreatePage> createState() => _CreatePageState();
@@ -42,8 +46,8 @@ class _CreatePageState extends State<CreatePage> {
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
+              image: DecorationImage(
+                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
             children: [
@@ -145,19 +149,17 @@ class _CreatePageState extends State<CreatePage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: TextButton(
-                                  child: const Text(
-                                    '10s',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 25),
-                                  ),
-                                  // onPressed: () =>
-                                  //     setState(() => tiempoA10 = true),
-                                  onPressed: () {
-                                    setState(() => tiempoA10 = true);
-                                    tiempo = 10;
-                                  }
-                                )
-                              )
+                                    child: const Text(
+                                      '10s',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 25),
+                                    ),
+                                    // onPressed: () =>
+                                    //     setState(() => tiempoA10 = true),
+                                    onPressed: () {
+                                      setState(() => tiempoA10 = true);
+                                      tiempo = 10;
+                                    }))
                           ],
                         ),
                       ]),
@@ -324,17 +326,25 @@ class _CreatePageState extends State<CreatePage> {
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
-    Map mapeddate = {'playername': "paulapruebas", 'nplayers': count, 'tturn': tiempo};
+    Map mapeddate = {
+      'playername': widget.nomUser,
+      'nplayers': count,
+      'tturn': tiempo
+    };
 
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {
-      
-      Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
       print(respuesta['id']);
       final route = MaterialPageRoute(
-                          builder: (context) => AnadirJugadores(autorization: widget.autorization, idPagina: respuesta['id'],));
-                      Navigator.push(context, route);
+          builder: (context) => AnadirJugadores(
+                nomUser: widget.nomUser,
+                autorization: widget.autorization,
+                idPagina: respuesta['id'],
+              ));
+      Navigator.push(context, route);
       popUpCorrecto(context);
     } else {
       print('No se ha creado');
