@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_unogame/src/pages/pagina_invitar_amigos.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
@@ -154,7 +155,10 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                                   ? Colors.white : Color.fromARGB(255, 65, 189, 210), // foreground
                       ),
                       onPressed: (){ 
-                        // setState(() { _selectedNumber = numbers[index] as int?; });
+                        final route = MaterialPageRoute(
+                    builder: (context) =>
+                        InvitePlayers(username: widget.nomUser));
+                Navigator.push(context, route);
                       },
                   ),
                   ); 

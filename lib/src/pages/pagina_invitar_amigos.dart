@@ -65,7 +65,7 @@ class _InvitePlayersState extends State<InvitePlayers> {
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 221, 26, 26)),
+                                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 68, 221, 26)),
                                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(12.0),
