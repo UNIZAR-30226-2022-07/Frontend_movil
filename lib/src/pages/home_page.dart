@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => chat());
+                          builder: (context) => ChatPage(autorizacion: widget.autorization,));
                       Navigator.push(context, route);
                     },
                     child: const Text(
