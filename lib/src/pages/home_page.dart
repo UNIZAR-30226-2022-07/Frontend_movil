@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late TextEditingController controller;
+  
 
   GlobalKey<FormState> _formKey = GlobalKey();
   String code = '';
@@ -152,9 +153,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPressed: () {
-                      // final route = MaterialPageRoute(
-                      //     builder: (context) => const Partida());
-                      // Navigator.push(context, route);
+                      final route = MaterialPageRoute(
+                          builder: (context) => chat());
+                      Navigator.push(context, route);
                     },
                     child: const Text(
                       'Partida rápida',
