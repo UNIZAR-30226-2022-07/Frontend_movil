@@ -12,20 +12,27 @@ import "dart:async";
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
+// const numbers = [1,2,3,4,5,6];
+// final numbers = List.filled(4, 5);
+
 class AnadirJugadores extends StatefulWidget {
+  final int numP;
   final String idPagina;
   final String autorization;
   final String nomUser;
   AnadirJugadores(
       {required this.autorization,
       required this.idPagina,
-      required this.nomUser});
+      required this.nomUser,
+      required this.numP});
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
 }
 
 class _AnadirJugadoresState extends State<AnadirJugadores> {
+  
+  int? _selectedNumber;
   // late StompClient stompClient;
   // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
   String message = '';
@@ -115,6 +122,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> numbers = List.filled(widget.numP, '+');
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return Container(
         decoration: const BoxDecoration(
@@ -122,102 +130,131 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
         child: Column(children: <Widget>[
           const SizedBox(
-            height: 80,
-            width: 20,
+            height: 150,
+            width: 200,
           ),
-          Row(
-            children: <Widget>[
-              SizedBox(
-                width: 150,
-                height: 150.0,
-                child: TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black54),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+          Container(
+            height: 50,
+            width: 500,
+            child: Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: numbers.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: index == numbers.length - 1
+                          ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
+                          : const EdgeInsets.only(left: 8),
+                    child: ElevatedButton(
+                      child: Text('${numbers[index]}'),
+                      style: ElevatedButton.styleFrom(
+                        primary: numbers[index] == _selectedNumber 
+                                ? Color.fromARGB(255, 43, 168, 214) : Color.fromARGB(102, 10, 10, 10), // background
+                        onPrimary: numbers[index] == _selectedNumber 
+                                  ? Colors.white : Color.fromARGB(255, 65, 189, 210), // foreground
                       ),
-                    ),
+                      onPressed: (){ 
+                        // setState(() { _selectedNumber = numbers[index] as int?; });
+                      },
                   ),
-                  onPressed: () {
-                    // final route =
-                    //     MaterialPageRoute(builder: (context) => Partida());
-                    // Navigator.push(context, route);
-                  },
-                  child: const Text(
-                    '+',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'FredokaOne',
-                        fontSize: 80.0),
-                  ),
-                ),
+                  ); 
+                },
               ),
+            )
+          ),
+          // Row(
+          //   children: <Widget>[
+          //     SizedBox(
+          //       width: 150,
+          //       height: 150.0,
+          //       child: TextButton(
+          //         style: ButtonStyle(
+          //           backgroundColor:
+          //               MaterialStateProperty.all<Color>(Colors.black54),
+          //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          //             RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(12.0),
+          //             ),
+          //           ),
+          //         ),
+          //         onPressed: () {
+          //           // final route =
+          //           //     MaterialPageRoute(builder: (context) => Partida());
+          //           // Navigator.push(context, route);
+          //         },
+          //         child: const Text(
+          //           '+',
+          //           style: TextStyle(
+          //               color: Colors.white,
+          //               fontFamily: 'FredokaOne',
+          //               fontSize: 80.0),
+          //         ),
+          //       ),
+          //     ),
 
-              const SizedBox(
-                width: 20,
-              ), //SizedBox
-              SizedBox(
-                width: 150,
-                height: 150.0,
-                child: TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black54),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    // final route =
-                    //     MaterialPageRoute(builder: (context) => Partida());
-                    // Navigator.push(context, route);
-                  },
-                  child: const Text(
-                    '+',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'FredokaOne',
-                        fontSize: 80.0),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              ), //
-              SizedBox(
-                width: 150,
-                height: 150.0,
-                child: TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black54),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    // final route =
-                    //     MaterialPageRoute(builder: (context) => Partida());
-                    // Navigator.push(context, route);
-                  },
-                  child: const Text(
-                    '+',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'FredokaOne',
-                        fontSize: 80.0),
-                  ),
-                ),
-              ),
-            ], //<Widget>[]
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
+          //     const SizedBox(
+          //       width: 20,
+          //     ), //SizedBox
+          //     SizedBox(
+          //       width: 150,
+          //       height: 150.0,
+          //       child: TextButton(
+          //         style: ButtonStyle(
+          //           backgroundColor:
+          //               MaterialStateProperty.all<Color>(Colors.black54),
+          //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          //             RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(12.0),
+          //             ),
+          //           ),
+          //         ),
+          //         onPressed: () {
+          //           // final route =
+          //           //     MaterialPageRoute(builder: (context) => Partida());
+          //           // Navigator.push(context, route);
+          //         },
+          //         child: const Text(
+          //           '+',
+          //           style: TextStyle(
+          //               color: Colors.white,
+          //               fontFamily: 'FredokaOne',
+          //               fontSize: 80.0),
+          //         ),
+          //       ),
+          //     ),
+          //     const SizedBox(
+          //       width: 20,
+          //     ), //
+          //     SizedBox(
+          //       width: 150,
+          //       height: 150.0,
+          //       child: TextButton(
+          //         style: ButtonStyle(
+          //           backgroundColor:
+          //               MaterialStateProperty.all<Color>(Colors.black54),
+          //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          //             RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(12.0),
+          //             ),
+          //           ),
+          //         ),
+          //         onPressed: () {
+          //           // final route =
+          //           //     MaterialPageRoute(builder: (context) => Partida());
+          //           // Navigator.push(context, route);
+          //         },
+          //         child: const Text(
+          //           '+',
+          //           style: TextStyle(
+          //               color: Colors.white,
+          //               fontFamily: 'FredokaOne',
+          //               fontSize: 80.0),
+          //         ),
+          //       ),
+          //     ),
+          //   ], //<Widget>[]
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          // ),
           const SizedBox(
             height: 20,
             width: 20,
@@ -245,7 +282,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
             ],
           ),
           const SizedBox(
-            height: 20,
+            height: 80,
             width: 20,
           ),
           Row(
