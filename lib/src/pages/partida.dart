@@ -247,6 +247,16 @@ class _PartidaState extends State<Partida> {
                       ),
                       const SizedBox(
                         width: 80,
+                      ),
+                      SizedBox(
+                        height: 18.0,
+                        width: 18.0,
+                        child: new IconButton(
+                            padding: new EdgeInsets.all(0.0),
+                            color: Colors.blue,
+                            icon: new Icon(Icons.chat, size: 18.0),
+                            onPressed: () {},
+                        )
                       )
                     ],
                   ),

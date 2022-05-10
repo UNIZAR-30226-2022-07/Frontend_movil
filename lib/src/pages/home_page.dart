@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_unogame/src/pages/chat.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/crear_torneo.dart';
 import 'package:flutter_unogame/src/pages/editar_perfil.dart';
