@@ -32,7 +32,6 @@ class AnadirJugadores extends StatefulWidget {
 }
 
 class _AnadirJugadoresState extends State<AnadirJugadores> {
-  
   int? _selectedNumber;
   // late StompClient stompClient;
   // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
@@ -73,6 +72,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     //   stompClient.send(
     //       destination: '/game/connect/${widget.idPagina}', body: 'widget.nomUser');
     // });
+
     stompClient.send(
         destination: '/game/begin/${widget.idPagina}',
         body: '',
@@ -129,208 +129,215 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
-        child: Column(children: <Widget>[
-          const SizedBox(
-            height: 150,
-            width: 200,
-          ),
-          Container(
-            height: 50,
-            width: 500,
-            child: Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: numbers.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: index == numbers.length - 1
-                          ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
-                          : const EdgeInsets.only(left: 8),
-                    child: ElevatedButton(
-                      child: Text('${numbers[index]}'),
-                      style: ElevatedButton.styleFrom(
-                        primary: numbers[index] == _selectedNumber 
-                                ? Color.fromARGB(255, 43, 168, 214) : Color.fromARGB(102, 10, 10, 10), // background
-                        onPrimary: numbers[index] == _selectedNumber 
-                                  ? Colors.white : Color.fromARGB(255, 65, 189, 210), // foreground
-                      ),
-                      onPressed: (){ 
-                        final route = MaterialPageRoute(
-                    builder: (context) =>
-                        InvitePlayers(username: widget.nomUser));
-                Navigator.push(context, route);
-                      },
-                  ),
-                  ); 
-                },
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(
+                height: 120,
+                width: 200,
               ),
-            )
-          ),
-          // Row(
-          //   children: <Widget>[
-          //     SizedBox(
-          //       width: 150,
-          //       height: 150.0,
-          //       child: TextButton(
-          //         style: ButtonStyle(
-          //           backgroundColor:
-          //               MaterialStateProperty.all<Color>(Colors.black54),
-          //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          //             RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(12.0),
-          //             ),
-          //           ),
-          //         ),
-          //         onPressed: () {
-          //           // final route =
-          //           //     MaterialPageRoute(builder: (context) => Partida());
-          //           // Navigator.push(context, route);
-          //         },
-          //         child: const Text(
-          //           '+',
-          //           style: TextStyle(
-          //               color: Colors.white,
-          //               fontFamily: 'FredokaOne',
-          //               fontSize: 80.0),
-          //         ),
-          //       ),
-          //     ),
-
-          //     const SizedBox(
-          //       width: 20,
-          //     ), //SizedBox
-          //     SizedBox(
-          //       width: 150,
-          //       height: 150.0,
-          //       child: TextButton(
-          //         style: ButtonStyle(
-          //           backgroundColor:
-          //               MaterialStateProperty.all<Color>(Colors.black54),
-          //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          //             RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(12.0),
-          //             ),
-          //           ),
-          //         ),
-          //         onPressed: () {
-          //           // final route =
-          //           //     MaterialPageRoute(builder: (context) => Partida());
-          //           // Navigator.push(context, route);
-          //         },
-          //         child: const Text(
-          //           '+',
-          //           style: TextStyle(
-          //               color: Colors.white,
-          //               fontFamily: 'FredokaOne',
-          //               fontSize: 80.0),
-          //         ),
-          //       ),
-          //     ),
-          //     const SizedBox(
-          //       width: 20,
-          //     ), //
-          //     SizedBox(
-          //       width: 150,
-          //       height: 150.0,
-          //       child: TextButton(
-          //         style: ButtonStyle(
-          //           backgroundColor:
-          //               MaterialStateProperty.all<Color>(Colors.black54),
-          //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          //             RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(12.0),
-          //             ),
-          //           ),
-          //         ),
-          //         onPressed: () {
-          //           // final route =
-          //           //     MaterialPageRoute(builder: (context) => Partida());
-          //           // Navigator.push(context, route);
-          //         },
-          //         child: const Text(
-          //           '+',
-          //           style: TextStyle(
-          //               color: Colors.white,
-          //               fontFamily: 'FredokaOne',
-          //               fontSize: 80.0),
-          //         ),
-          //       ),
-          //     ),
-          //   ], //<Widget>[]
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          // ),
-          const SizedBox(
-            height: 20,
-            width: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                  width: 240.0,
-                  height: 42.0,
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 25,
-                      ),
-                      ElevatedButton(
-                        child: const Text('Copiar código'),
-                        onPressed: () {
-                          final data = ClipboardData(text: widget.idPagina);
-                          Clipboard.setData(data);
-                        },
-                      ),
-                    ],
+              Container(
+                  height: 50,
+                  width: 500,
+                  child: Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: numbers.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: index == numbers.length - 1
+                              ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
+                              : const EdgeInsets.only(left: 8),
+                          child: ElevatedButton(
+                            child: Text(numbers[index]),
+                            style: ElevatedButton.styleFrom(
+                              primary: numbers[index] == _selectedNumber
+                                  ? Color.fromARGB(255, 43, 168, 214)
+                                  : Color.fromARGB(
+                                      102, 10, 10, 10), // background
+                              onPrimary: numbers[index] == _selectedNumber
+                                  ? Colors.white
+                                  : Color.fromARGB(
+                                      255, 65, 189, 210), // foreground
+                            ),
+                            onPressed: () {
+                              final route = MaterialPageRoute(
+                                  builder: (context) =>
+                                      InvitePlayers(username: widget.nomUser));
+                              Navigator.push(context, route);
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   )),
-            ],
-          ),
-          const SizedBox(
-            height: 80,
-            width: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                width: 120,
-                height: 40.0,
-                child: TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromARGB(255, 32, 159, 255)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+              // Row(
+              //   children: <Widget>[
+              //     SizedBox(
+              //       width: 150,
+              //       height: 150.0,
+              //       child: TextButton(
+              //         style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all<Color>(Colors.black54),
+              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //             RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(12.0),
+              //             ),
+              //           ),
+              //         ),
+              //         onPressed: () {
+              //           // final route =
+              //           //     MaterialPageRoute(builder: (context) => Partida());
+              //           // Navigator.push(context, route);
+              //         },
+              //         child: const Text(
+              //           '+',
+              //           style: TextStyle(
+              //               color: Colors.white,
+              //               fontFamily: 'FredokaOne',
+              //               fontSize: 80.0),
+              //         ),
+              //       ),
+              //     ),
+
+              //     const SizedBox(
+              //       width: 20,
+              //     ), //SizedBox
+              //     SizedBox(
+              //       width: 150,
+              //       height: 150.0,
+              //       child: TextButton(
+              //         style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all<Color>(Colors.black54),
+              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //             RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(12.0),
+              //             ),
+              //           ),
+              //         ),
+              //         onPressed: () {
+              //           // final route =
+              //           //     MaterialPageRoute(builder: (context) => Partida());
+              //           // Navigator.push(context, route);
+              //         },
+              //         child: const Text(
+              //           '+',
+              //           style: TextStyle(
+              //               color: Colors.white,
+              //               fontFamily: 'FredokaOne',
+              //               fontSize: 80.0),
+              //         ),
+              //       ),
+              //     ),
+              //     const SizedBox(
+              //       width: 20,
+              //     ), //
+              //     SizedBox(
+              //       width: 150,
+              //       height: 150.0,
+              //       child: TextButton(
+              //         style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all<Color>(Colors.black54),
+              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //             RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(12.0),
+              //             ),
+              //           ),
+              //         ),
+              //         onPressed: () {
+              //           // final route =
+              //           //     MaterialPageRoute(builder: (context) => Partida());
+              //           // Navigator.push(context, route);
+              //         },
+              //         child: const Text(
+              //           '+',
+              //           style: TextStyle(
+              //               color: Colors.white,
+              //               fontFamily: 'FredokaOne',
+              //               fontSize: 80.0),
+              //         ),
+              //       ),
+              //     ),
+              //   ], //<Widget>[]
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              // ),
+              const SizedBox(
+                height: 20,
+                width: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                      width: 240.0,
+                      height: 42.0,
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 25,
+                          ),
+                          ElevatedButton(
+                            child: const Text('Copiar código'),
+                            onPressed: () {
+                              final data = ClipboardData(text: widget.idPagina);
+                              Clipboard.setData(data);
+                            },
+                          ),
+                        ],
+                      )),
+                ],
+              ),
+              const SizedBox(
+                height: 80,
+                width: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 120,
+                    height: 40.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromARGB(255, 32, 159, 255)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        stompClient.activate();
+                        print("entro a la partida");
+                        final route = MaterialPageRoute(
+                            builder: (context) => Partida(
+                                  userListener: canalUser.stream,
+                                  gameListener: canalGeneral.stream,
+                                  stompClient: stompClient,
+                                  nomUser: widget.nomUser,
+                                  authorization: widget.autorization,
+                                  idPartida: widget.idPagina,
+                                ));
+                        Navigator.push(context, route);
+                      },
+                      child: const Text(
+                        'Crear',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'FredokaOne',
+                            fontSize: 20.0),
                       ),
                     ),
                   ),
-                  onPressed: () {
-                    stompClient.activate();
-                    print("entro a la partida");
-                    final route = MaterialPageRoute(
-                        builder: (context) => Partida(
-                              userListener: canalUser.stream,
-                              gameListener: canalGeneral.stream,
-                              stompClient: stompClient,
-                              nomUser: widget.nomUser,
-                              authorization: widget.autorization,
-                              idPartida: widget.idPagina,
-                            ));
-                    Navigator.push(context, route);
-                  },
-                  child: const Text(
-                    'Crear',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'FredokaOne',
-                        fontSize: 20.0),
-                  ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ]));
+            ]));
   }
 
   @override
