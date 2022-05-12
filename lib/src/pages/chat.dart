@@ -52,76 +52,71 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  String mensaje = '';
   List<types.Message> _messages = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
   final canalGeneral = StreamController.broadcast();
 
-  // void onConnect(StompFrame frame) {
-  //   stompClient.subscribe(
-  //       destination: '/topic/chat/${widget.idPagina}',
-  //       callback: (StompFrame frame) {
-  //         if (frame.body != null) {
-  //           canalUser.sink.add(json.decode(frame.body!));
-  //           print(frame.body);
-  //           //canalUser = json.decode(frame.body!);
-  //           // canalUser = json.decode(frame.body!);
-  //           // print(canalUser);
-  //         }
-  //       });
+  void onConnect(StompFrame frame) {
+    stompClient.subscribe(
+        destination: '/topic/chat/9fa7b511-d202-4115-8e09-639a711907ec',
+        callback: (StompFrame frame) {
+          if (frame.body != null) {
+            canalGeneral.sink.add(json.decode(frame.body!));
+            print(frame.body);
+          }
+        }
+    );
 
-  //   print("me he suscrito");
-  //   // Timer.periodic(Duration(seconds: 10), (_) {
-  //   //   stompClient.send(
-  //   //       destination: '/game/connect/${widget.idPagina}', body: 'widget.nomUser');
-  //   // });
-  //   stompClient.send(
-  //       destination: '/message/${widget.idPagina}',
-  //       body: 'el mensaje',
-  //       headers: {
-  //         'Authorization': 'Bearer ${widget.autorization}',
-  //         'username': widget.nomUser
-  //       });
-  //   print("lo he mandado");
-  // }
+    print("me he suscrito");
+    stompClient.send(
+        destination: '/game/message/9fa7b511-d202-4115-8e09-639a711907ec',
+        body: mensaje,
+        headers: {
+          'Authorization': 'Bearer ${widget.autorizacion}',
+          'username': 'paulae'
+        });
+    print("lo he mandado");
+  }
 
-  // late StompClient stompClient = StompClient(
-  //   config: StompConfig.SockJS(
-  //     url: 'https://onep1.herokuapp.com/onep1-game',
-  //     onConnect: onConnect,
-  //     beforeConnect: () async {
-  //       print('waiting to connect...');
-  //       await Future.delayed(const Duration(milliseconds: 200));
-  //       print('connecting...');
-  //     },
-  //     stompConnectHeaders: {
-  //       'Authorization': 'Bearer ${widget.autorization}',
-  //       'username': widget.nomUser
-  //     },
-  //     webSocketConnectHeaders: {
-  //       'Authorization': 'Bearer ${widget.autorization}',
-  //       'username': widget.nomUser
-  //     },
-  //     onWebSocketError: (dynamic error) => print(error.toString()),
-  //     onStompError: (dynamic error) => print(error.toString()),
-  //     onDisconnect: (f) => print('disconnected'),
-  //   ),
-  // );
+  late StompClient stompClient = StompClient(
+    config: StompConfig.SockJS(
+      url: 'https://onep1.herokuapp.com/onep1-game',
+      onConnect: onConnect,
+      beforeConnect: () async {
+        print('waiting to connect...');
+        await Future.delayed(const Duration(milliseconds: 200));
+        print('connecting...');
+      },
+      stompConnectHeaders: {
+        'Authorization': 'Bearer ${widget.autorizacion}',
+        'username': 'paulae'
+      },
+      webSocketConnectHeaders: {
+        'Authorization': 'Bearer ${widget.autorizacion}',
+        'username': 'paulae'
+      },
+      onWebSocketError: (dynamic error) => print(error.toString()),
+      onStompError: (dynamic error) => print(error.toString()),
+      onDisconnect: (f) => print('disconnected'),
+    ),
+  );
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (stompClient == null) {
-  //     StompFrame frame;
-  //     StompClient client = StompClient(
-  //         config: StompConfig.SockJS(
-  //       url: 'wss://onep1.herokuapp.com/onep1-game',
-  //       onConnect: onConnect,
-  //       onWebSocketError: (dynamic error) => print(error.toString()),
-  //     ));
-  //     stompClient.activate();
-  //   }
-  //   _loadMessages();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    if (stompClient == null) {
+      StompFrame frame;
+      StompClient client = StompClient(
+          config: StompConfig.SockJS(
+        url: 'wss://onep1.herokuapp.com/onep1-game',
+        onConnect: onConnect,
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ));
+      stompClient.activate();
+    }
+    _loadMessages();
+  }
 
 
   // @override
@@ -133,6 +128,7 @@ class _ChatPageState extends State<ChatPage> {
   //para mostrar el mensaje en la interfaz
   void _addMessage(types.Message message) {
     setState(() {
+      // stompClient.activate();
       _messages.insert(0, message);
     });
   }
@@ -159,12 +155,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleSendPressed(types.PartialText message) {
+    mensaje = message.text;
     final textMessage = types.TextMessage(
       author: _user,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: const Uuid().v4(),
       text: message.text,
     );
+    // initState();
+    stompClient.activate();
     //enviar mensaje aqui por el socket
     _addMessage(textMessage);
   }
