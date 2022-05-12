@@ -129,7 +129,10 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
-        child: Column(children: <Widget>[
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
           const SizedBox(
             height: 150,
             width: 200,
