@@ -28,9 +28,9 @@ class Carta {
       case 'VERDE':
         rtdo += 'verde-';
         break;
-      case 'CAMBIO_COLOR':
-        break;
-      default:
+      // case 'CAMBIO_COLOR':
+      //   break;
+      // default:
     }
     switch (num) {
       case 'CERO':
@@ -84,7 +84,7 @@ class Carta {
   }
 
   String buildMessage() {
-    Map<String, String> rtdo = {'num': numero, 'col': color};
+    Map<String, String> rtdo = {'numero': numero, 'color': color};
     String mensaje = jsonEncode(rtdo);
     return mensaje;
   }
@@ -93,6 +93,7 @@ class Carta {
     List<Carta> rtdo = [];
     for (dynamic i in mensaje) {
       if (i != null) {
+        print(Carta.getURL(i['numero'], i['color']));
         rtdo.add(Carta(
             color: i['color'],
             numero: i['numero'],

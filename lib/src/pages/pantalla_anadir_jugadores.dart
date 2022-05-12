@@ -39,21 +39,20 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   bool comenzarPartida = false;
   final canalUser = StreamController.broadcast();
   final canalGeneral = StreamController.broadcast();
+  final canalCartaMedio = StreamController.broadcast();
+  final canalJugada = StreamController.broadcast();
 
   void onConnect(StompFrame frame) {
     //por aqui devuelve tu mano de cartas
+    //Funciona
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) {
           if (frame.body != null) {
-            canalUser.sink.add(json.decode(frame.body!));
             print(frame.body);
-            //canalUser = json.decode(frame.body!);
-            // canalUser = json.decode(frame.body!);
-            // print(canalUser);
+            canalUser.sink.add(json.decode(frame.body!));
           }
-        }
-    );
+        });
 
     //conectarse a la partida y nos devuelve la lista de los jugadores
     stompClient.subscribe(
@@ -61,75 +60,52 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
-          //print(canalGeneral);
+          //canalGeneral.sink.add(frame.body!);
+          print('Lista de jugadores');
           print(frame.body);
-          //Map<String, dynamic> result = json.decode(frame.body!);
-          // canalGeneral = json.decode(frame.body!);
-          // print(canalGeneral);
         }
       },
     );
 
     //devuelve la carta del medio
+    //Funciona
     stompClient.subscribe(
-      destination: '/topic/begin/${widget.idPagina}', 
+      destination: '/topic/begin/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
-          canalGeneral.sink.add(json.decode(frame.body!));
-          //print(canalGeneral);
-          print(frame.body);
-          //Map<String, dynamic> result = json.decode(frame.body!);
-          // canalGeneral = json.decode(frame.body!);
-          // print(canalGeneral);
+          canalCartaMedio.sink.add(json.decode(frame.body!));
         }
       },
     );
 
     //enviar mensaje para jugar una carta
     stompClient.subscribe(
-      destination: '/topic/jugada/${widget.idPagina}', 
+      destination: '/topic/jugada/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
-          canalGeneral.sink.add(json.decode(frame.body!));
-          //print(canalGeneral);
+          canalJugada.sink.add(json.decode(frame.body!));
+          // canalJugada.sink.add(frame.body!);
           print(frame.body);
-          //Map<String, dynamic> result = json.decode(frame.body!);
-          // canalGeneral = json.decode(frame.body!);
-          // print(canalGeneral);
         }
       },
     );
 
-    
+    //Envío de mensaje para conectarte a una partida
+    // stompClient.send(
+    //     destination: '/game/connect/${widget.idPagina}',
+    //     body: '',
+    //     headers: {
+    //       'Authorization': 'Bearer ${widget.autorization}',
+    //       'username': widget.nomUser
+    //     });
 
-    print("me he suscrito");
-    // Timer.periodic(Duration(seconds: 10), (_) {
-    //   stompClient.send(
-    //       destination: '/game/connect/${widget.idPagina}', body: 'widget.nomUser');
-    // });
-
-    
-
-    //para conectarte a una partida
     stompClient.send(
-        destination: '/connect/${widget.idPagina}',
+        destination: '/game/begin/${widget.idPagina}',
         body: '',
         headers: {
           'Authorization': 'Bearer ${widget.autorization}',
           'username': widget.nomUser
         });
-    print("lo he mandado");
-
-    //empezar una partida (solo el que crea la partida)
-    stompClient.send(
-        destination: '/begin/${widget.idPagina}',
-        body: '',
-        headers: {
-          'Authorization': 'Bearer ${widget.autorization}',
-          'username': widget.nomUser
-        });
-
-
     //para jugar un carta (va dentro de la funcion de callback) va en partida al igual que robar n cartas
     // stompClient.send(
     //     destination: '/card/play/${widget.idPagina}',
@@ -193,45 +169,143 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const SizedBox(
-                height: 120,
-                width: 200,
+                height: 100,
               ),
-              Container(
-                  height: 50,
-                  width: 500,
-                  child: Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: numbers.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: index == numbers.length - 1
-                              ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
-                              : const EdgeInsets.only(left: 8),
-                          child: ElevatedButton(
-                            child: Text(numbers[index]),
-                            style: ElevatedButton.styleFrom(
-                              primary: numbers[index] == _selectedNumber
-                                  ? Color.fromARGB(255, 43, 168, 214)
-                                  : Color.fromARGB(
-                                      102, 10, 10, 10), // background
-                              onPrimary: numbers[index] == _selectedNumber
-                                  ? Colors.white
-                                  : Color.fromARGB(
-                                      255, 65, 189, 210), // foreground
-                            ),
-                            onPressed: () {
-                              final route = MaterialPageRoute(
-                                  builder: (context) =>
-                                      InvitePlayers(username: widget.nomUser));
-                              Navigator.push(context, route);
-                            },
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: numbers.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: index == numbers.length - 1
+                          ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
+                          : const EdgeInsets.only(left: 8),
+                      child: ElevatedButton(
+                        child: Text(numbers[index]),
+                        style: ElevatedButton.styleFrom(
+                          primary: numbers[index] == _selectedNumber
+                              ? const Color.fromARGB(255, 43, 168, 214)
+                              : const Color.fromARGB(
+                                  102, 10, 10, 10), // background
+                          onPrimary: numbers[index] == _selectedNumber
+                              ? Colors.white
+                              : const Color.fromARGB(
+                                  255, 65, 189, 210), // foreground
+                        ),
+                        onPressed: () {
+                          final route = MaterialPageRoute(
+                              builder: (context) =>
+                                  InvitePlayers(username: widget.nomUser));
+                          Navigator.push(context, route);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    child: const Text('Copiar código'),
+                    onPressed: () {
+                      final data = ClipboardData(text: widget.idPagina);
+                      Clipboard.setData(data);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 80,
+                width: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 120,
+                    height: 40.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromARGB(255, 32, 159, 255)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
-                        );
+                        ),
+                      ),
+                      onPressed: () {
+                        stompClient.activate();
+                        //Envío de un mensaje para empezar una partida (solo el que crea la partida)
+                        // stompClient.send(
+                        //     destination: '/begin/${widget.idPagina}',
+                        //     body: '',
+                        //     headers: {
+                        //       'Authorization': 'Bearer ${widget.autorization}',
+                        //       'username': widget.nomUser
+                        //     });
+                        print("entro a la partida");
+                        final route = MaterialPageRoute(
+                            builder: (context) => Partida(
+                                  userListener: canalUser.stream,
+                                  gameListener: canalGeneral.stream,
+                                  cartaMedioListener: canalCartaMedio.stream,
+                                  jugadaListener: canalJugada.stream,
+                                  stompClient: stompClient,
+                                  nomUser: widget.nomUser,
+                                  authorization: widget.autorization,
+                                  idPartida: widget.idPagina,
+                                ));
+                        Navigator.push(context, route);
                       },
+                      child: const Text(
+                        'Crear',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'FredokaOne',
+                            fontSize: 20.0),
+                      ),
                     ),
-                  )),
-              // Row(
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20)
+            ]));
+  }
+
+  @override
+  void dispose() {
+    if (stompClient != null) {
+      stompClient.deactivate();
+    }
+    canalGeneral.close();
+    canalUser.close();
+    super.dispose();
+  }
+
+  Future<dynamic> faltanJugadores(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              title: const Text(
+                'Aún no están todos los jugadores',
+                style: TextStyle(fontSize: 24, color: Colors.black),
+              ),
+            ));
+  }
+}
+
+
+// Row(
               //   children: <Widget>[
               //     SizedBox(
               //       width: 150,
@@ -324,102 +398,3 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
               //   ], //<Widget>[]
               //   mainAxisAlignment: MainAxisAlignment.center,
               // ),
-              const SizedBox(
-                height: 20,
-                width: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                      width: 240.0,
-                      height: 42.0,
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                            width: 25,
-                          ),
-                          ElevatedButton(
-                            child: const Text('Copiar código'),
-                            onPressed: () {
-                              final data = ClipboardData(text: widget.idPagina);
-                              Clipboard.setData(data);
-                            },
-                          ),
-                        ],
-                      )),
-                ],
-              ),
-              const SizedBox(
-                height: 80,
-                width: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: 120,
-                    height: 40.0,
-                    child: TextButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            const Color.fromARGB(255, 32, 159, 255)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        stompClient.activate();
-                        print("entro a la partida");
-                        final route = MaterialPageRoute(
-                            builder: (context) => Partida(
-                                  userListener: canalUser.stream,
-                                  gameListener: canalGeneral.stream,
-                                  //faltan de añadir 2 canales cambiarles el nombre
-                                  stompClient: stompClient,
-                                  nomUser: widget.nomUser,
-                                  authorization: widget.autorization,
-                                  idPartida: widget.idPagina,
-                                ));
-                        Navigator.push(context, route);
-                      },
-                      child: const Text(
-                        'Crear',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'FredokaOne',
-                            fontSize: 20.0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ]));
-  }
-
-  @override
-  void dispose() {
-    if (stompClient != null) {
-      stompClient.deactivate();
-    }
-    canalGeneral.close();
-    canalUser.close();
-    super.dispose();
-  }
-
-  Future<dynamic> faltanJugadores(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              title: const Text(
-                'Aún no están todos los jugadores',
-                style: TextStyle(fontSize: 24, color: Colors.black),
-              ),
-            ));
-  }
-}

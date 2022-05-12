@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
               autorization: '',
               idPagina: '',
               nomUser: '',
-              numP: 0 ,
+              numP: 0,
             ),
         'crear_partida': (BuildContext context) => CreatePage(
               autorization: '',

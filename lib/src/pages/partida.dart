@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
@@ -11,6 +12,8 @@ import '../models/mano.dart';
 class Partida extends StatefulWidget {
   final Stream userListener;
   final Stream gameListener;
+  final Stream cartaMedioListener;
+  final Stream jugadaListener;
   final StompClient stompClient;
   final String idPartida;
   final String nomUser;
@@ -20,6 +23,8 @@ class Partida extends StatefulWidget {
       required this.idPartida,
       required this.nomUser,
       required this.userListener,
+      required this.cartaMedioListener,
+      required this.jugadaListener,
       required this.gameListener,
       required this.authorization,
       required this.stompClient})
@@ -32,6 +37,8 @@ class Partida extends StatefulWidget {
 class _PartidaState extends State<Partida> {
   late StreamSubscription userListener;
   late StreamSubscription gameListener;
+  late StreamSubscription jugadaListener;
+  late StreamSubscription cartaMedioListener;
   late StompClient stompClient;
   late Carta cima;
   late Mano mano;
@@ -42,27 +49,76 @@ class _PartidaState extends State<Partida> {
     userListener =
         widget.userListener.listen((event) => gestionarUsuario(event));
     gameListener = widget.gameListener.listen((event) => gestionarGame(event));
+    jugadaListener =
+        widget.jugadaListener.listen((event) => gestionarJugada(event));
+    cartaMedioListener =
+        widget.cartaMedioListener.listen((event) => gestionarCarta(event));
     stompClient = widget.stompClient;
     cima = Carta(color: '', url: 'images/one.png', numero: '');
     mano = Mano(cartas: []);
   }
 
+  // Van a llegar los mensajes específicos del usuario
+  //  -- Las cartas de la mano inicial
   void gestionarUsuario(dynamic a) {
-    print("Partida.dart:");
-    print(a);
     setState(() {
       mano = Mano(cartas: Carta.getCartas(a));
-      print(mano.cartas);
     });
   }
 
+  // Va a llegar la lista de jugadores
+  // TODO:
   void gestionarGame(dynamic a) {
-    String url = Carta.getURL(a['num'], a['col']);
+    // "jugadores":[{"username":"usuario123","numeroCartas":5}]
+    List<Map<String, dynamic>> mapaJugadores = a['jugadores'];
+    //Borramos nuestro jugador
+    for (dynamic a in mapaJugadores) {
+      if (a['username'] == widget.nomUser) {
+        //Borramos a nuestro propio usuario
+        mapaJugadores.remove(a);
+        break;
+      }
+    }
+    setState(() {
+      mapa = mapaJugadores; //Se actualiza la lista de jugadores
+    });
+  }
+
+  // Canal para enviar y recibir jugadas
+  // TODO: Hay que implementarla
+  void gestionarJugada(dynamic a) {
+    dynamic carta = a['carta'];
+    // Carta que se va a poner en la cima
+    Carta c = Carta(
+        color: carta['color'],
+        numero: carta['numero'],
+        url: Carta.getURL(carta['numero'], carta['color']));
+    dynamic aux = a['jugadores'];
+    print(jsonEncode(aux));
+    dynamic mapaJugadores = a['jugadores'];
+    //Borramos nuestro jugador
+    for (dynamic a in mapaJugadores) {
+      if (a['username'] == widget.nomUser) {
+        //Borramos a nuestro propio usuario
+        mapaJugadores.remove(a);
+        break;
+      }
+    }
+    setState(() {
+      cima = c; //Se cambia la cima
+      mapa = mapaJugadores; //Se actualiza la lista de jugadores
+    });
+  }
+
+  // Canal al que nos va a llegar la carta inicial de la partida
+  // Funciona
+  void gestionarCarta(dynamic a) {
+    String url = Carta.getURL(a['numero'], a['color']);
     print('Cima de la partida inicial: ' + url);
     setState(() {
       cima = Carta(
-        color: a['col'],
-        numero: a['num'],
+        color: a['color'],
+        numero: a['numero'],
         url: url,
       );
     });
@@ -70,11 +126,11 @@ class _PartidaState extends State<Partida> {
 
   //Lista de jugadores de la partida
   List<Map<String, dynamic>> mapa = [
-    {'username': 'Julián', 'cartas': 5},
-    {'username': 'Paula', 'cartas': 5},
-    {'username': 'Nerea', 'cartas': 5},
-    {'username': 'Victor', 'cartas': 5},
-    {'username': 'César', 'cartas': 5},
+    {'username': 'Julián', 'numeroCartas': 5},
+    {'username': 'Paula', 'numeroCartas': 5},
+    {'username': 'Nerea', 'numeroCartas': 5},
+    {'username': 'Victor', 'numeroCartas': 5},
+    {'username': 'César', 'numeroCartas': 5},
   ];
   bool miTurno = true;
 
@@ -100,7 +156,7 @@ class _PartidaState extends State<Partida> {
           itemBuilder: (BuildContext context, int index) {
             return RivalCard(
                 userName: mapa[index]['username'],
-                cards: mapa[index]['cartas']);
+                cards: mapa[index]['numeroCartas']);
           },
         ),
       ));
@@ -125,13 +181,15 @@ class _PartidaState extends State<Partida> {
               mano.del(carta); //Se elimina la carta de la mano del jugador
             }
             //Enviar a backend la carta a jugar
+            print('Jugando la carta ' + carta.url);
             stompClient.send(
-                destination: '/card/play/${widget.idPartida}',
+                destination: '/game/card/play/${widget.idPartida}',
                 body: carta.buildMessage(),
                 headers: {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
+            print(carta.buildMessage());
           } else {
             print('No se puede realizar ese movimiento');
           }
