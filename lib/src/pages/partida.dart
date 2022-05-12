@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import 'package:stomp_dart_client/stomp.dart';
-import 'package:stomp_dart_client/stomp_config.dart';
-import 'package:stomp_dart_client/stomp_frame.dart';
 import '../models/mano.dart';
 
 class Partida extends StatefulWidget {
@@ -85,7 +82,6 @@ class _PartidaState extends State<Partida> {
   }
 
   // Canal para enviar y recibir jugadas
-  // TODO: Hay que implementarla
   void gestionarJugada(dynamic a) {
     dynamic carta = a['carta'];
     // Carta que se va a poner en la cima
@@ -93,8 +89,6 @@ class _PartidaState extends State<Partida> {
         color: carta['color'],
         numero: carta['numero'],
         url: Carta.getURL(carta['numero'], carta['color']));
-    dynamic aux = a['jugadores'];
-    print(jsonEncode(aux));
     dynamic mapaJugadores = a['jugadores'];
     //Borramos nuestro jugador
     for (dynamic a in mapaJugadores) {
@@ -125,7 +119,7 @@ class _PartidaState extends State<Partida> {
   }
 
   //Lista de jugadores de la partida
-  List<Map<String, dynamic>> mapa = [
+  dynamic mapa = [
     {'username': 'Julián', 'numeroCartas': 5},
     {'username': 'Paula', 'numeroCartas': 5},
     {'username': 'Nerea', 'numeroCartas': 5},
@@ -139,7 +133,7 @@ class _PartidaState extends State<Partida> {
     bool sePuede = false;
     sePuede = seleccionada.numero == cima.numero ||
         seleccionada.color == cima.color ||
-        seleccionada.numero == 'UNDEFINED' ||
+        seleccionada.numero == 'CAMBIO_COLOR' ||
         seleccionada.numero == 'MAS_CUATRO';
     return sePuede;
   }
@@ -166,29 +160,28 @@ class _PartidaState extends State<Partida> {
         if (miTurno) {
           //Si es el turno del jugador
           if (comprobarMov(carta, cima)) {
-            if (carta.color == null) {
-              //Caso de las wild y el draw4
-              switch (carta.especialidad) {
-                case 'draw4':
-                  popUpDraw(context, carta).then((_) => setState(() {}));
-                  break;
-                case 'wild':
-                  popUpWild(context, carta).then((_) => setState(() {}));
-                  break;
-              }
-            } else {
-              cima = carta; //Cambia la cima
-              mano.del(carta); //Se elimina la carta de la mano del jugador
+            //Caso de las wild y el draw4
+            switch (carta.numero) {
+              case 'CAMBIO_COLOR':
+                popUpWild(context, carta).then((_) => setState(() {}));
+                break;
+              case 'MAS_CUATRO':
+                popUpDraw(context, carta).then((_) => setState(() {}));
+                break;
+              default:
+                cima = carta; //Cambia la cima
+                mano.del(carta); //Se elimina la carta de la mano del jugador
+                //Enviar a backend la carta a jugar
+                print('Jugando la carta ' + carta.url);
+                stompClient.send(
+                    destination: '/game/card/play/${widget.idPartida}',
+                    body: carta.buildMessage(),
+                    headers: {
+                      'Authorization': 'Bearer ${widget.authorization}',
+                      'username': widget.nomUser
+                    });
+                break;
             }
-            //Enviar a backend la carta a jugar
-            print('Jugando la carta ' + carta.url);
-            stompClient.send(
-                destination: '/game/card/play/${widget.idPartida}',
-                body: carta.buildMessage(),
-                headers: {
-                  'Authorization': 'Bearer ${widget.authorization}',
-                  'username': widget.nomUser
-                });
             print(carta.buildMessage());
           } else {
             print('No se puede realizar ese movimiento');
@@ -349,9 +342,22 @@ class _PartidaState extends State<Partida> {
                           onPressed: () {
                             cima = Carta(
                                 color: 'AZUL',
-                                numero: 'UNDEFINED',
+                                numero: 'CAMBIO_COLOR',
                                 url: 'images/cartas/azul-wild.png');
                             mano.del(carta);
+                            carta.color = 'AZUL';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -368,6 +374,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'UNDEFINED',
                                 url: 'images/cartas/rojo-wild.png');
                             mano.del(carta);
+                            carta.color = 'ROJO';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -384,6 +403,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'UNDEFINED',
                                 url: 'images/cartas/verde-wild.png');
                             mano.del(carta);
+                            carta.color = 'VERDE';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -400,6 +432,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'UNDEFINED',
                                 url: 'images/cartas/amarillo-wild.png');
                             mano.del(carta);
+                            carta.color = 'AMARILLO';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -436,6 +481,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'MAS_CUATRO',
                                 url: 'images/cartas/azul-draw4.png');
                             mano.del(carta);
+                            carta.color = 'AZUL';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -452,6 +510,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'MAS_CUATRO',
                                 url: 'images/cartas/rojo-draw4.png');
                             mano.del(carta);
+                            carta.color = 'ROJO';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -468,6 +539,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'MAS_CUATRO',
                                 url: 'images/cartas/verde-draw4.png');
                             mano.del(carta);
+                            carta.color = 'VERDE';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(
@@ -484,6 +568,19 @@ class _PartidaState extends State<Partida> {
                                 numero: 'MAS_CUATRO',
                                 url: 'images/cartas/amarillo-draw4.png');
                             mano.del(carta);
+                            carta.color = 'AMARILLO';
+                            //Enviar a backend la carta a jugar
+                            print('Jugando la carta ' + carta.url);
+                            stompClient.send(
+                                destination:
+                                    '/game/card/play/${widget.idPartida}',
+                                body: carta.buildMessage(),
+                                headers: {
+                                  'Authorization':
+                                      'Bearer ${widget.authorization}',
+                                  'username': widget.nomUser
+                                });
+                            print(carta.buildMessage());
                             Navigator.of(context).pop();
                           },
                           child: const Text(

@@ -30,7 +30,7 @@ class Carta {
         break;
       // case 'CAMBIO_COLOR':
       //   break;
-      // default:
+      default:
     }
     switch (num) {
       case 'CERO':
@@ -72,7 +72,7 @@ class Carta {
       case 'CAMBIO_SENTIDO':
         rtdo += 'reverse.png';
         break;
-      case 'UNDEFINED':
+      case 'CAMBIO_COLOR':
         rtdo += 'wild.png';
         break;
       case 'MAS_CUATRO':
@@ -93,7 +93,6 @@ class Carta {
     List<Carta> rtdo = [];
     for (dynamic i in mensaje) {
       if (i != null) {
-        print(Carta.getURL(i['numero'], i['color']));
         rtdo.add(Carta(
             color: i['color'],
             numero: i['numero'],
