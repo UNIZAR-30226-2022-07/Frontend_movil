@@ -220,6 +220,12 @@ class _HomePageState extends State<HomePage> {
                       if (code == null || code.isEmpty) return;
 
                       setState(() => this.code = code);
+                      // final route = MaterialPageRoute(
+                      //     builder: (context) => WaitPartida( //mirar que la partida exista antes ir a la otra pagina
+                      //         autorization: widget.autorization,
+                      //         username: widget.username,
+                      //          idPartida: code));
+                      // Navigator.push(context, route);
                     },
                     child: const Text(
                       'Unirse a partida privada',

@@ -42,7 +42,9 @@ import 'package:web_socket_channel/status.dart' as status;
 
 class ChatPage extends StatefulWidget {
   final String autorizacion;
-  // final String idPartida;
+  // final String idPagina;
+  // final String nomUser;
+  // ChatPage({Key? key, required this.autorizacion,required this.idPagina, required this.nomUser}) : super(key: key);
   ChatPage({Key? key, required this.autorizacion}) : super(key: key);
 
   @override
@@ -52,12 +54,11 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
-  final canalUser = StreamController.broadcast();
   final canalGeneral = StreamController.broadcast();
 
   // void onConnect(StompFrame frame) {
   //   stompClient.subscribe(
-  //       destination: '/user/${widget.nomUser}/msg',
+  //       destination: '/topic/chat/${widget.idPagina}',
   //       callback: (StompFrame frame) {
   //         if (frame.body != null) {
   //           canalUser.sink.add(json.decode(frame.body!));
@@ -68,28 +69,14 @@ class _ChatPageState extends State<ChatPage> {
   //         }
   //       });
 
-  //   stompClient.subscribe(
-  //     destination: '/topic/game/chat/{roomId}',
-  //     callback: (StompFrame frame) {
-  //       if (frame.body != null) {
-  //         canalGeneral.sink.add(json.decode(frame.body!));
-  //         //print(canalGeneral);
-  //         print(frame.body);
-  //         //Map<String, dynamic> result = json.decode(frame.body!);
-  //         // canalGeneral = json.decode(frame.body!);
-  //         // print(canalGeneral);
-  //       }
-  //     },
-  //   );
-
   //   print("me he suscrito");
   //   // Timer.periodic(Duration(seconds: 10), (_) {
   //   //   stompClient.send(
   //   //       destination: '/game/connect/${widget.idPagina}', body: 'widget.nomUser');
   //   // });
   //   stompClient.send(
-  //       destination: '/game/begin/${widget.idPagina}',
-  //       body: '',
+  //       destination: '/message/${widget.idPagina}',
+  //       body: 'el mensaje',
   //       headers: {
   //         'Authorization': 'Bearer ${widget.autorization}',
   //         'username': widget.nomUser
@@ -143,6 +130,7 @@ class _ChatPageState extends State<ChatPage> {
   //   _loadMessages();
   // }
 
+  //para mostrar el mensaje en la interfaz
   void _addMessage(types.Message message) {
     setState(() {
       _messages.insert(0, message);
@@ -150,11 +138,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
 
-  void _handleMessageTap(BuildContext context, types.Message message) async {
-    if (message is types.FileMessage) {
-      await OpenFile.open(message.uri);
-    }
-  }
+  // void _handleMessageTap(BuildContext context, types.Message message) async {
+  //   if (message is types.FileMessage) {
+  //     await OpenFile.open(message.uri);
+  //   }
+  // }
 
   void _handlePreviewDataFetched(
     types.TextMessage message,
@@ -177,11 +165,12 @@ class _ChatPageState extends State<ChatPage> {
       id: const Uuid().v4(),
       text: message.text,
     );
-
+    //enviar mensaje aqui por el socket
     _addMessage(textMessage);
   }
 
   void _loadMessages() async {
+    //aqi la funcio de recibir mensajes del socket
     // final response = await rootBundle.loadString('assets/messages.json');
     // final messages = (jsonDecode(response) as List)
     //     .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
@@ -197,7 +186,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       body: Chat(
         messages: _messages,
-        onMessageTap: _handleMessageTap,
+        // onMessageTap: _handleMessageTap,
         onPreviewDataFetched: _handlePreviewDataFetched,
         onSendPressed: _handleSendPressed,
         user: _user,

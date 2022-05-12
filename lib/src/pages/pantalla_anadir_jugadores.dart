@@ -41,6 +41,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   final canalGeneral = StreamController.broadcast();
 
   void onConnect(StompFrame frame) {
+    //por aqui devuelve tu mano de cartas
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) {
@@ -51,10 +52,12 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
             // canalUser = json.decode(frame.body!);
             // print(canalUser);
           }
-        });
+        }
+    );
 
+    //conectarse a la partida y nos devuelve la lista de los jugadores
     stompClient.subscribe(
-      destination: '/topic/game/${widget.idPagina}',
+      destination: '/topic/connect/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
@@ -67,20 +70,76 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       },
     );
 
+    //devuelve la carta del medio
+    stompClient.subscribe(
+      destination: '/topic/begin/${widget.idPagina}', 
+      callback: (StompFrame frame) {
+        if (frame.body != null) {
+          canalGeneral.sink.add(json.decode(frame.body!));
+          //print(canalGeneral);
+          print(frame.body);
+          //Map<String, dynamic> result = json.decode(frame.body!);
+          // canalGeneral = json.decode(frame.body!);
+          // print(canalGeneral);
+        }
+      },
+    );
+
+    //enviar mensaje para jugar una carta
+    stompClient.subscribe(
+      destination: '/topic/jugada/${widget.idPagina}', 
+      callback: (StompFrame frame) {
+        if (frame.body != null) {
+          canalGeneral.sink.add(json.decode(frame.body!));
+          //print(canalGeneral);
+          print(frame.body);
+          //Map<String, dynamic> result = json.decode(frame.body!);
+          // canalGeneral = json.decode(frame.body!);
+          // print(canalGeneral);
+        }
+      },
+    );
+
+    
+
     print("me he suscrito");
     // Timer.periodic(Duration(seconds: 10), (_) {
     //   stompClient.send(
     //       destination: '/game/connect/${widget.idPagina}', body: 'widget.nomUser');
     // });
 
+    
+
+    //para conectarte a una partida
     stompClient.send(
-        destination: '/game/begin/${widget.idPagina}',
+        destination: '/connect/${widget.idPagina}',
         body: '',
         headers: {
           'Authorization': 'Bearer ${widget.autorization}',
           'username': widget.nomUser
         });
     print("lo he mandado");
+
+    //empezar una partida (solo el que crea la partida)
+    stompClient.send(
+        destination: '/begin/${widget.idPagina}',
+        body: '',
+        headers: {
+          'Authorization': 'Bearer ${widget.autorization}',
+          'username': widget.nomUser
+        });
+
+
+    //para jugar un carta (va dentro de la funcion de callback) va en partida al igual que robar n cartas
+    // stompClient.send(
+    //     destination: '/card/play/${widget.idPagina}',
+    //     body: '',
+    //     headers: {
+    //       'Authorization': 'Bearer ${widget.autorization}',
+    //       'username': widget.nomUser
+    //     });
+
+    //fata el disconnect
   }
 
   late StompClient stompClient = StompClient(
@@ -319,6 +378,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                             builder: (context) => Partida(
                                   userListener: canalUser.stream,
                                   gameListener: canalGeneral.stream,
+                                  //faltan de añadir 2 canales cambiarles el nombre
                                   stompClient: stompClient,
                                   nomUser: widget.nomUser,
                                   authorization: widget.autorization,
