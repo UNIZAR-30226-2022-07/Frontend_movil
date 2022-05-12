@@ -59,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/topic/chat/9fa7b511-d202-4115-8e09-639a711907ec',
+        destination: '/topic/chat/36e34003-6de6-4a34-8b08-87d3f598d534',
         callback: (StompFrame frame) {
           if (frame.body != null) {
             canalGeneral.sink.add(json.decode(frame.body!));
@@ -69,14 +69,7 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     print("me he suscrito");
-    stompClient.send(
-        destination: '/game/message/9fa7b511-d202-4115-8e09-639a711907ec',
-        body: mensaje,
-        headers: {
-          'Authorization': 'Bearer ${widget.autorizacion}',
-          'username': 'paulae'
-        });
-    print("lo he mandado");
+    
   }
 
   late StompClient stompClient = StompClient(
@@ -113,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
         onConnect: onConnect,
         onWebSocketError: (dynamic error) => print(error.toString()),
       ));
-      stompClient.activate();
+       stompClient.activate();
     }
     _loadMessages();
   }
@@ -128,7 +121,7 @@ class _ChatPageState extends State<ChatPage> {
   //para mostrar el mensaje en la interfaz
   void _addMessage(types.Message message) {
     setState(() {
-      // stompClient.activate();
+      stompClient.activate();
       _messages.insert(0, message);
     });
   }
@@ -152,6 +145,7 @@ class _ChatPageState extends State<ChatPage> {
         _messages[index] = updatedMessage;
       });
     });
+    
   }
 
   void _handleSendPressed(types.PartialText message) {
@@ -163,9 +157,19 @@ class _ChatPageState extends State<ChatPage> {
       text: message.text,
     );
     // initState();
-    stompClient.activate();
+    // stompClient.activate();
     //enviar mensaje aqui por el socket
     _addMessage(textMessage);
+    stompClient.send(
+        destination: '/game/message/36e34003-6de6-4a34-8b08-87d3f598d534',
+        body: mensaje,
+        headers: {
+          'Authorization': 'Bearer ${widget.autorizacion}',
+          'username': 'paulae'
+        });
+    print("lo he mandado");
+    // stompClient.activate();
+    print(mensaje);
   }
 
   void _loadMessages() async {
