@@ -53,9 +53,10 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   String mensaje = '';
-  String r ='';
+  // String r ='';
   List<String> respuesta = [];
   List<types.Message> _messages = [];
+  List<types.Message> messages2 = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
   final canalGeneral = StreamController.broadcast();
 
@@ -64,9 +65,12 @@ class _ChatPageState extends State<ChatPage> {
         destination: '/topic/chat/36e34003-6de6-4a34-8b08-87d3f598d534',
         callback: (StompFrame frame) {
           if (frame.body != null) {
-            r = frame.body!;
             canalGeneral.sink.add(json.decode(frame.body!));
             print(frame.body);
+            final messages = (jsonDecode(frame.body!) as List)
+              .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
+              .toList();
+            messages2=messages;
           }
         }
     );
@@ -176,18 +180,17 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _loadMessages() {
-    Map<String, String> respuesta = json.decode(r); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
-      print(respuesta['username']);
-    // // respuesta = jsonDecode(r); //en respuesta ya esta la respuesta de backend en formato de lista
-    // // aqi la funcio de recibir mensajes del socket
-    // // final response = await rootBundle.loadString('assets/messages.json');
-    // final messages = (jsonDecode(r) as List)
+    // final response = await rootBundle.loadString('assets/messages.json');
+    // final messages = (jsonDecode(response) as List)
     //     .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
     //     .toList();
 
     // setState(() {
     //   _messages = messages;
     // });
+    setState(() {
+      _messages = messages2;
+    });
   }
 
   @override
