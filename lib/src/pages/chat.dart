@@ -53,6 +53,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   String mensaje = '';
+  String r ='';
+  List<String> respuesta = [];
   List<types.Message> _messages = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
   final canalGeneral = StreamController.broadcast();
@@ -62,6 +64,7 @@ class _ChatPageState extends State<ChatPage> {
         destination: '/topic/chat/36e34003-6de6-4a34-8b08-87d3f598d534',
         callback: (StompFrame frame) {
           if (frame.body != null) {
+            r = frame.body!;
             canalGeneral.sink.add(json.decode(frame.body!));
             print(frame.body);
           }
@@ -172,10 +175,11 @@ class _ChatPageState extends State<ChatPage> {
     print(mensaje);
   }
 
-  void _loadMessages() async {
-    //aqi la funcio de recibir mensajes del socket
-    // final response = await rootBundle.loadString('assets/messages.json');
-    // final messages = (jsonDecode(response) as List)
+  void _loadMessages() {
+    // // respuesta = jsonDecode(r); //en respuesta ya esta la respuesta de backend en formato de lista
+    // // aqi la funcio de recibir mensajes del socket
+    // // final response = await rootBundle.loadString('assets/messages.json');
+    // final messages = (jsonDecode(r) as List)
     //     .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
     //     .toList();
 
