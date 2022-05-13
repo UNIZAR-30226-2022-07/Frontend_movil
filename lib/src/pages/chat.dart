@@ -176,6 +176,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _loadMessages() {
+    Map<String, String> respuesta = json.decode(r); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      print(respuesta['username']);
     // // respuesta = jsonDecode(r); //en respuesta ya esta la respuesta de backend en formato de lista
     // // aqi la funcio de recibir mensajes del socket
     // // final response = await rootBundle.loadString('assets/messages.json');
