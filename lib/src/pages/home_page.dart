@@ -22,7 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late TextEditingController controller;
-  
 
   GlobalKey<FormState> _formKey = GlobalKey();
   String code = '';
@@ -154,7 +153,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) => ChatPage(autorizacion: widget.autorization,));
+                          builder: (context) => ChatPage(
+                                autorizacion: widget.autorization,
+                              ));
                       Navigator.push(context, route);
                     },
                     child: const Text(
