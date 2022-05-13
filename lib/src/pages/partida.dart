@@ -224,6 +224,7 @@ class _PartidaState extends State<Partida> {
           // mano.add(c);
           print('Robando carta...');
           Map<String, dynamic> robo = {'nCards': 1};
+          print(jsonEncode(robo));
           stompClient.send(
               destination: '/game/card/draw/${widget.idPartida}',
               body: jsonEncode(robo),

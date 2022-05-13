@@ -33,8 +33,6 @@ class AnadirJugadores extends StatefulWidget {
 
 class _AnadirJugadoresState extends State<AnadirJugadores> {
   int? _selectedNumber;
-  // late StompClient stompClient;
-  // final socketUrl = 'ws://onep1.herokuapp.com/onep1-game';
   String message = '';
   bool comenzarPartida = false;
   final canalUser = StreamController.broadcast();
@@ -64,7 +62,6 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
-          //canalGeneral.sink.add(frame.body!);
           print('Canal general');
           print(frame.body);
         }
@@ -90,7 +87,6 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalJugada.sink.add(json.decode(frame.body!));
-          // canalJugada.sink.add(frame.body!);
           print('Canal jugada');
           print(frame.body);
         }
@@ -113,15 +109,6 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
           'Authorization': 'Bearer ${widget.autorization}',
           'username': widget.nomUser
         });
-    //para jugar un carta (va dentro de la funcion de callback) va en partida al igual que robar n cartas
-    // stompClient.send(
-    //     destination: '/card/play/${widget.idPagina}',
-    //     body: '',
-    //     headers: {
-    //       'Authorization': 'Bearer ${widget.autorization}',
-    //       'username': widget.nomUser
-    //     });
-
     //fata el disconnect
   }
 
