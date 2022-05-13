@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
@@ -83,32 +84,34 @@ class _PartidaState extends State<Partida> {
 
   // Canal para enviar y recibir jugadas
   void gestionarJugada(dynamic a) {
-    dynamic carta = a['carta'];
-    // Carta que se va a poner en la cima
-    Carta c = Carta(
-        color: carta['color'],
-        numero: carta['numero'],
-        url: Carta.getURL(carta['numero'], carta['color']));
-    dynamic mapaJugadores = a['jugadores'];
-    //Borramos nuestro jugador
-    for (dynamic a in mapaJugadores) {
-      if (a['username'] == widget.nomUser) {
-        //Borramos a nuestro propio usuario
-        mapaJugadores.remove(a);
-        break;
+    if (a != 'ALGUIEN HA INTENTADO JUGAR Y NO ERA SU TURNO') {
+      dynamic carta = a['carta'];
+      // Carta que se va a poner en la cima
+      Carta c = Carta(
+          color: carta['color'],
+          numero: carta['numero'],
+          url: Carta.getURL(carta['numero'], carta['color']));
+      dynamic mapaJugadores = a['jugadores'];
+      //Borramos nuestro jugador
+      for (dynamic a in mapaJugadores) {
+        if (a['username'] == widget.nomUser) {
+          //Borramos a nuestro propio usuario
+          mapaJugadores.remove(a);
+          break;
+        }
       }
+      dynamic turno = a['turno'];
+      setState(() {
+        cima = c; //Se cambia la cima
+        mapa = mapaJugadores; //Se actualiza la lista de jugadores
+      });
     }
-    setState(() {
-      cima = c; //Se cambia la cima
-      mapa = mapaJugadores; //Se actualiza la lista de jugadores
-    });
   }
 
   // Canal al que nos va a llegar la carta inicial de la partida
   // Funciona
   void gestionarCarta(dynamic a) {
     String url = Carta.getURL(a['numero'], a['color']);
-    print('Cima de la partida inicial: ' + url);
     setState(() {
       cima = Carta(
         color: a['color'],
@@ -216,11 +219,21 @@ class _PartidaState extends State<Partida> {
       onTap: () {
         if (miTurno) {
           //Pedir carta al backend y cuando llegue:
-          Carta c = Carta(
-              color: 'ROJO', numero: 'TRES', url: 'images/cartas/rojo-3.png');
-          mano.add(c);
+          // Carta c = Carta(
+          //     color: 'ROJO', numero: 'TRES', url: 'images/cartas/rojo-3.png');
+          // mano.add(c);
+          print('Robando carta...');
+          Map<String, dynamic> robo = {'nCards': 1};
+          stompClient.send(
+              destination: '/game/card/draw/${widget.idPartida}',
+              body: jsonEncode(robo),
+              headers: {
+                'Authorization': 'Bearer ${widget.authorization}',
+                'username': widget.nomUser
+              });
+
           //Añadir carta a la mano del jugador
-          setState(() {});
+          // setState(() {});
         }
       },
       child: Container(

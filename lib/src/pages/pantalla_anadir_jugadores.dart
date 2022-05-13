@@ -49,8 +49,12 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) {
           if (frame.body != null) {
+            print('Canal usuario');
             print(frame.body);
-            canalUser.sink.add(json.decode(frame.body!));
+            dynamic a = "No es tu turno";
+            if (frame.body != a) {
+              canalUser.sink.add(json.decode(frame.body!));
+            }
           }
         });
 
@@ -61,7 +65,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
           //canalGeneral.sink.add(frame.body!);
-          print('Lista de jugadores');
+          print('Canal general');
           print(frame.body);
         }
       },
@@ -74,6 +78,8 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalCartaMedio.sink.add(json.decode(frame.body!));
+          print('Canal carta medio:');
+          print(frame.body);
         }
       },
     );
@@ -85,6 +91,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         if (frame.body != null) {
           canalJugada.sink.add(json.decode(frame.body!));
           // canalJugada.sink.add(frame.body!);
+          print('Canal jugada');
           print(frame.body);
         }
       },
