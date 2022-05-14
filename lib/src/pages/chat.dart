@@ -53,28 +53,26 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   String mensaje = '';
-  // String r ='';
-  List<String> respuesta = [];
+  String r = '';
   List<types.Message> _messages = [];
-  List<types.Message> messages2 = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
   final canalGeneral = StreamController.broadcast();
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/topic/chat/36e34003-6de6-4a34-8b08-87d3f598d534',
+        destination: '/topic/chat/fb693e80-02ff-4a19-8397-1e1abb674d13',
         callback: (StompFrame frame) {
+          print("he entrado"); //esto no se imprime
           if (frame.body != null) {
-            canalGeneral.sink.add(json.decode(frame.body!));
-            print(frame.body);
-            final messages = (jsonDecode(frame.body!) as List)
-              .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-              .toList();
-            messages2=messages;
+            print("he entrado"); //esto pues tampoco se imprime
+            //esto esta comentado porque aqui es como si no hiciese nada de esto
+            // Map<String, dynamic> mensajes = json.decode(frame.body!);
+            // print(mensajes);
+            // canalGeneral.sink.add(json.decode(frame.body!));
+            // print(frame.body);
           }
         }
     );
-
     print("me he suscrito");
     
   }
@@ -113,7 +111,7 @@ class _ChatPageState extends State<ChatPage> {
         onConnect: onConnect,
         onWebSocketError: (dynamic error) => print(error.toString()),
       ));
-       stompClient.activate();
+      stompClient.activate();
     }
     _loadMessages();
   }
@@ -128,7 +126,6 @@ class _ChatPageState extends State<ChatPage> {
   //para mostrar el mensaje en la interfaz
   void _addMessage(types.Message message) {
     setState(() {
-      stompClient.activate();
       _messages.insert(0, message);
     });
   }
@@ -152,7 +149,6 @@ class _ChatPageState extends State<ChatPage> {
         _messages[index] = updatedMessage;
       });
     });
-    
   }
 
   void _handleSendPressed(types.PartialText message) {
@@ -163,23 +159,20 @@ class _ChatPageState extends State<ChatPage> {
       id: const Uuid().v4(),
       text: message.text,
     );
-    // initState();
-    // stompClient.activate();
-    //enviar mensaje aqui por el socket
-    _addMessage(textMessage);
+    stompClient.activate();
     stompClient.send(
-        destination: '/game/message/36e34003-6de6-4a34-8b08-87d3f598d534',
+        destination: '/game/message/fb693e80-02ff-4a19-8397-1e1abb674d13',
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
           'username': 'paulae'
         });
     print("lo he mandado");
-    // stompClient.activate();
-    print(mensaje);
+    _addMessage(textMessage);
   }
 
-  void _loadMessages() {
+  void _loadMessages() async {
+    //aqi la funcio de recibir mensajes del socket
     // final response = await rootBundle.loadString('assets/messages.json');
     // final messages = (jsonDecode(response) as List)
     //     .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
@@ -188,9 +181,6 @@ class _ChatPageState extends State<ChatPage> {
     // setState(() {
     //   _messages = messages;
     // });
-    setState(() {
-      _messages = messages2;
-    });
   }
 
   @override
