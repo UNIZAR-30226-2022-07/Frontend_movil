@@ -13,7 +13,12 @@ import 'crear_partida.dart';
 class HomePage extends StatefulWidget {
   final String autorization;
   final String username;
-  const HomePage({Key? key, required this.autorization, required this.username})
+  final String pais;
+  const HomePage(
+      {Key? key,
+      required this.autorization,
+      required this.username,
+      required this.pais})
       : super(key: key);
 
   @override
@@ -57,7 +62,10 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 final route = MaterialPageRoute(
-                    builder: (context) => ClasificationPage(userName: ''));
+                    builder: (context) => ClasificationPage(
+                          userName: widget.username,
+                          pais: widget.pais,
+                        ));
                 Navigator.push(context, route);
               },
             )),

@@ -6,7 +6,9 @@ import '../models/players_api.dart';
 
 class ClasificationPage extends StatefulWidget {
   String userName;
-  ClasificationPage({Key? key, required this.userName}) : super(key: key);
+  String pais;
+  ClasificationPage({Key? key, required this.userName, required this.pais})
+      : super(key: key);
 
   @override
   _ClasificationPageState createState() => _ClasificationPageState();
@@ -43,8 +45,8 @@ class _ClasificationPageState extends State<ClasificationPage> {
           ),
           body: TabBarView(children: [
             FriendsPage(widget.userName),
-            NationalPage('España'),
-            WorldPage()
+            NationalPage(widget.userName, widget.pais),
+            WorldPage(widget.userName)
           ])));
 }
 
@@ -95,7 +97,7 @@ Widget FriendsPage(String usuario) {
       });
 }
 
-Widget NationalPage(String pais) {
+Widget NationalPage(String userName, String pais) {
   return FutureBuilder(
       future: getPlayers('rankingPais', pais),
       builder: (context, projectSnap) {
@@ -121,14 +123,14 @@ Widget NationalPage(String pais) {
                           userName: data![index].userName,
                           trophies: data[index].trophies.toString(),
                           rating: data[index].rating.toString(),
-                          ownUser: data[index].userName == 'usuario123');
+                          ownUser: data[index].userName == userName);
                     }))
           ],
         ));
       });
 }
 
-Widget WorldPage() {
+Widget WorldPage(String userName) {
   return FutureBuilder(
       future: getPlayers('rankingMundial', ''),
       builder: (context, projectSnap) {
@@ -154,93 +156,9 @@ Widget WorldPage() {
                           userName: data![index].userName,
                           trophies: data[index].trophies.toString(),
                           rating: data[index].rating.toString(),
-                          ownUser: data[index].userName == 'usuario123');
+                          ownUser: data[index].userName == userName);
                     }))
           ],
         ));
       });
 }
-
-// class FriendsPage extends StatelessWidget {
-//   const FriendsPage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         body: Column(
-//       children: [
-//         const SizedBox(
-//           height: 5,
-//         ),
-//         PlayerCard(
-//           userName: 'juliferre09',
-//           rating: '3º',
-//           trophies: '400',
-//           ownUser: true,
-//         ),
-//         PlayerCard(
-//           userName: 'paulaEzpe',
-//           rating: '1º',
-//           trophies: '450',
-//           ownUser: false,
-//         ),
-//       ],
-//     ));
-//   }
-// }
-
-// class NationalPage extends StatelessWidget {
-//   const NationalPage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         body: Column(
-//       children: [
-//         const SizedBox(
-//           height: 5,
-//         ),
-//         PlayerCard(
-//           userName: 'juliferre09-nacional',
-//           rating: '3º',
-//           trophies: '400',
-//           ownUser: true,
-//         ),
-//         PlayerCard(
-//           userName: 'paulaEzpe',
-//           rating: '1º',
-//           trophies: '450',
-//           ownUser: false,
-//         ),
-//       ],
-//     ));
-//   }
-// }
-
-// class WorldPage extends StatelessWidget {
-//   const WorldPage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         body: Column(
-//       children: [
-//         const SizedBox(
-//           height: 5,
-//         ),
-//         PlayerCard(
-//           userName: 'juliferre09-mundial',
-//           rating: '3º',
-//           trophies: '400',
-//           ownUser: true,
-//         ),
-//         PlayerCard(
-//           userName: 'paulaEzpe',
-//           rating: '1º',
-//           trophies: '450',
-//           ownUser: false,
-//         ),
-//       ],
-//     ));
-//   }
-// }

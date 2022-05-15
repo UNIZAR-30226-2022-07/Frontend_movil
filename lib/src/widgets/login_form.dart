@@ -155,11 +155,13 @@ class _LoginFormState extends State<LoginForm> {
     if (response.statusCode == 200) {
       Map<String, dynamic> respuesta = json.decode(response
           .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
-      print(respuesta['accessToken']);
+      // print(respuesta);
+      // print(respuesta['accessToken']);
       final route = MaterialPageRoute(
           builder: (context) => HomePage(
                 autorization: respuesta['accessToken'],
                 username: respuesta['username'],
+                pais: respuesta['pais'],
               ));
       Navigator.push(context, route);
       // Navigator.pushReplacementNamed(context, 'home_page');

@@ -12,13 +12,16 @@ import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
 
 import '../pages/home_page.dart';
+
 int count = 2;
 bool tiempoA10 = false;
 
 class CreateTournament extends StatefulWidget {
   final String autorization;
   final String username;
-  const CreateTournament({Key? key,required this.autorization, required this.username}) : super(key: key);
+  const CreateTournament(
+      {Key? key, required this.autorization, required this.username})
+      : super(key: key);
 
   @override
   State<CreateTournament> createState() => _CreateTournamentState();
@@ -43,8 +46,8 @@ class _CreateTournamentState extends State<CreateTournament> {
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
+              image: DecorationImage(
+                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
             children: [
@@ -56,8 +59,8 @@ class _CreateTournamentState extends State<CreateTournament> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                                height: 150,
-                              ),
+                        height: 150,
+                      ),
                       const Text(
                         'Reglas de la partida',
                         style: TextStyle(
@@ -96,10 +99,10 @@ class _CreateTournamentState extends State<CreateTournament> {
                   ElevatedButton(
                     onPressed: () {
                       // CrearTorneo(); //falta de implementar aqui esta funcion
-                      final route = MaterialPageRoute(
-                          builder: (context) => HomePage(autorization: widget.autorization,
-                username: widget.username));
-                      Navigator.push(context, route);
+                      //       final route = MaterialPageRoute(
+                      //           builder: (context) => HomePage(autorization: widget.autorization,
+                      // username: widget.username, pais: widget.pais,));
+                      //       Navigator.push(context, route);
                     },
                     child: const Text('Crear'),
 

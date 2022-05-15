@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         'home_page': (BuildContext context) => const HomePage(
               autorization: '',
               username: '',
+              pais: '',
             ),
         'lista_amigos': (BuildContext context) => SearchPlayers(username: ''),
         // 'clasification': (BuildContext context) => ClasificationPage(
