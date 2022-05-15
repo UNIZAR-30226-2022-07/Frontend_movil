@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class RivalCard extends StatelessWidget {
   final String userName;
   final int cards;
+  final bool turno;
   RivalCard({
     required this.userName,
     required this.cards,
+    required this.turno,
   });
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class RivalCard extends StatelessWidget {
       width: 100,
       height: 25,
       decoration: BoxDecoration(
-        color: Colors.black87,
+        color: turno ? Colors.yellow : Colors.black87,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Align(

@@ -16,6 +16,8 @@ class Partida extends StatefulWidget {
   final String idPartida;
   final String nomUser;
   final String authorization;
+  final dynamic infoInicial;
+  final dynamic listaInicial;
   const Partida(
       {Key? key,
       required this.idPartida,
@@ -25,7 +27,9 @@ class Partida extends StatefulWidget {
       required this.jugadaListener,
       required this.gameListener,
       required this.authorization,
-      required this.stompClient})
+      required this.stompClient,
+      required this.infoInicial,
+      required this.listaInicial})
       : super(key: key);
 
   @override
@@ -40,6 +44,13 @@ class _PartidaState extends State<Partida> {
   late StompClient stompClient;
   late Carta cima;
   late Mano mano;
+  late String _turno;
+  late List<dynamic> mapa = [];
+  //infoInicial
+// {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
+//estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
+//njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
+//turno: {nombre: usuario123, cartas: []}, tipo: true}
 
   @override
   void initState() {
@@ -54,6 +65,14 @@ class _PartidaState extends State<Partida> {
     stompClient = widget.stompClient;
     cima = Carta(color: '', url: 'images/one.png', numero: '');
     mano = Mano(cartas: []);
+    _turno = (widget.infoInicial['turno'])['nombre'];
+    for (String a in widget.listaInicial) {
+      if (a != widget.nomUser) {
+        Map<String, dynamic> aux = {'username': a, 'numeroCartas': 7};
+        mapa.add(aux);
+      }
+    }
+    // _turno = widget.nomUser;
   }
 
   // Van a llegar los mensajes específicos del usuario
@@ -65,7 +84,6 @@ class _PartidaState extends State<Partida> {
   }
 
   // Va a llegar la lista de jugadores
-  // TODO:
   void gestionarGame(dynamic a) {
     // "jugadores":[{"username":"usuario123","numeroCartas":5}]
     List<Map<String, dynamic>> mapaJugadores = a['jugadores'];
@@ -91,7 +109,8 @@ class _PartidaState extends State<Partida> {
           color: carta['color'],
           numero: carta['numero'],
           url: Carta.getURL(carta['numero'], carta['color']));
-      dynamic mapaJugadores = a['jugadores'];
+
+      List<dynamic> mapaJugadores = a['jugadores'];
       //Borramos nuestro jugador
       for (dynamic a in mapaJugadores) {
         if (a['username'] == widget.nomUser) {
@@ -104,12 +123,12 @@ class _PartidaState extends State<Partida> {
       setState(() {
         cima = c; //Se cambia la cima
         mapa = mapaJugadores; //Se actualiza la lista de jugadores
+        _turno = turno;
       });
     }
   }
 
   // Canal al que nos va a llegar la carta inicial de la partida
-  // Funciona
   void gestionarCarta(dynamic a) {
     String url = Carta.getURL(a['numero'], a['color']);
     setState(() {
@@ -122,14 +141,13 @@ class _PartidaState extends State<Partida> {
   }
 
   //Lista de jugadores de la partida
-  dynamic mapa = [
-    {'username': 'Julián', 'numeroCartas': 5},
-    {'username': 'Paula', 'numeroCartas': 5},
-    {'username': 'Nerea', 'numeroCartas': 5},
-    {'username': 'Victor', 'numeroCartas': 5},
-    {'username': 'César', 'numeroCartas': 5},
-  ];
-  bool miTurno = true;
+  // dynamic mapa = [
+  //   {'username': 'Julián', 'numeroCartas': 5},
+  //   {'username': 'Paula', 'numeroCartas': 5},
+  //   {'username': 'Nerea', 'numeroCartas': 5},
+  //   {'username': 'Victor', 'numeroCartas': 5},
+  //   {'username': 'César', 'numeroCartas': 5},
+  // ];
 
   // Esta función dependerá también de las diferentes reglas con las que se juegue
   bool comprobarMov(Carta seleccionada, Carta cima) {
@@ -152,15 +170,17 @@ class _PartidaState extends State<Partida> {
           itemCount: mapa.length,
           itemBuilder: (BuildContext context, int index) {
             return RivalCard(
-                userName: mapa[index]['username'],
-                cards: mapa[index]['numeroCartas']);
+              userName: mapa[index]['username'],
+              cards: mapa[index]['numeroCartas'],
+              turno: mapa[index]['username'] == _turno,
+            );
           },
         ),
       ));
 
   Widget buildCard(Carta carta) => GestureDetector(
       onTap: () {
-        if (miTurno) {
+        if (_turno == widget.nomUser) {
           //Si es el turno del jugador
           if (comprobarMov(carta, cima)) {
             //Caso de las wild y el draw4
@@ -217,7 +237,7 @@ class _PartidaState extends State<Partida> {
 
   Widget cartaRobar() => GestureDetector(
       onTap: () {
-        if (miTurno) {
+        if (_turno == widget.nomUser) {
           //Pedir carta al backend y cuando llegue:
           // Carta c = Carta(
           //     color: 'ROJO', numero: 'TRES', url: 'images/cartas/rojo-3.png');
@@ -321,7 +341,12 @@ class _PartidaState extends State<Partida> {
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.fromLTRB(12, 0, 0, 2),
-                child: SizedBox(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: (_turno == widget.nomUser)
+                        ? Colors.yellow
+                        : Colors.transparent,
+                  ),
                   height: 130,
                   width: MediaQuery.of(context).size.width - 50,
                   child: ListView.builder(

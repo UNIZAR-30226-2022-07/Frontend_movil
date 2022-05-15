@@ -387,6 +387,7 @@ class _CreatePageState extends State<CreatePage> {
                 autorization: widget.autorization,
                 idPagina: respuesta['id'],
                 numP: count,
+                infoInicial: respuesta,
               ));
       Navigator.push(context, route);
       popUpCorrecto(context);

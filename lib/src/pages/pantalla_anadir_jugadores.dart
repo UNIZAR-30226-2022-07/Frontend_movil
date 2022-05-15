@@ -21,11 +21,13 @@ class AnadirJugadores extends StatefulWidget {
   final String idPagina;
   final String autorization;
   final String nomUser;
+  final dynamic infoInicial;
   AnadirJugadores(
       {required this.autorization,
       required this.idPagina,
       required this.nomUser,
-      required this.numP});
+      required this.numP,
+      required this.infoInicial});
 
   @override
   State<AnadirJugadores> createState() => _AnadirJugadoresState();
@@ -41,6 +43,11 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   List<String> _listaJugadores = [];
+
+// {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
+//estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
+//njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
+//turno: {nombre: usuario123, cartas: []}, tipo: true}
 
   void onConnect(StompFrame frame) {
     //por aqui devuelve tu mano de cartas
@@ -292,9 +299,12 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                                     nomUser: widget.nomUser,
                                     authorization: widget.autorization,
                                     idPartida: widget.idPagina,
+                                    infoInicial: widget.infoInicial,
+                                    listaInicial: _listaJugadores,
                                   ));
                           Navigator.push(context, route);
                         } else {
+                          faltanJugadores(context);
                           print('Faltan jugadores');
                         }
                       },
@@ -331,12 +341,11 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                   borderRadius: BorderRadius.circular(20)),
               title: const Text(
                 'Aún no están todos los jugadores',
-                style: TextStyle(fontSize: 24, color: Colors.black),
+                style: TextStyle(fontSize: 24, color: Colors.red),
               ),
             ));
   }
 }
-
 
 // Expanded(
 //                 child: ListView.builder(

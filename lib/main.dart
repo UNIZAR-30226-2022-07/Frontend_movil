@@ -46,12 +46,12 @@ class MyApp extends StatelessWidget {
         // 'clasification': (BuildContext context) => ClasificationPage(
         //       userName: '',
         //     ),
-        'anadir_jugadores': (BuildContext context) => AnadirJugadores(
-              autorization: '',
-              idPagina: '',
-              nomUser: '',
-              numP: 0,
-            ),
+        // 'anadir_jugadores': (BuildContext context) => AnadirJugadores(
+        //       autorization: '',
+        //       idPagina: '',
+        //       nomUser: '',
+        //       numP: 0,
+        //     ),
         'crear_partida': (BuildContext context) => CreatePage(
               autorization: '',
               nomUser: '',
