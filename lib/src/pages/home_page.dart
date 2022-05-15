@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 final route = MaterialPageRoute(
-                    builder: (context) => ClasificationPage());
+                    builder: (context) => ClasificationPage(userName: ''));
                 Navigator.push(context, route);
               },
             )),

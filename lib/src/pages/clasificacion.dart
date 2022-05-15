@@ -5,27 +5,14 @@ import 'package:flutter_unogame/src/widgets/player_card.dart';
 import '../models/players_api.dart';
 
 class ClasificationPage extends StatefulWidget {
+  String userName;
+  ClasificationPage({Key? key, required this.userName}) : super(key: key);
+
   @override
   _ClasificationPageState createState() => _ClasificationPageState();
 }
 
 class _ClasificationPageState extends State<ClasificationPage> {
-  // late List<Player> _players;
-  // bool _isLoading = true;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getPlayers();
-  // }
-
-  // Future<void> getPlayers() async {
-  //   _players = await PlayerApi.getRecipe();
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) => DefaultTabController(
       length: 3,
@@ -55,22 +42,10 @@ class _ClasificationPageState extends State<ClasificationPage> {
                 ]),
           ),
           body: TabBarView(children: [
-            FriendsPage('usuario123'),
-            NationalPage('espagna'),
+            FriendsPage(widget.userName),
+            NationalPage('España'),
             WorldPage()
           ])));
-  // body: _isLoading
-  //   ? const Center(child: CircularProgressIndicator())
-  //   : ListView.builder(
-  //       itemCount: _players.length,
-  //       itemBuilder: (context, index) {
-  //         return PlayerCard(
-  //             userName: 'juliferre09',
-  //             rating: '3º',
-  //             trophies: '400',
-  //             ownUser: true);
-  //       },
-  //     ));
 }
 
 Future<List<Player>> getPlayers(String tipo, String aux) async {
@@ -122,7 +97,7 @@ Widget FriendsPage(String usuario) {
 
 Widget NationalPage(String pais) {
   return FutureBuilder(
-      future: getPlayers('rankingNacional', pais),
+      future: getPlayers('rankingPais', pais),
       builder: (context, projectSnap) {
         //List<Player>? data = projectSnap.data;
         List<Player>? data = projectSnap.data as List<Player>?;

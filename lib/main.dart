@@ -42,7 +42,9 @@ class MyApp extends StatelessWidget {
               username: '',
             ),
         'lista_amigos': (BuildContext context) => SearchPlayers(username: ''),
-        'clasification': (BuildContext context) => ClasificationPage(),
+        // 'clasification': (BuildContext context) => ClasificationPage(
+        //       userName: '',
+        //     ),
         'anadir_jugadores': (BuildContext context) => AnadirJugadores(
               autorization: '',
               idPagina: '',
