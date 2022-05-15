@@ -56,20 +56,31 @@ class _ChatPageState extends State<ChatPage> {
   String r = '';
   List<types.Message> _messages = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
-  final canalGeneral = StreamController.broadcast();
+  // final canalGeneral = StreamController.broadcast();
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/topic/chat/fb693e80-02ff-4a19-8397-1e1abb674d13',
+        destination: '/topic/chat/2167f5f8-276f-4f70-adb6-216bc37cd7c1',
         callback: (StompFrame frame) {
           print("he entrado"); //esto no se imprime
           if (frame.body != null) {
             print("he entrado"); //esto pues tampoco se imprime
-            //esto esta comentado porque aqui es como si no hiciese nada de esto
-            // Map<String, dynamic> mensajes = json.decode(frame.body!);
-            // print(mensajes);
             // canalGeneral.sink.add(json.decode(frame.body!));
-            // print(frame.body);
+            dynamic msj = json.decode(frame.body!);
+            String u = msj['username'];
+            final us = types.User(id: u);
+            String aux = msj['username'] + ':' + msj['message'];
+            print(aux);
+            if (u != 'paulae') {
+              final textMessage = types.TextMessage(
+              author: us,
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              id: const Uuid().v4(),
+              text: aux,
+            );
+            
+              _addMessage(textMessage);
+            }
           }
         }
     );
@@ -161,7 +172,7 @@ class _ChatPageState extends State<ChatPage> {
     );
     stompClient.activate();
     stompClient.send(
-        destination: '/game/message/fb693e80-02ff-4a19-8397-1e1abb674d13',
+        destination: '/game/message/2167f5f8-276f-4f70-adb6-216bc37cd7c1',
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
