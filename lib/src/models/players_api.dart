@@ -43,13 +43,13 @@ class PlayerApi {
     for (var i in laux) {
       String cutted = i.split(',');
       String name = cutted[0];
-      int trophies = cutted[1] as int;
-      String pais = cutted[2];
+      int trophies = int.parse(cutted[1]);
+      // String pais = cutted[2];
       print(i);
       rtdos.add(Player(userName: name, trophies: trophies));
     }
     rtdos.sort((a, b) => a.trophies.compareTo(b.trophies));
-    int n = 0;
+    int n = 1;
     for (var j in rtdos) {
       j.rating = n;
       n++;
@@ -72,16 +72,15 @@ class PlayerApi {
     var l = data['message'];
     var laux = json.decode(l);
     List<Player> rtdos = [];
-    //"[\"3nsalada3,0,espagna\",\"nereapruebas,0,España\"]"
     for (var i in laux) {
-      String cutted = i.split(',');
+      List<String> cutted = i.split(',');
       String name = cutted[0];
-      int trophies = cutted[1] as int;
+      int trophies = int.parse(cutted[1]);
       print(i);
       rtdos.add(Player(userName: name, trophies: trophies));
     }
     rtdos.sort((a, b) => a.trophies.compareTo(b.trophies));
-    int n = 0;
+    int n = 1;
     for (var j in rtdos) {
       j.rating = n;
       n++;
