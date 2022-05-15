@@ -28,11 +28,14 @@ class CreatePage extends StatefulWidget {
 }
 
 class _CreatePageState extends State<CreatePage> {
-  bool regla1 = false;
-  bool regla2 = false;
-  bool regla3 = false;
-  bool regla4 = false;
+  bool ceroSwitch = false;
+  bool crazy7 = false;
+  bool progDraw = false;
+  bool chaosDraw = false;
+  bool blockDraw = false;
+  bool repeatDraw = false;
   int tiempo = 5;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,8 +212,6 @@ class _CreatePageState extends State<CreatePage> {
                       // Navigator.push(context, route);
                     },
                     child: const Text('Crear'),
-
-                    //onPressed: () => {}, child: const Text('Crear'))
                   ),
                 ],
               )
@@ -234,42 +235,57 @@ class _CreatePageState extends State<CreatePage> {
                       Expanded(
                         child: CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
-                          title: const Text('Regla 1'),
-                          value: regla1,
+                          title: const Text('0 Switch'),
+                          value: ceroSwitch,
                           onChanged: (regla1) =>
-                              setState(() => this.regla1 = regla1!),
+                              setState(() => ceroSwitch = regla1!),
                         ),
                       ),
                       Expanded(
                         child: CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
-                          title: const Text('Regla 2'),
-                          value: regla2,
+                          title: const Text('Crazy 7'),
+                          value: crazy7,
                           onChanged: (regla2) =>
-                              setState(() => this.regla2 = regla2!),
+                              setState(() => crazy7 = regla2!),
                         ),
                       ),
                       Expanded(
                         child: CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
-                          title: const Text('Regla 3'),
-                          value: regla3,
+                          title: const Text('Progressive Draw'),
+                          value: progDraw,
                           onChanged: (regla3) =>
-                              setState(() => this.regla3 = regla3!),
+                              setState(() => progDraw = regla3!),
                         ),
                       ),
                       Expanded(
                         child: CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
-                          title: const Text('Regla 4'),
-                          value: regla4,
+                          title: const Text('Chaos Draw'),
+                          value: chaosDraw,
                           onChanged: (regla4) =>
-                              setState(() => this.regla4 = regla4!),
+                              setState(() => chaosDraw = regla4!),
                         ),
                       ),
-                      // Switch.adaptive(
-                      //     value: regla1,
-                      //     onChanged: (regla1) => setState(() => regla1 = true))
+                      Expanded(
+                        child: CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: const Text('Block Draw'),
+                          value: blockDraw,
+                          onChanged: (regla3) =>
+                              setState(() => blockDraw = regla3!),
+                        ),
+                      ),
+                      Expanded(
+                        child: CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: const Text('Reapeat Draw'),
+                          value: repeatDraw,
+                          onChanged: (regla4) =>
+                              setState(() => repeatDraw = regla4!),
+                        ),
+                      ),
                     ],
                   ),
                   actions: <Widget>[
@@ -321,15 +337,41 @@ class _CreatePageState extends State<CreatePage> {
                 ))));
   }
 
+  dynamic crearReglas() {
+    List<String> reglas = [];
+    if (ceroSwitch) {
+      reglas.add('CERO_SWITCH');
+    }
+    if (blockDraw) {
+      reglas.add('BLOCK_DRAW');
+    }
+    if (crazy7) {
+      reglas.add('CRAZY_7');
+    }
+    if (progDraw) {
+      reglas.add('PROGRESSIVE_DRAW');
+    }
+    if (chaosDraw) {
+      reglas.add('CHAOS_DRAW');
+    }
+    if (repeatDraw) {
+      reglas.add('REPEAT_DRAW');
+    }
+    return reglas;
+  }
+
   Future CrearPartida() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/game/create');
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
+    // Crear una función para construir el campo reglas
+    dynamic a = crearReglas();
     Map mapeddate = {
       'playername': widget.nomUser,
       'nplayers': count,
-      'tturn': tiempo
+      'tturn': tiempo,
+      'rules': a
     };
 
     final response = await http.post(url,
@@ -337,6 +379,7 @@ class _CreatePageState extends State<CreatePage> {
     if (response.statusCode == 200) {
       Map<String, dynamic> respuesta = json.decode(response
           .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      print(respuesta);
       print(respuesta['id']);
       final route = MaterialPageRoute(
           builder: (context) => AnadirJugadores(

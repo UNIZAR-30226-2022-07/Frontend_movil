@@ -34,11 +34,13 @@ class AnadirJugadores extends StatefulWidget {
 class _AnadirJugadoresState extends State<AnadirJugadores> {
   int? _selectedNumber;
   String message = '';
-  bool comenzarPartida = false;
+  int nJugadores = 1;
+  bool partidaEmpezada = false;
   final canalUser = StreamController.broadcast();
   final canalGeneral = StreamController.broadcast();
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
+  List<String> _listaJugadores = [];
 
   void onConnect(StompFrame frame) {
     //por aqui devuelve tu mano de cartas
@@ -62,8 +64,20 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
+          print(json.decode(frame.body!));
           print('Canal general');
-          print(frame.body);
+          if (!partidaEmpezada) {
+            dynamic a = json.decode(frame.body!);
+            List<String> jugadores = [];
+            for (dynamic i in a) {
+              jugadores.add(i['nombre']);
+            }
+            print(jugadores);
+            setState(() {
+              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              nJugadores = jugadores.length;
+            });
+          }
         }
       },
     );
@@ -102,13 +116,13 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
     //       'username': widget.nomUser
     //     });
 
-    stompClient.send(
-        destination: '/game/begin/${widget.idPagina}',
-        body: '',
-        headers: {
-          'Authorization': 'Bearer ${widget.autorization}',
-          'username': widget.nomUser
-        });
+    // stompClient.send(
+    //     destination: '/game/begin/${widget.idPagina}',
+    //     body: '',
+    //     headers: {
+    //       'Authorization': 'Bearer ${widget.autorization}',
+    //       'username': widget.nomUser
+    //     });
     //fata el disconnect
   }
 
@@ -148,12 +162,15 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       ));
       stompClient.activate();
     }
+    _listaJugadores = List.filled(widget.numP, 'Jugador');
+    _listaJugadores[0] = widget.nomUser;
   }
 
   @override
   Widget build(BuildContext context) {
     List<String> numbers = List.filled(widget.numP, '+');
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+    stompClient.activate();
     return Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
@@ -162,61 +179,77 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(
-                height: 100,
-              ),
+              //Lista de jugadores
               Expanded(
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: numbers.length,
+                  itemCount: widget.numP,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: index == numbers.length - 1
                           ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
                           : const EdgeInsets.only(left: 8),
-                      child: ElevatedButton(
-                        child: Text(numbers[index]),
-                        style: ElevatedButton.styleFrom(
-                          primary: numbers[index] == _selectedNumber
-                              ? const Color.fromARGB(255, 43, 168, 214)
-                              : const Color.fromARGB(
-                                  102, 10, 10, 10), // background
-                          onPrimary: numbers[index] == _selectedNumber
-                              ? Colors.white
-                              : const Color.fromARGB(
-                                  255, 65, 189, 210), // foreground
-                        ),
-                        onPressed: () {
-                          final route = MaterialPageRoute(
-                              builder: (context) =>
-                                  InvitePlayers(username: widget.nomUser));
-                          Navigator.push(context, route);
-                        },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.supervised_user_circle_rounded,
+                            size: 60,
+                          ),
+                          DefaultTextStyle(
+                              style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                              child: Text(_listaJugadores[index])),
+                        ],
                       ),
                     );
                   },
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              //Botón invitar amigos
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    child: const Text('Copiar código'),
-                    onPressed: () {
-                      final data = ClipboardData(text: widget.idPagina);
-                      Clipboard.setData(data);
-                    },
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: DefaultTextStyle(
+                          style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                          child: Text(widget.idPagina),
+                        ),
+                      ),
+                      ElevatedButton(
+                        child: const Text('Copiar código'),
+                        onPressed: () {
+                          final data = ClipboardData(text: widget.idPagina);
+                          Clipboard.setData(data);
+                        },
+                      )
+                    ],
                   ),
+                  ElevatedButton(
+                      onPressed: () {
+                        final route = MaterialPageRoute(
+                            builder: (context) =>
+                                InvitePlayers(username: widget.nomUser));
+                        Navigator.push(context, route);
+                      },
+                      child: const Text('Invitar amigos')),
                 ],
               ),
               const SizedBox(
-                height: 80,
-                width: 20,
+                height: 50,
               ),
+              //Botón crear
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -236,28 +269,34 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                         ),
                       ),
                       onPressed: () {
-                        stompClient.activate();
+                        // stompClient.activate();
                         //Envío de un mensaje para empezar una partida (solo el que crea la partida)
-                        // stompClient.send(
-                        //     destination: '/begin/${widget.idPagina}',
-                        //     body: '',
-                        //     headers: {
-                        //       'Authorization': 'Bearer ${widget.autorization}',
-                        //       'username': widget.nomUser
-                        //     });
-                        print("entro a la partida");
-                        final route = MaterialPageRoute(
-                            builder: (context) => Partida(
-                                  userListener: canalUser.stream,
-                                  gameListener: canalGeneral.stream,
-                                  cartaMedioListener: canalCartaMedio.stream,
-                                  jugadaListener: canalJugada.stream,
-                                  stompClient: stompClient,
-                                  nomUser: widget.nomUser,
-                                  authorization: widget.autorization,
-                                  idPartida: widget.idPagina,
-                                ));
-                        Navigator.push(context, route);
+                        if (nJugadores == widget.numP) {
+                          partidaEmpezada = true;
+                          stompClient.send(
+                              destination: '/game/begin/${widget.idPagina}',
+                              body: '',
+                              headers: {
+                                'Authorization':
+                                    'Bearer ${widget.autorization}',
+                                'username': widget.nomUser
+                              });
+                          print("entro a la partida");
+                          final route = MaterialPageRoute(
+                              builder: (context) => Partida(
+                                    userListener: canalUser.stream,
+                                    gameListener: canalGeneral.stream,
+                                    cartaMedioListener: canalCartaMedio.stream,
+                                    jugadaListener: canalJugada.stream,
+                                    stompClient: stompClient,
+                                    nomUser: widget.nomUser,
+                                    authorization: widget.autorization,
+                                    idPartida: widget.idPagina,
+                                  ));
+                          Navigator.push(context, route);
+                        } else {
+                          print('Faltan jugadores');
+                        }
                       },
                       child: const Text(
                         'Crear',
@@ -299,96 +338,36 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
 }
 
 
-// Row(
-              //   children: <Widget>[
-              //     SizedBox(
-              //       width: 150,
-              //       height: 150.0,
-              //       child: TextButton(
-              //         style: ButtonStyle(
-              //           backgroundColor:
-              //               MaterialStateProperty.all<Color>(Colors.black54),
-              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //             RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(12.0),
-              //             ),
-              //           ),
-              //         ),
-              //         onPressed: () {
-              //           // final route =
-              //           //     MaterialPageRoute(builder: (context) => Partida());
-              //           // Navigator.push(context, route);
-              //         },
-              //         child: const Text(
-              //           '+',
-              //           style: TextStyle(
-              //               color: Colors.white,
-              //               fontFamily: 'FredokaOne',
-              //               fontSize: 80.0),
-              //         ),
-              //       ),
-              //     ),
-
-              //     const SizedBox(
-              //       width: 20,
-              //     ), //SizedBox
-              //     SizedBox(
-              //       width: 150,
-              //       height: 150.0,
-              //       child: TextButton(
-              //         style: ButtonStyle(
-              //           backgroundColor:
-              //               MaterialStateProperty.all<Color>(Colors.black54),
-              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //             RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(12.0),
-              //             ),
-              //           ),
-              //         ),
-              //         onPressed: () {
-              //           // final route =
-              //           //     MaterialPageRoute(builder: (context) => Partida());
-              //           // Navigator.push(context, route);
-              //         },
-              //         child: const Text(
-              //           '+',
-              //           style: TextStyle(
-              //               color: Colors.white,
-              //               fontFamily: 'FredokaOne',
-              //               fontSize: 80.0),
-              //         ),
-              //       ),
-              //     ),
-              //     const SizedBox(
-              //       width: 20,
-              //     ), //
-              //     SizedBox(
-              //       width: 150,
-              //       height: 150.0,
-              //       child: TextButton(
-              //         style: ButtonStyle(
-              //           backgroundColor:
-              //               MaterialStateProperty.all<Color>(Colors.black54),
-              //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //             RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(12.0),
-              //             ),
-              //           ),
-              //         ),
-              //         onPressed: () {
-              //           // final route =
-              //           //     MaterialPageRoute(builder: (context) => Partida());
-              //           // Navigator.push(context, route);
-              //         },
-              //         child: const Text(
-              //           '+',
-              //           style: TextStyle(
-              //               color: Colors.white,
-              //               fontFamily: 'FredokaOne',
-              //               fontSize: 80.0),
-              //         ),
-              //       ),
-              //     ),
-              //   ], //<Widget>[]
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              // ),
+// Expanded(
+//                 child: ListView.builder(
+//                   scrollDirection: Axis.horizontal,
+//                   itemCount: numbers.length,
+//                   shrinkWrap: true,
+//                   itemBuilder: (context, index) {
+//                     return Padding(
+//                       padding: index == numbers.length - 1
+//                           ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
+//                           : const EdgeInsets.only(left: 8),
+//                       child: ElevatedButton(
+//                         child: Text(numbers[index]),
+//                         style: ElevatedButton.styleFrom(
+//                           primary: numbers[index] == _selectedNumber
+//                               ? const Color.fromARGB(255, 43, 168, 214)
+//                               : const Color.fromARGB(
+//                                   102, 10, 10, 10), // background
+//                           onPrimary: numbers[index] == _selectedNumber
+//                               ? Colors.white
+//                               : const Color.fromARGB(
+//                                   255, 65, 189, 210), // foreground
+//                         ),
+//                         onPressed: () {
+//                           final route = MaterialPageRoute(
+//                               builder: (context) =>
+//                                   InvitePlayers(username: widget.nomUser));
+//                           Navigator.push(context, route);
+//                         },
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ),
