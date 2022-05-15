@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/pages/chat.dart';
@@ -6,6 +10,7 @@ import 'package:flutter_unogame/src/pages/crear_torneo.dart';
 import 'package:flutter_unogame/src/pages/editar_perfil.dart';
 import 'package:flutter_unogame/src/pages/lista_torneos.dart';
 import 'package:flutter_unogame/src/pages/notifications_page.dart';
+import 'package:flutter_unogame/src/pages/pantalla_espera.dart';
 import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
 import 'crear_partida.dart';
@@ -227,14 +232,43 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final code = await openDialog();
                       if (code == null || code.isEmpty) return;
+                      Uri url =
+                          Uri.parse('https://onep1.herokuapp.com/game/create');
+                      final headers = {
+                        HttpHeaders.contentTypeHeader:
+                            "application/json; charset=UTF-8"
+                      };
+                      Map mapeddate = {
+                        'playername': widget.username,
+                      };
+                      final response = await http.post(url,
+                          headers: headers, body: jsonEncode(mapeddate));
 
                       setState(() => this.code = code);
+                      if (response.statusCode == 200) {
+                        Map<String, dynamic> respuesta =
+                            json.decode(response.body);
+                        print(respuesta);
+                        List<String> jugadores = [];
+                        for (dynamic a in respuesta['jugadores']) {
+                          jugadores.add(a['nombre']);
+                        }
+                        final route = MaterialPageRoute(
+                            builder: (context) => EsperaPartida(
+                                autorization: widget.autorization,
+                                idPagina: code,
+                                nomUser: widget.username,
+                                nPlayers: respuesta['njugadores'],
+                                jugadores: jugadores,
+                                infoInicial: respuesta,
+                                reglas: respuesta['reglas']));
+                        Navigator.push(context, route);
+                      }
                       // final route = MaterialPageRoute(
                       //     builder: (context) => WaitPartida( //mirar que la partida exista antes ir a la otra pagina
                       //         autorization: widget.autorization,
                       //         username: widget.username,
                       //          idPartida: code));
-                      // Navigator.push(context, route);
                     },
                     child: const Text(
                       'Unirse a partida privada',

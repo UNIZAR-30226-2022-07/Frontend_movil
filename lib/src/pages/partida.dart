@@ -28,7 +28,7 @@ class Partida extends StatefulWidget {
       required this.gameListener,
       required this.authorization,
       required this.stompClient,
-      required this.infoInicial,
+      this.infoInicial,
       required this.listaInicial})
       : super(key: key);
 
@@ -65,7 +65,11 @@ class _PartidaState extends State<Partida> {
     stompClient = widget.stompClient;
     cima = Carta(color: '', url: 'images/one.png', numero: '');
     mano = Mano(cartas: []);
-    _turno = (widget.infoInicial['turno'])['nombre'];
+    if (widget.infoInicial != null) {
+      _turno = (widget.infoInicial['turno'])['nombre'];
+    } else {
+      _turno = 'otro';
+    }
     for (String a in widget.listaInicial) {
       if (a != widget.nomUser) {
         Map<String, dynamic> aux = {'username': a, 'numeroCartas': 7};
