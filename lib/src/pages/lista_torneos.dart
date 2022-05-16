@@ -18,9 +18,7 @@ class ListTorneos extends StatefulWidget {
 }
 
 class _ListTorneosState extends State<ListTorneos> {
-  final FetchFriendList _friendList = FetchFriendList();
-  // final FetchTournamentList _torneoList = FetchTournamentList();
-
+  final FetchTournamentList _torunamentList = FetchTournamentList();
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +34,8 @@ class _ListTorneosState extends State<ListTorneos> {
             image: DecorationImage(
                 image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           padding: const EdgeInsets.all(20),
-          child: FutureBuilder<List<Userlist>>( //aqui sera FutureBuilder<List<TournamentList>>
-              future: _friendList.getFriendList(widget.username), // esta en API_service y sera _torneoList.getTournamentList(widget.username)
+          child: FutureBuilder<List<dynamic>>( //aqui sera FutureBuilder<List<TournamentList>>
+              future: _torunamentList.getTournamentList(), // esta en API_service y sera _torneoList.getTournamentList(widget.username)
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(
@@ -58,18 +56,19 @@ class _ListTorneosState extends State<ListTorneos> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${data?[index].username}', //aqui sera el nombre del torneo realmente
+                                        'Torneo ${index}',
+                                        // '${data?[index]}', //aqui sera el nombre del torneo realmente
                                         style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
                                       SizedBox(width: 50.0),
-                                      Text(
-                                        'hola',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
-                                      ),
+                                      // Text(
+                                      //   'hola',
+                                      //   style: const TextStyle(
+                                      //       fontSize: 18,
+                                      //       fontWeight: FontWeight.w600),
+                                      // ),
                                       const SizedBox(width:400),
                                       TextButton(
                                         style: ButtonStyle(
