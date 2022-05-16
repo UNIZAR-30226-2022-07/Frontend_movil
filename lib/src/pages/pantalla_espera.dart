@@ -44,12 +44,12 @@ class _EsperaPartidaState extends State<EsperaPartida> {
 //njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
 //turno: {nombre: usuario123, cartas: []}, tipo: true}
 
-  void onConnect(StompFrame frame) {
+  void onConnect(StompFrame frame) async {
     //por aqui devuelve tu mano de cartas
     //Funciona
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
-        callback: (StompFrame frame) {
+        callback: (StompFrame frame) async {
           if (frame.body != null) {
             print('Canal usuario');
             print(frame.body);
@@ -72,6 +72,7 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                         ));
                 Navigator.push(context, route);
               }
+              await Future.delayed(const Duration(seconds: 3));
               canalUser.sink.add(json.decode(frame.body!));
             }
           }
@@ -104,7 +105,7 @@ class _EsperaPartidaState extends State<EsperaPartida> {
     //Funciona
     stompClient.subscribe(
       destination: '/topic/begin/${widget.idPagina}',
-      callback: (StompFrame frame) {
+      callback: (StompFrame frame) async {
         if (frame.body != null) {
           print('Canal carta medio:');
           print(frame.body);
@@ -125,6 +126,7 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                     ));
             Navigator.push(context, route);
           }
+          await Future.delayed(const Duration(seconds: 3));
           canalCartaMedio.sink.add(json.decode(frame.body!));
         }
       },
@@ -190,6 +192,20 @@ class _EsperaPartidaState extends State<EsperaPartida> {
     }
   }
 
+  String getReglas() {
+    String rtdo = 'Reglas activas: ';
+    bool primera = true;
+    for (dynamic a in widget.reglas) {
+      if (primera) {
+        rtdo += a;
+        primera = false;
+      } else {
+        rtdo += ', ' + a;
+      }
+    }
+    return rtdo;
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
@@ -232,6 +248,13 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                 ),
               ),
               //Botón invitar amigos
+              DefaultTextStyle(
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  child: Text(getReglas())),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,

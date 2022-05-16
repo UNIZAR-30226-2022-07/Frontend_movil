@@ -232,18 +232,18 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final code = await openDialog();
                       if (code == null || code.isEmpty) return;
-                      Uri url =
-                          Uri.parse('https://onep1.herokuapp.com/game/create');
+                      Uri url = Uri.parse(
+                          'https://onep1.herokuapp.com/game/getInfoPartida');
                       final headers = {
                         HttpHeaders.contentTypeHeader:
                             "application/json; charset=UTF-8"
                       };
                       Map mapeddate = {
-                        'playername': widget.username,
+                        'idPartida': code,
                       };
                       final response = await http.post(url,
                           headers: headers, body: jsonEncode(mapeddate));
-
+                      print(response.body);
                       setState(() => this.code = code);
                       if (response.statusCode == 200) {
                         Map<String, dynamic> respuesta =
@@ -251,14 +251,14 @@ class _HomePageState extends State<HomePage> {
                         print(respuesta);
                         List<String> jugadores = [];
                         for (dynamic a in respuesta['jugadores']) {
-                          jugadores.add(a['nombre']);
+                          jugadores.add(a);
                         }
                         final route = MaterialPageRoute(
                             builder: (context) => EsperaPartida(
                                 autorization: widget.autorization,
                                 idPagina: code,
                                 nomUser: widget.username,
-                                nPlayers: respuesta['njugadores'],
+                                nPlayers: respuesta['numeroJugadores'],
                                 jugadores: jugadores,
                                 infoInicial: respuesta,
                                 reglas: respuesta['reglas']));

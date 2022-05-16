@@ -60,7 +60,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/topic/chat/2167f5f8-276f-4f70-adb6-216bc37cd7c1',
+        destination: '/topic/chat/d93dcc5c-80e6-4e3a-a1e8-dc2a55200560',
         callback: (StompFrame frame) {
           print("he entrado"); //esto no se imprime
           if (frame.body != null) {
@@ -73,19 +73,17 @@ class _ChatPageState extends State<ChatPage> {
             print(aux);
             if (u != 'paulae') {
               final textMessage = types.TextMessage(
-              author: us,
-              createdAt: DateTime.now().millisecondsSinceEpoch,
-              id: const Uuid().v4(),
-              text: aux,
-            );
-            
+                author: us,
+                createdAt: DateTime.now().millisecondsSinceEpoch,
+                id: const Uuid().v4(),
+                text: aux,
+              );
+
               _addMessage(textMessage);
             }
           }
-        }
-    );
+        });
     print("me he suscrito");
-    
   }
 
   late StompClient stompClient = StompClient(
@@ -127,7 +125,6 @@ class _ChatPageState extends State<ChatPage> {
     _loadMessages();
   }
 
-
   // @override
   // void initState() {
   //   super.initState();
@@ -140,7 +137,6 @@ class _ChatPageState extends State<ChatPage> {
       _messages.insert(0, message);
     });
   }
-
 
   // void _handleMessageTap(BuildContext context, types.Message message) async {
   //   if (message is types.FileMessage) {
@@ -172,7 +168,7 @@ class _ChatPageState extends State<ChatPage> {
     );
     stompClient.activate();
     stompClient.send(
-        destination: '/game/message/2167f5f8-276f-4f70-adb6-216bc37cd7c1',
+        destination: '/game/message/d93dcc5c-80e6-4e3a-a1e8-dc2a55200560',
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
@@ -196,6 +192,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    stompClient.activate();
     return Scaffold(
       body: Chat(
         messages: _messages,

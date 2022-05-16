@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/pages/pagina_invitar_amigos.dart';
@@ -12,9 +14,6 @@ import 'dart:async';
 import "dart:async";
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
-
-// const numbers = [1,2,3,4,5,6];
-// final numbers = List.filled(4, 5);
 
 class AnadirJugadores extends StatefulWidget {
   final int numP;
@@ -34,7 +33,6 @@ class AnadirJugadores extends StatefulWidget {
 }
 
 class _AnadirJugadoresState extends State<AnadirJugadores> {
-  int? _selectedNumber;
   String message = '';
   int nJugadores = 1;
   bool partidaEmpezada = false;
@@ -43,6 +41,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   List<String> _listaJugadores = [];
+  List<bool> _listacompleta = [];
 
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
@@ -82,6 +81,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
             print(jugadores);
             setState(() {
               _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              _listacompleta[nJugadores] = true;
               nJugadores = jugadores.length;
             });
           }
@@ -113,24 +113,6 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
         }
       },
     );
-
-    //Envío de mensaje para conectarte a una partida
-    // stompClient.send(
-    //     destination: '/game/connect/${widget.idPagina}',
-    //     body: '',
-    //     headers: {
-    //       'Authorization': 'Bearer ${widget.autorization}',
-    //       'username': widget.nomUser
-    //     });
-
-    // stompClient.send(
-    //     destination: '/game/begin/${widget.idPagina}',
-    //     body: '',
-    //     headers: {
-    //       'Authorization': 'Bearer ${widget.autorization}',
-    //       'username': widget.nomUser
-    //     });
-    //fata el disconnect
   }
 
   late StompClient stompClient = StompClient(
@@ -169,8 +151,9 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
       ));
       stompClient.activate();
     }
-    _listaJugadores = List.filled(widget.numP, 'Jugador');
+    _listaJugadores = List.filled(widget.numP, 'Esperando...');
     _listaJugadores[0] = widget.nomUser;
+    _listacompleta = List.filled(widget.numP, false);
   }
 
   @override
@@ -211,6 +194,35 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                               child: Text(_listaJugadores[index])),
+                          !_listacompleta[index]
+                              ? const SizedBox(
+                                  height: 30,
+                                )
+                              : SizedBox(
+                                  height: 30,
+                                  child: TextButton(
+                                      onPressed: () {
+                                        stompClient.send(
+                                            destination:
+                                                '/game/disconnect/${widget.idPagina}',
+                                            body: '',
+                                            headers: {
+                                              'Authorization':
+                                                  'Bearer ${widget.autorization}',
+                                              'username': _listaJugadores[index]
+                                            });
+                                        setState(() {
+                                          _listaJugadores[index] =
+                                              'Esperando...';
+                                          _listacompleta[index] = false;
+                                          nJugadores--;
+                                        });
+                                      },
+                                      style: TextButton.styleFrom(
+                                          primary: Colors.red,
+                                          fixedSize: const Size(100, 20)),
+                                      child: const Text('Expulsar')),
+                                )
                         ],
                       ),
                     );

@@ -66,7 +66,7 @@ class _PartidaState extends State<Partida> {
     cima = Carta(color: '', url: 'images/one.png', numero: '');
     mano = Mano(cartas: []);
     if (widget.infoInicial != null) {
-      _turno = (widget.infoInicial['turno'])['nombre'];
+      _turno = widget.infoInicial['jugadores'][0];
     } else {
       _turno = 'otro';
     }
