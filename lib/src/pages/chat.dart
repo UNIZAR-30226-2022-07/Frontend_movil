@@ -42,10 +42,12 @@ import 'package:web_socket_channel/status.dart' as status;
 
 class ChatPage extends StatefulWidget {
   final String autorizacion;
+  final String idP;
+  final String username;
   // final String idPagina;
   // final String nomUser;
   // ChatPage({Key? key, required this.autorizacion,required this.idPagina, required this.nomUser}) : super(key: key);
-  ChatPage({Key? key, required this.autorizacion}) : super(key: key);
+  ChatPage({Key? key, required this.autorizacion, required this.idP, required this.username}) : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -60,7 +62,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/topic/chat/d93dcc5c-80e6-4e3a-a1e8-dc2a55200560',
+        destination: '/topic/chat/${widget.idP}',
         callback: (StompFrame frame) {
           print("he entrado"); //esto no se imprime
           if (frame.body != null) {
@@ -71,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
             final us = types.User(id: u);
             String aux = msj['username'] + ':' + msj['message'];
             print(aux);
-            if (u != 'paulae') {
+            if (u != {widget.username}) {
               final textMessage = types.TextMessage(
                 author: us,
                 createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -97,11 +99,11 @@ class _ChatPageState extends State<ChatPage> {
       },
       stompConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorizacion}',
-        'username': 'paulae'
+        'username': '${widget.username}'
       },
       webSocketConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorizacion}',
-        'username': 'paulae'
+        'username': '${widget.username}'
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
       onStompError: (dynamic error) => print(error.toString()),
@@ -168,11 +170,11 @@ class _ChatPageState extends State<ChatPage> {
     );
     stompClient.activate();
     stompClient.send(
-        destination: '/game/message/d93dcc5c-80e6-4e3a-a1e8-dc2a55200560',
+        destination: '/game/message/${widget.idP}',
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
-          'username': 'paulae'
+          'username': '${widget.username}'
         });
     print("lo he mandado");
     _addMessage(textMessage);

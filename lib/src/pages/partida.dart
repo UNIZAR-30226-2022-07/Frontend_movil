@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
+import 'package:flutter_unogame/src/pages/chat.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import '../models/mano.dart';
@@ -307,6 +308,37 @@ class _PartidaState extends State<Partida> {
                   ),
                   Row(
                     children: [
+                      // SizedBox
+                      SizedBox(
+                        height: 40,
+                        width: 120,
+                        child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(249, 148, 25, 209)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final route = MaterialPageRoute(
+                              builder: (context) => ChatPage(
+                                autorizacion: widget.authorization, idP: widget.idPartida, username: widget.nomUser
+                              ));
+                            Navigator.push(context, route);
+                          },
+                          child: const Text(
+                            'CHAT',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'FredokaOne',
+                                fontSize: 25.0),
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 40,
                         width: 150,

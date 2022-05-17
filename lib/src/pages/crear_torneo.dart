@@ -3,6 +3,7 @@ import 'package:flutter_unogame/src/pages/pantalla_anadir_jugadores.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter_unogame/src/pages/pantalla_anadir_jugadores_torneo.dart';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -13,7 +14,7 @@ import 'dart:convert';
 
 import '../pages/home_page.dart';
 
-int count = 2;
+// int count = 2;
 bool tiempoA10 = false;
 
 class CreateTournament extends StatefulWidget {
@@ -100,13 +101,13 @@ class _CreateTournamentState extends State<CreateTournament> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // CrearTorneo(); //falta de implementar aqui esta funcion
+                      CrearTorneo(); //falta de implementar aqui esta funcion
                       //       final route = MaterialPageRoute(
                       //           builder: (context) => HomePage(autorization: widget.autorization,
                       // username: widget.username, pais: widget.pais,));
                       //       Navigator.push(context, route);
                     },
-                    child: const Text('Crear'),
+                    child: const Text('Crear torneo'),
 
                     //onPressed: () => {}, child: const Text('Crear'))
                   ),
@@ -221,6 +222,47 @@ class _CreateTournamentState extends State<CreateTournament> {
     return reglas;
   }
   
+  
+    Future<dynamic> popUpError(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'No se ha podido crear el torneo',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
+
+  Future<dynamic> popUpCorrecto(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Se ha creado el torneo correctamente',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 16, 159, 19),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+  
+  
   Future CrearTorneo() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/torneo/createTorneo');
     final headers = {
@@ -234,21 +276,31 @@ class _CreateTournamentState extends State<CreateTournament> {
       'reglas': a
     };
 
-    // final response = await http.post(url,
-    //     headers: headers, body: jsonEncode(mapeddate)); // print(response);
-    // if (response.statusCode == 200) {
-    //   Map<String, dynamic> respuesta = json.decode(response
-    //       .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
-    //   print(        infoInicial: respuesta,
-    //           ));
-    //   Navigator.push(context, route);
-    //   popUpCorrecto(context);
-    // } else {
-    //   print('No se ha creado');
-    //   if (response.statusCode != 200) {
-    //     print(response.statusCode);
-    //     popUpError(context);
-    //   }
-    // }
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      // print(        infoInicial: respuesta,
+      //         ));
+      print(respuesta);
+      print(respuesta['id']);
+      final route = MaterialPageRoute(
+          builder: (context) => AnadirJugadoresTorneo(
+                nomUser: widget.username,
+                autorization: widget.autorization,
+                idPagina: respuesta['idTorneo'],
+                numP: 9,
+                infoInicial: respuesta,
+              ));
+      Navigator.push(context, route);
+      popUpCorrecto(context);
+    } else {
+      print('No se ha creado');
+      if (response.statusCode != 200) {
+        print(response.statusCode);
+        popUpError(context);
+      }
+    }
   }
 }
