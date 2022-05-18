@@ -207,7 +207,6 @@ class _PartidaState extends State<Partida> {
                     });
                 break;
             }
-            print(carta.buildMessage());
           } else {
             print('No se puede realizar ese movimiento');
           }
