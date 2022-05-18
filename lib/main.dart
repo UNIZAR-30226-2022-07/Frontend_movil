@@ -56,9 +56,9 @@ class MyApp extends StatelessWidget {
               autorization: '',
               nomUser: '',
             ),
-        'notificaciones': (BuildContext context) => Notifications(
-              username: '',
-            ),
+        // 'notificaciones': (BuildContext context) => Notifications(
+        //       username: '',
+        //     ),
         'search_friend': (BuildContext context) => AnadirAmigos(username: ''),
       },
     );

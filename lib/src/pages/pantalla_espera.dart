@@ -210,82 +210,196 @@ class _EsperaPartidaState extends State<EsperaPartida> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     stompClient.activate();
-    return Container(
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              //Lista de jugadores
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _listaJugadores.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.supervised_user_circle_rounded,
-                            size: 60,
-                          ),
-                          DefaultTextStyle(
-                              style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              child: Text(_listaJugadores[index])),
-                        ],
-                      ),
-                    );
-                  },
+    return Scaffold(
+      body: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              //Botón invitar amigos
-              DefaultTextStyle(
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          popUpReglas(context);
+                        },
+                        icon: const Icon(
+                          Icons.info_outline,
+                          size: 40,
+                          color: Colors.white,
+                        )),
+                  ],
+                ),
+                //Lista de jugadores
+                Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _listaJugadores.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.supervised_user_circle_rounded,
+                              size: 60,
+                            ),
+                            DefaultTextStyle(
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                                child: Text(_listaJugadores[index])),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                  child: Text(getReglas())),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: DefaultTextStyle(
-                          style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                          child: Text(widget.idPagina),
+                ),
+                DefaultTextStyle(
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                    child: Text(getReglas())),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: DefaultTextStyle(
+                            style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                            child: Text(widget.idPagina),
+                          ),
+                        ),
+                        ElevatedButton(
+                          child: const Text('Copiar código'),
+                          onPressed: () {
+                            final data = ClipboardData(text: widget.idPagina);
+                            Clipboard.setData(data);
+                          },
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      child: const DefaultTextStyle(
+                        child: Text('Salir de la partida'),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            backgroundColor: Colors.red),
+                      ),
+                      onPressed: () {
+                        stompClient.send(
+                            destination: '/game/disconnect/${widget.idPagina}',
+                            body: '',
+                            headers: {
+                              'Authorization': 'Bearer ${widget.autorization}',
+                              'username': widget.nomUser
+                            });
+                        Navigator.pop(context);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
                       ),
-                      ElevatedButton(
-                        child: const Text('Copiar código'),
-                        onPressed: () {
-                          final data = ClipboardData(text: widget.idPagina);
-                          Clipboard.setData(data);
-                        },
-                      )
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ])),
+    );
+  }
+
+  Future<dynamic> popUpReglas(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Descripción de las reglas de la partida',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-            ]));
+                  content: SingleChildScrollView(
+                    child: RichText(
+                        text: const TextSpan(
+                            style: TextStyle(color: Colors.black, fontSize: 12),
+                            children: [
+                          TextSpan(
+                              text: '0 switch: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  'Cada vez que un usuario juegue la carta normal con numero 0, todos los jugadores pasan su mano al siguiente jugador en el sentido del juego.\n'),
+                          TextSpan(
+                              text: '\nCrazy 7: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  'Cada vez que un jugador juegue la carta normal con numero 7, podra elegir a otro jugador para intercambiar su mano.\n'),
+                          TextSpan(
+                              text: '\nProgressive draw: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  'Cuando en la cima de la pila de descartes haya una carta +2 o +4, el jugador que tenga el turno puede evitar robar jugando otra carta +2 si son del mismo color o +4, acumulando la cantidad de cartas pendientes por robar para el siguiente jugador.\n'),
+                          TextSpan(
+                              text: '\nChaos draw: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  'Si en algun momento el jugador debe robar cartas, el jugador robara una cantidad aleatoria entre 0 y 6 cartas.\n'),
+                          TextSpan(
+                              text: '\nBlock draw: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  'Si el jugador anterior ha jugado una carta +2 o +4, el jugador que tenga el turno puede evitar robar jugando la carta Bloqueo, saltando su propio turno y dejando las cartas pendientes de robar al siguiente jugador. El siguiente jugador puede encadenar otra carta de Bloqueo y evitar robar tambien.\n'),
+                          TextSpan(
+                              text: '\nRepeat draw: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  'Si es el turno de un jugador y no puede jugar ninguna de las cartas de su mano, el jugador debera robar cartas de 1 en 1 hasta que pueda jugar una.\n'),
+                        ])),
+                  ),
+                ))));
   }
 
   @override
