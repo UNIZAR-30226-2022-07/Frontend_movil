@@ -44,12 +44,16 @@ class ChatPage extends StatefulWidget {
   final String autorizacion;
   final String idPagina;
   final String nomUser;
+  final List<types.Message> listaMensajes;
+  final void Function(List<types.Message>) callback;
   // ChatPage({Key? key, required this.autorizacion,required this.idPagina, required this.nomUser}) : super(key: key);
   ChatPage(
       {Key? key,
       required this.autorizacion,
       required this.idPagina,
-      required this.nomUser})
+      required this.nomUser,
+      required this.listaMensajes,
+      required this.callback})
       : super(key: key);
 
   @override
@@ -60,7 +64,7 @@ class _ChatPageState extends State<ChatPage> {
   String mensaje = '';
   String r = '';
   bool primeraContruccion = true;
-  List<types.Message> _messages = [];
+  late List<types.Message> _messages;
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
   // final canalGeneral = StreamController.broadcast();
 
@@ -68,16 +72,16 @@ class _ChatPageState extends State<ChatPage> {
     stompClient.subscribe(
         destination: '/topic/chat/${widget.idPagina}',
         callback: (StompFrame frame) {
-          print("he entrado"); //esto no se imprime
           if (frame.body != null) {
-            print("he entrado"); //esto pues tampoco se imprime
             // canalGeneral.sink.add(json.decode(frame.body!));
             dynamic msj = json.decode(frame.body!);
+            print(frame.body);
             String u = msj['username'];
             final us = types.User(id: u);
             String aux = msj['username'] + ': ' + msj['message'];
             print(aux);
-            if (u != {widget.nomUser}) {
+            print(u);
+            if (u != widget.nomUser) {
               final textMessage = types.TextMessage(
                 author: us,
                 createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -103,11 +107,11 @@ class _ChatPageState extends State<ChatPage> {
       },
       stompConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorizacion}',
-        'username': '${widget.nomUser}'
+        'username': widget.nomUser
       },
       webSocketConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorizacion}',
-        'username': '${widget.nomUser}'
+        'username': widget.nomUser
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
       onStompError: (dynamic error) => print(error.toString()),
@@ -128,6 +132,7 @@ class _ChatPageState extends State<ChatPage> {
       ));
       stompClient.activate();
     }
+    _messages = widget.listaMensajes;
     _loadMessages();
   }
 
@@ -142,6 +147,7 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _messages.insert(0, message);
     });
+    widget.callback(_messages);
   }
 
   // void _handleMessageTap(BuildContext context, types.Message message) async {
@@ -161,6 +167,7 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _messages[index] = updatedMessage;
       });
+      widget.callback(_messages);
     });
   }
 
@@ -178,7 +185,7 @@ class _ChatPageState extends State<ChatPage> {
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
-          'username': '${widget.nomUser}'
+          'username': widget.nomUser
         });
     print("lo he mandado");
     _addMessage(textMessage);

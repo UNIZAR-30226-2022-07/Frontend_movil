@@ -6,6 +6,7 @@ import 'package:flutter_unogame/src/models/carta.dart';
 import 'package:flutter_unogame/src/pages/chat.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import 'package:stomp_dart_client/stomp.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import '../models/mano.dart';
 
 class Partida extends StatefulWidget {
@@ -38,6 +39,7 @@ class Partida extends StatefulWidget {
 }
 
 class _PartidaState extends State<Partida> {
+  List<types.Message> listaMensajes = [];
   late StreamSubscription userListener;
   late StreamSubscription gameListener;
   late StreamSubscription jugadaListener;
@@ -148,15 +150,6 @@ class _PartidaState extends State<Partida> {
       );
     });
   }
-
-  //Lista de jugadores de la partida
-  // dynamic mapa = [
-  //   {'username': 'Julián', 'numeroCartas': 5},
-  //   {'username': 'Paula', 'numeroCartas': 5},
-  //   {'username': 'Nerea', 'numeroCartas': 5},
-  //   {'username': 'Victor', 'numeroCartas': 5},
-  //   {'username': 'César', 'numeroCartas': 5},
-  // ];
 
   // Esta función dependerá también de las diferentes reglas con las que se juegue
   bool comprobarMov(Carta seleccionada, Carta cima) {
@@ -290,7 +283,7 @@ class _PartidaState extends State<Partida> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   rivalsCards(),
                   Column(children: [
@@ -354,12 +347,19 @@ class _PartidaState extends State<Partida> {
                                   autorizacion: widget.authorization,
                                   idPagina: widget.idPartida,
                                   nomUser: widget.nomUser,
+                                  listaMensajes: listaMensajes,
+                                  callback: (List<types.Message> updatedList) {
+                                    setState(() {
+                                      listaMensajes = updatedList;
+                                    });
+                                  },
                                 ));
                         Navigator.push(context, route);
                       },
                       icon: const Icon(
                         Icons.chat,
-                        size: 20,
+                        size: 40,
+                        color: Colors.white,
                       )),
                 ],
               ),
