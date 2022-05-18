@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_unogame/src/pages/pantalla_espera.dart';
 
 import 'package:http/http.dart' as http;
 import '../models/notificacion.dart';
@@ -9,7 +10,9 @@ import '../models/notificaciones_api.dart';
 
 class Notifications extends StatefulWidget {
   String username;
-  Notifications({Key? key, required this.username}) : super(key: key);
+  String authorization;
+  Notifications({Key? key, required this.username, required this.authorization})
+      : super(key: key);
 
   @override
   State<Notifications> createState() => _notificationsState();
@@ -30,7 +33,10 @@ class _notificationsState extends State<Notifications> {
   }
 
   Future<List<Notificacion>> getNotifications(String usuario) async {
-    List<Notificacion> l = await NotisApi.getNotifications(usuario);
+    List<Notificacion> l = await NotisApi.getNotificationsAmistad(usuario);
+    List<Notificacion> l2 = await NotisApi.getNotificationsAmistad(usuario);
+    l.addAll(l2);
+    // l es una lista de notificaciones con las peticiones de amistad y las invitaciones a partidas
     return l;
   }
 
@@ -110,6 +116,16 @@ class _notificationsState extends State<Notifications> {
                                                       index,
                                                       '${data?[index].person}')
                                                   .then((_) => setState(() {}));
+                                            } else if ('${data?[index].accion}' ==
+                                                'partida') {
+                                              // Para aceptar la invitación a la partida hay que eliminar
+                                              // la invitación para el usuario y conctarse a la partida
+                                              CancelPartida(
+                                                  widget.username,
+                                                  index,
+                                                  '${data?[index].idPartida}');
+                                              EntrarPartida(
+                                                  '${data?[index].idPartida}');
                                             }
                                             //notificaciones.removeAt(index);
                                           },
@@ -134,8 +150,12 @@ class _notificationsState extends State<Notifications> {
                                                       index,
                                                       '${data?[index].person}')
                                                   .then((_) => setState(() {}));
-                                            } else {
-                                              // Cuando sea una invitación a una partida
+                                            } else if ('${data?[index].accion}' ==
+                                                'partida') {
+                                              CancelPartida(
+                                                  widget.username,
+                                                  index,
+                                                  '${data?[index].idPartida}');
                                             }
                                           },
                                           icon: const Icon(
@@ -273,7 +293,26 @@ class _notificationsState extends State<Notifications> {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     Map mapeddate = {'username': username, 'friendname': friend};
-    
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      // notificaciones.removeAt(i);
+    } else {
+      print('Error');
+      popUpError(context, 'Ha ocurrido un error');
+    }
+  }
+
+  Future CancelPartida(String username, int i, String idPartida) async {
+    Uri url =
+        Uri.parse('https://onep1.herokuapp.com/game/cancelarInvitacionPartida');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'username': username, 'gameId': idPartida};
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {
@@ -283,5 +322,57 @@ class _notificationsState extends State<Notifications> {
     } else {
       print('Error');
     }
+  }
+
+  Future EntrarPartida(String idPartida) async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {
+      'idPartida': idPartida,
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(mapeddate));
+    print(response.body);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response.body);
+      print(respuesta);
+      List<String> jugadores = [];
+      for (dynamic a in respuesta['jugadores']) {
+        jugadores.add(a);
+      }
+      final route = MaterialPageRoute(
+          builder: (context) => EsperaPartida(
+              autorization: widget.authorization,
+              idPagina: idPartida,
+              nomUser: widget.username,
+              nPlayers: respuesta['numeroJugadores'],
+              jugadores: jugadores,
+              infoInicial: respuesta,
+              reglas: respuesta['reglas']));
+      Navigator.push(context, route);
+    } else {
+      popUpError(context, 'La partida ya no existe');
+    }
+  }
+
+  Future<dynamic> popUpError(BuildContext context, String mensaje) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: Text(
+                    mensaje,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
   }
 }

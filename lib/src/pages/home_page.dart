@@ -87,8 +87,10 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () {
                 final route = MaterialPageRoute(
-                    builder: (context) =>
-                        Notifications(username: widget.username));
+                    builder: (context) => Notifications(
+                          username: widget.username,
+                          authorization: widget.autorization,
+                        ));
                 Navigator.push(context, route);
               },
             ),
