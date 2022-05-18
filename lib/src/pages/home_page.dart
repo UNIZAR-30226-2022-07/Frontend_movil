@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_unogame/src/pages/wait_publica.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart';
@@ -164,12 +165,56 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      // final route = MaterialPageRoute(
-                      //     builder: (context) => ChatPage(
-                      //           autorizacion: widget.autorization,
-                      //         ));
-                      // Navigator.push(context, route);
+                    onPressed: () async {
+                      Uri url = Uri.parse(
+                          'https://onep1.herokuapp.com/game/getPartidaPublica');
+                      final headers = {
+                        HttpHeaders.contentTypeHeader:
+                            "application/json; charset=UTF-8"
+                      };
+
+                      final responsePartida =
+                          await http.post(url, headers: headers);
+                      setState(() => this.code = code);
+                      if (responsePartida.statusCode == 200) {
+                        dynamic idPartida = json.decode(responsePartida.body);
+                        Uri url = Uri.parse(
+                            'https://onep1.herokuapp.com/game/getInfoPartida');
+                        print(idPartida);
+                        Map mapeddate = {
+                          'idPartida': idPartida,
+                        };
+                        final response = await http.post(url,
+                            headers: headers, body: jsonEncode(mapeddate));
+                        setState(() => this.code = code);
+                        if (response.statusCode == 200) {
+                          Map<String, dynamic> respuesta =
+                              json.decode(response.body);
+                          print(respuesta);
+                          List<String> jugadores = [];
+                          for (dynamic a in respuesta['jugadores']) {
+                            jugadores.add(a);
+                          }
+                          final route = MaterialPageRoute(
+                              builder: (context) => EsperaPublica(
+                                    autorization: widget.autorization,
+                                    idPagina: code,
+                                    nomUser: widget.username,
+                                    nPlayers: respuesta['numeroJugadores'],
+                                    jugadores: jugadores,
+                                    infoInicial: respuesta,
+                                  ));
+                          Navigator.push(context, route);
+                        } else {
+                          print('Error');
+                          dynamic respuesta = json.decode(response.body);
+                          print(respuesta);
+                        }
+                      } else {
+                        print('Error');
+                        dynamic respuesta = json.decode(responsePartida.body);
+                        print(respuesta);
+                      }
                     },
                     child: const Text(
                       'Partida rápida',
@@ -264,11 +309,6 @@ class _HomePageState extends State<HomePage> {
                                 reglas: respuesta['reglas']));
                         Navigator.push(context, route);
                       }
-                      // final route = MaterialPageRoute(
-                      //     builder: (context) => WaitPartida( //mirar que la partida exista antes ir a la otra pagina
-                      //         autorization: widget.autorization,
-                      //         username: widget.username,
-                      //          idPartida: code));
                     },
                     child: const Text(
                       'Unirse a partida privada',
