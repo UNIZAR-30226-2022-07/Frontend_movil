@@ -77,7 +77,7 @@ class _ChatPageState extends State<ChatPage> {
             final us = types.User(id: u);
             String aux = msj['username'] + ': ' + msj['message'];
             print(aux);
-            if (u != 'paulae') {
+            if (u != {widget.nomUser}) {
               final textMessage = types.TextMessage(
                 author: us,
                 createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -103,11 +103,11 @@ class _ChatPageState extends State<ChatPage> {
       },
       stompConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorizacion}',
-        'username': 'paulae'
+        'username': '${widget.nomUser}'
       },
       webSocketConnectHeaders: {
         'Authorization': 'Bearer ${widget.autorizacion}',
-        'username': 'paulae'
+        'username': '${widget.nomUser}'
       },
       onWebSocketError: (dynamic error) => print(error.toString()),
       onStompError: (dynamic error) => print(error.toString()),
@@ -178,7 +178,7 @@ class _ChatPageState extends State<ChatPage> {
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
-          'username': 'paulae'
+          'username': '${widget.nomUser}'
         });
     print("lo he mandado");
     _addMessage(textMessage);
