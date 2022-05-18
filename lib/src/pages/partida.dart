@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
+import 'package:flutter_unogame/src/pages/chat.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import '../models/mano.dart';
@@ -66,7 +67,11 @@ class _PartidaState extends State<Partida> {
     cima = Carta(color: '', url: 'images/one.png', numero: '');
     mano = Mano(cartas: []);
     if (widget.infoInicial != null) {
-      _turno = widget.infoInicial['jugadores'][0];
+      if (widget.infoInicial['turno'] != null) {
+        _turno = widget.infoInicial['turno']['nombre'];
+      } else {
+        _turno = widget.infoInicial['jugadores'][0];
+      }
     } else {
       _turno = 'otro';
     }
@@ -276,94 +281,111 @@ class _PartidaState extends State<Partida> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-    return Container(
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 6, 104, 16),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                rivalsCards(),
-                Column(children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // No es un buildCard sino la cima
-                      ultimaCarta(cima),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      cartaRobar(),
-                      const SizedBox(
-                        width: 80,
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 40,
-                        width: 150,
-                        child: TextButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color.fromARGB(250, 199, 9, 9)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100.0),
+    return Scaffold(
+      body: Container(
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 6, 104, 16),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  rivalsCards(),
+                  Column(children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // No es un buildCard sino la cima
+                        ultimaCarta(cima),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        cartaRobar(),
+                        const SizedBox(
+                          width: 80,
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 150,
+                          child: TextButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  const Color.fromARGB(250, 199, 9, 9)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                ),
                               ),
                             ),
-                          ),
-                          onPressed: () async {
-                            //Acciones a realizar al apretar el botón UNO
-                            //Avisar al Backend
-                          },
-                          child: const Text(
-                            'UNO',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'FredokaOne',
-                                fontSize: 25.0),
+                            onPressed: () async {
+                              //Acciones a realizar al apretar el botón UNO
+                              //Avisar al Backend
+                            },
+                            child: const Text(
+                              'UNO',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'FredokaOne',
+                                  fontSize: 25.0),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 80,
-                      ),
-                    ],
-                  ),
-                ]),
-              ],
-            ),
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.fromLTRB(12, 0, 0, 2),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: (_turno == widget.nomUser)
-                        ? Colors.yellow
-                        : Colors.transparent,
-                  ),
-                  height: 130,
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: mano.length(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildCard(mano.cartas[index]);
-                    },
-                  ),
-                ))
-          ],
-        ));
+                        const SizedBox(
+                          width: 80,
+                        ),
+                      ],
+                    ),
+                  ]),
+                  //Hay que añadir aquí el botón del char
+                  IconButton(
+                      onPressed: () {
+                        final route = MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                                  autorizacion: widget.authorization,
+                                  idPagina: widget.idPartida,
+                                  nomUser: widget.nomUser,
+                                ));
+                        Navigator.push(context, route);
+                      },
+                      icon: const Icon(
+                        Icons.chat,
+                        size: 20,
+                      )),
+                ],
+              ),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.fromLTRB(12, 0, 0, 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: (_turno == widget.nomUser)
+                          ? Colors.yellow
+                          : Colors.transparent,
+                    ),
+                    height: 130,
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: mano.length(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildCard(mano.cartas[index]);
+                      },
+                    ),
+                  ))
+            ],
+          )),
+    );
   }
 
   Future<dynamic> popUpWild(BuildContext context, Carta carta) {

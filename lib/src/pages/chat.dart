@@ -42,10 +42,15 @@ import 'package:web_socket_channel/status.dart' as status;
 
 class ChatPage extends StatefulWidget {
   final String autorizacion;
-  // final String idPagina;
-  // final String nomUser;
+  final String idPagina;
+  final String nomUser;
   // ChatPage({Key? key, required this.autorizacion,required this.idPagina, required this.nomUser}) : super(key: key);
-  ChatPage({Key? key, required this.autorizacion}) : super(key: key);
+  ChatPage(
+      {Key? key,
+      required this.autorizacion,
+      required this.idPagina,
+      required this.nomUser})
+      : super(key: key);
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -54,13 +59,14 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   String mensaje = '';
   String r = '';
+  bool primeraContruccion = true;
   List<types.Message> _messages = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
   // final canalGeneral = StreamController.broadcast();
 
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
-        destination: '/topic/chat/d93dcc5c-80e6-4e3a-a1e8-dc2a55200560',
+        destination: '/topic/chat/${widget.idPagina}',
         callback: (StompFrame frame) {
           print("he entrado"); //esto no se imprime
           if (frame.body != null) {
@@ -69,7 +75,7 @@ class _ChatPageState extends State<ChatPage> {
             dynamic msj = json.decode(frame.body!);
             String u = msj['username'];
             final us = types.User(id: u);
-            String aux = msj['username'] + ':' + msj['message'];
+            String aux = msj['username'] + ': ' + msj['message'];
             print(aux);
             if (u != 'paulae') {
               final textMessage = types.TextMessage(
@@ -168,7 +174,7 @@ class _ChatPageState extends State<ChatPage> {
     );
     stompClient.activate();
     stompClient.send(
-        destination: '/game/message/d93dcc5c-80e6-4e3a-a1e8-dc2a55200560',
+        destination: '/game/message/${widget.idPagina}',
         body: mensaje,
         headers: {
           'Authorization': 'Bearer ${widget.autorizacion}',
@@ -192,7 +198,10 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    stompClient.activate();
+    if (primeraContruccion) {
+      stompClient.activate();
+      primeraContruccion = false;
+    }
     return Scaffold(
       body: Chat(
         messages: _messages,

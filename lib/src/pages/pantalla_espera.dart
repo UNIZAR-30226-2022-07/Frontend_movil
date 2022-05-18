@@ -72,7 +72,7 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                         ));
                 Navigator.push(context, route);
               }
-              await Future.delayed(const Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 1));
               canalUser.sink.add(json.decode(frame.body!));
             }
           }
@@ -126,7 +126,7 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                     ));
             Navigator.push(context, route);
           }
-          await Future.delayed(const Duration(seconds: 3));
+          await Future.delayed(const Duration(seconds: 1));
           canalCartaMedio.sink.add(json.decode(frame.body!));
         }
       },
