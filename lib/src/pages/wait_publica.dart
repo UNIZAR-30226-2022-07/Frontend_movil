@@ -37,7 +37,8 @@ class _EsperaPublicaState extends State<EsperaPublica> {
   final canalGeneral = StreamController.broadcast();
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
-  late List<String> _listaJugadores = widget.jugadores;
+  List<String> _listaJugadores = [];
+  List<bool> _listacompleta = [];
 
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
@@ -94,8 +95,35 @@ class _EsperaPublicaState extends State<EsperaPublica> {
             }
             print(jugadores);
             setState(() {
-              _listaJugadores = jugadores;
+              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              _listacompleta[nJugadores] = true;
+              nJugadores = jugadores.length;
             });
+            if (nJugadores == widget.nPlayers &&
+                jugadores[0] == widget.nomUser) {
+              //Comenzar la partida automáticamente
+              stompClient.send(
+                  destination: '/game/begin/${widget.idPagina}',
+                  body: '',
+                  headers: {
+                    'Authorization': 'Bearer ${widget.autorization}',
+                    'username': widget.nomUser
+                  });
+              final route = MaterialPageRoute(
+                  builder: (context) => Partida(
+                        userListener: canalUser.stream,
+                        gameListener: canalGeneral.stream,
+                        cartaMedioListener: canalCartaMedio.stream,
+                        jugadaListener: canalJugada.stream,
+                        stompClient: stompClient,
+                        nomUser: widget.nomUser,
+                        authorization: widget.autorization,
+                        idPartida: widget.idPagina,
+                        infoInicial: widget.infoInicial,
+                        listaInicial: _listaJugadores,
+                      ));
+              Navigator.push(context, route);
+            }
           }
         }
       },
@@ -190,7 +218,9 @@ class _EsperaPublicaState extends State<EsperaPublica> {
       ));
       stompClient.activate();
     }
-    _listaJugadores.add(widget.nomUser);
+    _listaJugadores = List.filled(widget.nPlayers, 'Esperando...');
+    _listaJugadores[0] = widget.nomUser;
+    _listacompleta = List.filled(widget.nPlayers, false);
   }
 
   @override

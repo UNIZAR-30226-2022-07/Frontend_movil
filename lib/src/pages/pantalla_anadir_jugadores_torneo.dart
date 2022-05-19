@@ -1,23 +1,14 @@
-import 'dart:ffi';
-import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_unogame/src/pages/pagina_invitar_amigos.dart';
-import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/wait_torneo.dart';
-import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
-import '../pages/home_page.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:async';
-import "dart:async";
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/status.dart' as status;
 
 class AnadirJugadoresTorneo extends StatefulWidget {
   final int numP;
@@ -111,20 +102,7 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                           nPlayers: respuesta['numeroJugadores'],
                           jugadores: jugadores,
                           infoInicial: respuesta,
-                          reglas: respuesta['reglas'])
-                      // Partida(
-                      //       userListener: canalUser.stream,
-                      //       gameListener: canalGeneral.stream,
-                      //       cartaMedioListener: canalCartaMedio.stream,
-                      //       jugadaListener: canalJugada.stream,
-                      //       stompClient: stompClient,
-                      //       nomUser: widget.nomUser,
-                      //       authorization: widget.autorization,
-                      //       idPartida: widget.idPagina,
-                      //       infoInicial: widget.infoInicial,
-                      //       listaInicial: _listaJugadores,
-                      //     )
-                      );
+                          reglas: respuesta['reglas']));
                   Navigator.push(context, route);
                 }
               }

@@ -2,17 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_unogame/src/pages/wait_publica.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_unogame/src/pages/chat.dart';
 import 'package:flutter_unogame/src/pages/clasificacion.dart';
 import 'package:flutter_unogame/src/pages/crear_torneo.dart';
 import 'package:flutter_unogame/src/pages/editar_perfil.dart';
 import 'package:flutter_unogame/src/pages/lista_torneos.dart';
 import 'package:flutter_unogame/src/pages/notifications_page.dart';
 import 'package:flutter_unogame/src/pages/pantalla_espera.dart';
-import 'package:flutter_unogame/src/pages/partida.dart';
 import 'package:flutter_unogame/src/pages/search_players.dart';
 import 'crear_partida.dart';
 
