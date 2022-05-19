@@ -40,7 +40,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   List<String> _listaJugadores = [];
-  List<bool> _listacompleta = [];
 
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
@@ -130,7 +129,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             //Se actualiza la lista de jugadores
             setState(() {
               _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
-              _listacompleta[nJugadores] = true;
               nJugadores = jugadores.length;
             });
             //Se comprueba si se ha llegado al número necesario de jugadores
@@ -138,6 +136,13 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             if (nJugadores == widget.numP && jugadores[0] == widget.nomUser) {
               //Comenzar la partida automáticamente
               soyHost = true;
+              stompClient.send(
+                  destination: '/game/begin/torneo/${widget.idPagina}',
+                  body: '',
+                  headers: {
+                    'Authorization': 'Bearer ${widget.autorization}',
+                    'username': widget.nomUser
+                  });
             }
           } else {
             canalGeneral.sink.add(json.decode(frame.body!));
@@ -185,7 +190,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
     }
     _listaJugadores = List.filled(widget.numP, 'Esperando...');
     _listaJugadores[0] = widget.nomUser;
-    _listacompleta = List.filled(widget.numP, false);
   }
 
   @override
@@ -246,36 +250,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                                 child: Text(_listaJugadores[index])),
-                            !_listacompleta[index]
-                                ? const SizedBox(
-                                    height: 30,
-                                  )
-                                : SizedBox(
-                                    height: 30,
-                                    child: TextButton(
-                                        onPressed: () {
-                                          stompClient.send(
-                                              destination:
-                                                  '/game/disconnect/${widget.idPagina}',
-                                              body: '',
-                                              headers: {
-                                                'Authorization':
-                                                    'Bearer ${widget.autorization}',
-                                                'username':
-                                                    _listaJugadores[index]
-                                              });
-                                          setState(() {
-                                            _listaJugadores[index] =
-                                                'Esperando...';
-                                            _listacompleta[index] = false;
-                                            nJugadores--;
-                                          });
-                                        },
-                                        style: TextButton.styleFrom(
-                                            primary: Colors.red,
-                                            fixedSize: const Size(100, 20)),
-                                        child: const Text('Expulsar')),
-                                  )
                           ],
                         ),
                       );

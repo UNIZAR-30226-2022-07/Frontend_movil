@@ -38,7 +38,6 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   late List<String> _listaJugadores = widget.jugadores;
-
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
 //njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
@@ -104,15 +103,26 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
             }
             print(jugadores);
             setState(() {
-              _listaJugadores = jugadores;
+              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              nJugadores = jugadores.length;
             });
+            if (nJugadores == widget.nPlayers &&
+                jugadores[0] == widget.nomUser) {
+              //Si soy el host envío el begin de la partida cuando estén todos los jugadores
+              stompClient.send(
+                  destination: '/game/begin/${widget.idPagina}',
+                  body: '',
+                  headers: {
+                    'Authorization': 'Bearer ${widget.autorization}',
+                    'username': widget.nomUser
+                  });
+            }
           }
         }
       },
     );
 
     //devuelve la carta del medio
-    //Funciona
     stompClient.subscribe(
       destination: '/topic/begin/${widget.idPagina}',
       callback: (StompFrame frame) async {
@@ -200,6 +210,8 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
       ));
       stompClient.activate();
     }
+    _listaJugadores = List.filled(widget.nPlayers, 'Esperando...');
+    _listaJugadores[0] = widget.nomUser;
   }
 
   String getReglas() {
@@ -276,6 +288,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                     },
                   ),
                 ),
+                //Reglas de la partida
                 DefaultTextStyle(
                     style: const TextStyle(
                       color: Colors.black,
@@ -283,66 +296,6 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                       fontSize: 15,
                     ),
                     child: Text(getReglas())),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: DefaultTextStyle(
-                            style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                            child: Text(widget.idPagina),
-                          ),
-                        ),
-                        ElevatedButton(
-                          child: const Text('Copiar código'),
-                          onPressed: () {
-                            final data = ClipboardData(text: widget.idPagina);
-                            Clipboard.setData(data);
-                          },
-                        ),
-                      ],
-                    ),
-                    TextButton(
-                      child: const DefaultTextStyle(
-                        child: Text('Salir de la partida'),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            backgroundColor: Colors.red),
-                      ),
-                      onPressed: () {
-                        stompClient.send(
-                            destination: '/game/disconnect/${widget.idPagina}',
-                            body: '',
-                            headers: {
-                              'Authorization': 'Bearer ${widget.autorization}',
-                              'username': widget.nomUser
-                            });
-                        Navigator.pop(context);
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.red),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(
                   height: 50,
                 ),
