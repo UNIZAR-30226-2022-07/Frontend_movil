@@ -44,6 +44,16 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
 //njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
 //turno: {nombre: usuario123, cartas: []}, tipo: true}
 
+// if (soyHost) {
+  //   stompClient.send(
+  //       destination: '/game/begin/torneo/$idPartidaTorneo',
+  //       body: '',
+  //       headers: {
+  //         'Authorization': 'Bearer ${widget.autorization}',
+  //         'username': widget.nomUser
+  //       });
+  // }
+
   void onConnect(StompFrame frame) async {
     //por aqui devuelve tu mano de cartas
     //Funciona

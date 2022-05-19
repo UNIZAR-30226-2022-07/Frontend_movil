@@ -33,6 +33,8 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
   String message = '';
   int nJugadores = 1;
   bool partidaEmpezada = false;
+  bool soyHost = false;
+  String idPartidaTorneo = '';
   final canalUser = StreamController.broadcast();
   final canalGeneral = StreamController.broadcast();
   final canalCartaMedio = StreamController.broadcast();
@@ -61,7 +63,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
 
   void onConnect(StompFrame frame) {
     //por aqui devuelve tu mano de cartas
-    //Funciona
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) async {
@@ -70,10 +71,11 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             print(frame.body);
             dynamic a = "No es tu turno";
             if (frame.body != a) {
-              if (!partidaEmpezada) {
+              if (partidaEmpezada) {
                 canalUser.sink.add(json.decode(frame.body!));
               } else {
-                String idPartidaTorneo = jsonDecode(frame.body!);
+                //Nos llega el id de la partida a jugar
+                idPartidaTorneo = jsonDecode(frame.body!);
                 partidaEmpezada = true;
                 Uri url = Uri.parse(
                     'https://onep1.herokuapp.com/game/getInfoPartida');
@@ -84,16 +86,17 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                 Map mapeddate = {
                   'idPartida': idPartidaTorneo,
                 };
+                //Obtenemos la info necesaria para poder ir a la partida en cuestión
                 final response = await http.post(url,
                     headers: headers, body: jsonEncode(mapeddate));
                 print(response.body);
                 if (response.statusCode == 200) {
                   Map<String, dynamic> respuesta = json.decode(response.body);
-                  print(respuesta);
                   List<String> jugadores = [];
                   for (dynamic a in respuesta['jugadores']) {
                     jugadores.add(a);
                   }
+                  //Pasamos a la pantalla de esperaTorneo si todo ha ido bien
                   final route = MaterialPageRoute(
                       builder: (context) => EsperaTorneo(
                           autorization: widget.autorization,
@@ -112,12 +115,11 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
 
     //conectarse a la partida y nos devuelve la lista de los jugadores
     stompClient.subscribe(
-      destination: '/topic/connect/${widget.idPagina}',
+      destination: '/topic/connect/torneo/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
-          canalGeneral.sink.add(json.decode(frame.body!));
-          print(json.decode(frame.body!));
           print('Canal general');
+          print(json.decode(frame.body!));
           if (!partidaEmpezada) {
             dynamic a = json.decode(frame.body!);
             List<String> jugadores = [];
@@ -125,40 +127,21 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
               jugadores.add(i['nombre']);
             }
             print(jugadores);
+            //Se actualiza la lista de jugadores
             setState(() {
               _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
               _listacompleta[nJugadores] = true;
               nJugadores = jugadores.length;
             });
+            //Se comprueba si se ha llegado al número necesario de jugadores
+            // y si el jugador en cuestión es el host
             if (nJugadores == widget.numP && jugadores[0] == widget.nomUser) {
               //Comenzar la partida automáticamente
+              soyHost = true;
             }
+          } else {
+            canalGeneral.sink.add(json.decode(frame.body!));
           }
-        }
-      },
-    );
-
-    //devuelve la carta del medio
-    //Funciona
-    stompClient.subscribe(
-      destination: '/topic/begin/${widget.idPagina}',
-      callback: (StompFrame frame) {
-        if (frame.body != null) {
-          canalCartaMedio.sink.add(json.decode(frame.body!));
-          print('Canal carta medio:');
-          print(frame.body);
-        }
-      },
-    );
-
-    //enviar mensaje para jugar una carta
-    stompClient.subscribe(
-      destination: '/topic/jugada/${widget.idPagina}',
-      callback: (StompFrame frame) {
-        if (frame.body != null) {
-          canalJugada.sink.add(json.decode(frame.body!));
-          print('Canal jugada');
-          print(frame.body);
         }
       },
     );
@@ -310,70 +293,36 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                 const SizedBox(
                   height: 30,
                 ),
-                //Botón crear
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   children: <Widget>[
-                //     SizedBox(
-                //       width: 170,
-                //       height: 40.0,
-                //       child: TextButton(
-                //         style: ButtonStyle(
-                //           backgroundColor: MaterialStateProperty.all<Color>(
-                //               const Color.fromARGB(255, 32, 159, 255)),
-                //           shape:
-                //               MaterialStateProperty.all<RoundedRectangleBorder>(
-                //             RoundedRectangleBorder(
-                //               borderRadius: BorderRadius.circular(12.0),
-                //             ),
-                //           ),
-                //         ),
-                //         onPressed: () {
-                //           // stompClient.activate();
-                //           //Envío de un mensaje para empezar una partida (solo el que crea la partida)
-                //           if (nJugadores == widget.numP) {
-                //             partidaEmpezada = true;
-                //             stompClient.send(
-                //                 destination: '/game/begin/${widget.idPagina}',
-                //                 body: '',
-                //                 headers: {
-                //                   'Authorization':
-                //                       'Bearer ${widget.autorization}',
-                //                   'username': widget.nomUser
-                //                 });
-                //             print("entro a la partida");
-                //             final route = MaterialPageRoute(
-                //                 builder: (context) => Partida(
-                //                       userListener: canalUser.stream,
-                //                       gameListener: canalGeneral.stream,
-                //                       cartaMedioListener:
-                //                           canalCartaMedio.stream,
-                //                       jugadaListener: canalJugada.stream,
-                //                       stompClient: stompClient,
-                //                       nomUser: widget.nomUser,
-                //                       authorization: widget.autorization,
-                //                       idPartida: widget.idPagina,
-                //                       infoInicial: widget.infoInicial,
-                //                       listaInicial: _listaJugadores,
-                //                     ));
-                //             Navigator.push(context, route);
-                //           } else {
-                //             faltanJugadores(context);
-                //             print('Faltan jugadores');
-                //           }
-                //         },
-                //         child: const Text(
-                //           'Crear torneo',
-                //           style: TextStyle(
-                //               color: Colors.white,
-                //               fontFamily: 'FredokaOne',
-                //               fontSize: 20.0),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+                //Botón salir del torneo
+                TextButton(
+                  child: const DefaultTextStyle(
+                    child: Text('Salir de la partida'),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        backgroundColor: Colors.red),
+                  ),
+                  onPressed: () {
+                    stompClient.send(
+                        destination: '/game/disconnect/${widget.idPagina}',
+                        body: '',
+                        headers: {
+                          'Authorization': 'Bearer ${widget.autorization}',
+                          'username': widget.nomUser
+                        });
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20)
               ])),
     );
@@ -387,19 +336,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
     canalGeneral.close();
     canalUser.close();
     super.dispose();
-  }
-
-  Future<dynamic> faltanJugadores(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              title: const Text(
-                'Aún no están todos los jugadores',
-                style: TextStyle(fontSize: 24, color: Colors.red),
-              ),
-            ));
   }
 
   Future<dynamic> popUpReglas(BuildContext context) {

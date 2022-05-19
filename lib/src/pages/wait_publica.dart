@@ -47,7 +47,6 @@ class _EsperaPublicaState extends State<EsperaPublica> {
 
   void onConnect(StompFrame frame) async {
     //por aqui devuelve tu mano de cartas
-    //Funciona
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) async {
@@ -72,8 +71,8 @@ class _EsperaPublicaState extends State<EsperaPublica> {
                           listaInicial: _listaJugadores,
                         ));
                 Navigator.push(context, route);
+                await Future.delayed(const Duration(seconds: 1));
               }
-              await Future.delayed(const Duration(seconds: 1));
               canalUser.sink.add(json.decode(frame.body!));
             }
           }
