@@ -108,6 +108,7 @@ class _EsperaPublicaState extends State<EsperaPublica> {
                     'Authorization': 'Bearer ${widget.autorization}',
                     'username': widget.nomUser
                   });
+              partidaEmpezada = true;
               final route = MaterialPageRoute(
                   builder: (context) => Partida(
                         userListener: canalUser.stream,

@@ -11,8 +11,7 @@ import 'package:http/http.dart' as http;
 
 class InvitePlayers extends StatefulWidget {
   final String username;
-  const InvitePlayers({Key? key,required this.username})
-      : super(key: key);
+  const InvitePlayers({Key? key, required this.username}) : super(key: key);
   @override
   _InvitePlayersState createState() => _InvitePlayersState();
 }
@@ -31,11 +30,12 @@ class _InvitePlayersState extends State<InvitePlayers> {
         ),
         body: Container(
           decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
+              image: DecorationImage(
+                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
-              future: _friendList.getFriendList(widget.username), // esta en API_service
+              future: _friendList
+                  .getFriendList(widget.username), // esta en API_service
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(
@@ -52,8 +52,10 @@ class _InvitePlayersState extends State<InvitePlayers> {
                               children: [
                                 const SizedBox(width: 20),
                                 Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         '${data?[index].username}',
@@ -61,21 +63,26 @@ class _InvitePlayersState extends State<InvitePlayers> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      const SizedBox(width:400),
+                                      const SizedBox(width: 300),
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 68, 221, 26)),
-                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              MaterialStateProperty.all<Color>(
+                                                  Color.fromARGB(
+                                                      255, 68, 221, 26)),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12.0),
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
                                             ),
                                           ),
                                         ),
                                         onPressed: () {
-                                          String nom = '${data?[index].username}';
+                                          String nom =
+                                              '${data?[index].username}';
                                           print(nom);
-                                          InviteFriend(widget.username,nom);
+                                          InviteFriend(widget.username, nom);
                                         },
                                         child: const Text(
                                           'Invitar',
@@ -85,7 +92,7 @@ class _InvitePlayersState extends State<InvitePlayers> {
                                               fontSize: 15.0),
                                         ),
                                       ),
-                                      const SizedBox(height: 10),
+                                      // const SizedBox(height: 10),
                                     ])
                               ],
                             ),
@@ -99,7 +106,7 @@ class _InvitePlayersState extends State<InvitePlayers> {
     );
   }
 
-    Future<dynamic> popUpError(BuildContext context) {
+  Future<dynamic> popUpError(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -136,7 +143,7 @@ class _InvitePlayersState extends State<InvitePlayers> {
                   ),
                 ))));
   }
-  
+
   Future InviteFriend(String username, String friendname) async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/friends/deleteFriend');
     final headers = {
@@ -147,7 +154,8 @@ class _InvitePlayersState extends State<InvitePlayers> {
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {
-      Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
       popUpCorrecto(context);
       print(response);
     } else {
@@ -159,4 +167,3 @@ class _InvitePlayersState extends State<InvitePlayers> {
     }
   }
 }
-

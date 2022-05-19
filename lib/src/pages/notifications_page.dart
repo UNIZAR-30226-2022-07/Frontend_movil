@@ -34,7 +34,7 @@ class _notificationsState extends State<Notifications> {
 
   Future<List<Notificacion>> getNotifications(String usuario) async {
     List<Notificacion> l = await NotisApi.getNotificationsAmistad(usuario);
-    List<Notificacion> l2 = await NotisApi.getNotificationsAmistad(usuario);
+    List<Notificacion> l2 = await NotisApi.getNotificationsInvitacion(usuario);
     l.addAll(l2);
     // l es una lista de notificaciones con las peticiones de amistad y las invitaciones a partidas
     return l;
@@ -47,7 +47,6 @@ class _notificationsState extends State<Notifications> {
           List<Notificacion>? data = projectSnap.data;
           if (projectSnap.connectionState == ConnectionState.none &&
               projectSnap.hasData == null) {
-            //print('project snapshot data is: ${projectSnap.data}');
             return Container();
           }
           return Container(
@@ -294,8 +293,8 @@ class _notificationsState extends State<Notifications> {
     };
     Map mapeddate = {'username': username, 'friendname': friend};
 
-    final response = await http.post(url,
-        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(mapeddate));
     if (response.statusCode == 200) {
       Map<String, dynamic> respuesta = json.decode(response
           .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
@@ -313,8 +312,8 @@ class _notificationsState extends State<Notifications> {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     Map mapeddate = {'username': username, 'gameId': idPartida};
-    final response = await http.post(url,
-        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(mapeddate));
     if (response.statusCode == 200) {
       Map<String, dynamic> respuesta = json.decode(response
           .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/

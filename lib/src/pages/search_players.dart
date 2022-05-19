@@ -11,8 +11,7 @@ import 'package:http/http.dart' as http;
 
 class SearchPlayers extends StatefulWidget {
   final String username;
-  const SearchPlayers({Key? key,required this.username})
-      : super(key: key);
+  const SearchPlayers({Key? key, required this.username}) : super(key: key);
   @override
   _SearchPlayersState createState() => _SearchPlayersState();
 }
@@ -32,21 +31,23 @@ class _SearchPlayersState extends State<SearchPlayers> {
             IconButton(
               onPressed: () {
                 final route = MaterialPageRoute(
-                          builder: (context) => AnadirAmigos(username: widget.username));
-                      Navigator.push(context, route);
+                    builder: (context) =>
+                        AnadirAmigos(username: widget.username));
+                Navigator.push(context, route);
               },
               iconSize: 38.0,
               icon: const Icon(Icons.add),
             )
-          ], 
+          ],
         ),
         body: Container(
           decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
+              image: DecorationImage(
+                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
-              future: _friendList.getFriendList(widget.username), // esta en API_service
+              future: _friendList
+                  .getFriendList(widget.username), // esta en API_service
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(
@@ -72,21 +73,26 @@ class _SearchPlayersState extends State<SearchPlayers> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      const SizedBox(width:400),
+                                      const SizedBox(width: 300),
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all<Color>(Color.fromARGB(255, 221, 26, 26)),
-                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              MaterialStateProperty.all<Color>(
+                                                  const Color.fromARGB(
+                                                      255, 221, 26, 26)),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12.0),
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
                                             ),
                                           ),
                                         ),
                                         onPressed: () {
-                                          String nom = '${data?[index].username}';
+                                          String nom =
+                                              '${data?[index].username}';
                                           print(nom);
-                                          DeleteFriend(widget.username,nom);
+                                          DeleteFriend(widget.username, nom);
                                         },
                                         child: const Text(
                                           'Eliminar',
@@ -110,7 +116,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
     );
   }
 
-    Future<dynamic> popUpError(BuildContext context) {
+  Future<dynamic> popUpError(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -147,7 +153,7 @@ class _SearchPlayersState extends State<SearchPlayers> {
                   ),
                 ))));
   }
-  
+
   Future DeleteFriend(String username, String friendname) async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/friends/deleteFriend');
     final headers = {
@@ -158,7 +164,8 @@ class _SearchPlayersState extends State<SearchPlayers> {
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {
-      Map<String, dynamic> respuesta = json.decode(response.body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
       popUpCorrecto(context);
       print(response);
     } else {
@@ -170,7 +177,3 @@ class _SearchPlayersState extends State<SearchPlayers> {
     }
   }
 }
-
-
-
-
