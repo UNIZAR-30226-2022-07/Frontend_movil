@@ -1,44 +1,35 @@
-import 'dart:ffi';
-import 'dart:html';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_unogame/src/pages/pagina_invitar_amigos.dart';
-import 'package:flutter_unogame/src/pages/partida.dart';
-import 'package:flutter_unogame/src/pages/wait_torneo.dart';
-import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
-import '../pages/home_page.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:async';
-import "dart:async";
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/status.dart' as status;
 
-class AnadirJugadoresTorneo extends StatefulWidget {
-  final int numP;
+import 'partida.dart';
+
+class EsperaTorneo extends StatefulWidget {
   final String idPagina;
   final String autorization;
   final String nomUser;
+  final int nPlayers;
+  final List<String> jugadores;
+  final List<dynamic> reglas;
   final dynamic infoInicial;
-  final dynamic reglas;
-  AnadirJugadoresTorneo(
+  EsperaTorneo(
       {required this.autorization,
       required this.idPagina,
       required this.nomUser,
-      required this.numP,
+      required this.nPlayers,
+      required this.jugadores,
       required this.infoInicial,
       required this.reglas});
 
   @override
-  State<AnadirJugadoresTorneo> createState() => _AnadirJugadoresTorneoState();
+  State<EsperaTorneo> createState() => _EsperaTorneoState();
 }
 
-class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
+class _EsperaTorneoState extends State<EsperaTorneo> {
   String message = '';
   int nJugadores = 1;
   bool partidaEmpezada = false;
@@ -46,29 +37,14 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
   final canalGeneral = StreamController.broadcast();
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
-  List<String> _listaJugadores = [];
-  List<bool> _listacompleta = [];
+  late List<String> _listaJugadores = widget.jugadores;
 
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
 //njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
 //turno: {nombre: usuario123, cartas: []}, tipo: true}
 
-  String getReglas() {
-    String rtdo = 'Reglas activas: ';
-    bool primera = true;
-    for (dynamic a in widget.reglas) {
-      if (primera) {
-        rtdo += a;
-        primera = false;
-      } else {
-        rtdo += ', ' + a;
-      }
-    }
-    return rtdo;
-  }
-
-  void onConnect(StompFrame frame) {
+  void onConnect(StompFrame frame) async {
     //por aqui devuelve tu mano de cartas
     //Funciona
     stompClient.subscribe(
@@ -80,54 +56,24 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             dynamic a = "No es tu turno";
             if (frame.body != a) {
               if (!partidaEmpezada) {
-                canalUser.sink.add(json.decode(frame.body!));
-              } else {
-                String idPartidaTorneo = jsonDecode(frame.body!);
                 partidaEmpezada = true;
-                Uri url = Uri.parse(
-                    'https://onep1.herokuapp.com/game/getInfoPartida');
-                final headers = {
-                  HttpHeaders.contentTypeHeader:
-                      "application/json; charset=UTF-8"
-                };
-                Map mapeddate = {
-                  'idPartida': idPartidaTorneo,
-                };
-                final response = await http.post(url,
-                    headers: headers, body: jsonEncode(mapeddate));
-                print(response.body);
-                if (response.statusCode == 200) {
-                  Map<String, dynamic> respuesta = json.decode(response.body);
-                  print(respuesta);
-                  List<String> jugadores = [];
-                  for (dynamic a in respuesta['jugadores']) {
-                    jugadores.add(a);
-                  }
-                  final route = MaterialPageRoute(
-                      builder: (context) => EsperaTorneo(
-                          autorization: widget.autorization,
-                          idPagina: idPartidaTorneo,
+                final route = MaterialPageRoute(
+                    builder: (context) => Partida(
+                          userListener: canalUser.stream,
+                          gameListener: canalGeneral.stream,
+                          cartaMedioListener: canalCartaMedio.stream,
+                          jugadaListener: canalJugada.stream,
+                          stompClient: stompClient,
                           nomUser: widget.nomUser,
-                          nPlayers: respuesta['numeroJugadores'],
-                          jugadores: jugadores,
-                          infoInicial: respuesta,
-                          reglas: respuesta['reglas'])
-                      // Partida(
-                      //       userListener: canalUser.stream,
-                      //       gameListener: canalGeneral.stream,
-                      //       cartaMedioListener: canalCartaMedio.stream,
-                      //       jugadaListener: canalJugada.stream,
-                      //       stompClient: stompClient,
-                      //       nomUser: widget.nomUser,
-                      //       authorization: widget.autorization,
-                      //       idPartida: widget.idPagina,
-                      //       infoInicial: widget.infoInicial,
-                      //       listaInicial: _listaJugadores,
-                      //     )
-                      );
-                  Navigator.push(context, route);
-                }
+                          authorization: widget.autorization,
+                          idPartida: widget.idPagina,
+                          infoInicial: widget.infoInicial,
+                          listaInicial: _listaJugadores,
+                        ));
+                Navigator.push(context, route);
               }
+              await Future.delayed(const Duration(seconds: 1));
+              canalUser.sink.add(json.decode(frame.body!));
             }
           }
         });
@@ -138,8 +84,8 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
-          print(json.decode(frame.body!));
           print('Canal general');
+          print(json.decode(frame.body!));
           if (!partidaEmpezada) {
             dynamic a = json.decode(frame.body!);
             List<String> jugadores = [];
@@ -148,13 +94,8 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             }
             print(jugadores);
             setState(() {
-              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
-              _listacompleta[nJugadores] = true;
-              nJugadores = jugadores.length;
+              _listaJugadores = jugadores;
             });
-            if (nJugadores == widget.numP && jugadores[0] == widget.nomUser) {
-              //Comenzar la partida automáticamente
-            }
           }
         }
       },
@@ -164,11 +105,29 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
     //Funciona
     stompClient.subscribe(
       destination: '/topic/begin/${widget.idPagina}',
-      callback: (StompFrame frame) {
+      callback: (StompFrame frame) async {
         if (frame.body != null) {
-          canalCartaMedio.sink.add(json.decode(frame.body!));
           print('Canal carta medio:');
           print(frame.body);
+          if (!partidaEmpezada) {
+            partidaEmpezada = true;
+            final route = MaterialPageRoute(
+                builder: (context) => Partida(
+                      userListener: canalUser.stream,
+                      gameListener: canalGeneral.stream,
+                      cartaMedioListener: canalCartaMedio.stream,
+                      jugadaListener: canalJugada.stream,
+                      stompClient: stompClient,
+                      nomUser: widget.nomUser,
+                      authorization: widget.autorization,
+                      idPartida: widget.idPagina,
+                      infoInicial: widget.infoInicial,
+                      listaInicial: _listaJugadores,
+                    ));
+            Navigator.push(context, route);
+          }
+          await Future.delayed(const Duration(seconds: 1));
+          canalCartaMedio.sink.add(json.decode(frame.body!));
         }
       },
     );
@@ -184,6 +143,15 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
         }
       },
     );
+
+    //Envío de mensaje para conectarte a una partida
+    stompClient.send(
+        destination: '/game/connect/${widget.idPagina}',
+        body: '',
+        headers: {
+          'Authorization': 'Bearer ${widget.autorization}',
+          'username': widget.nomUser
+        });
   }
 
   late StompClient stompClient = StompClient(
@@ -222,14 +190,24 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
       ));
       stompClient.activate();
     }
-    _listaJugadores = List.filled(widget.numP, 'Esperando...');
-    _listaJugadores[0] = widget.nomUser;
-    _listacompleta = List.filled(widget.numP, false);
+  }
+
+  String getReglas() {
+    String rtdo = 'Reglas activas: ';
+    bool primera = true;
+    for (dynamic a in widget.reglas) {
+      if (primera) {
+        rtdo += a;
+        primera = false;
+      } else {
+        rtdo += ', ' + a;
+      }
+    }
+    return rtdo;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> numbers = List.filled(widget.numP, '+');
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     stompClient.activate();
     return Scaffold(
@@ -244,7 +222,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                 const SizedBox(
                   height: 20,
                 ),
-                //Botón info reglas
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -264,13 +241,11 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                 Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: widget.numP,
+                    itemCount: _listaJugadores.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: index == numbers.length - 1
-                            ? const EdgeInsets.fromLTRB(8, 0, 8, 0)
-                            : const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -285,43 +260,12 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                                 child: Text(_listaJugadores[index])),
-                            !_listacompleta[index]
-                                ? const SizedBox(
-                                    height: 30,
-                                  )
-                                : SizedBox(
-                                    height: 30,
-                                    child: TextButton(
-                                        onPressed: () {
-                                          stompClient.send(
-                                              destination:
-                                                  '/game/disconnect/${widget.idPagina}',
-                                              body: '',
-                                              headers: {
-                                                'Authorization':
-                                                    'Bearer ${widget.autorization}',
-                                                'username':
-                                                    _listaJugadores[index]
-                                              });
-                                          setState(() {
-                                            _listaJugadores[index] =
-                                                'Esperando...';
-                                            _listacompleta[index] = false;
-                                            nJugadores--;
-                                          });
-                                        },
-                                        style: TextButton.styleFrom(
-                                            primary: Colors.red,
-                                            fixedSize: const Size(100, 20)),
-                                        child: const Text('Expulsar')),
-                                  )
                           ],
                         ),
                       );
                     },
                   ),
                 ),
-                //Reglas de la partida activas
                 DefaultTextStyle(
                     style: const TextStyle(
                       color: Colors.black,
@@ -330,98 +274,70 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                     ),
                     child: Text(getReglas())),
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
-                //Botón crear
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   children: <Widget>[
-                //     SizedBox(
-                //       width: 170,
-                //       height: 40.0,
-                //       child: TextButton(
-                //         style: ButtonStyle(
-                //           backgroundColor: MaterialStateProperty.all<Color>(
-                //               const Color.fromARGB(255, 32, 159, 255)),
-                //           shape:
-                //               MaterialStateProperty.all<RoundedRectangleBorder>(
-                //             RoundedRectangleBorder(
-                //               borderRadius: BorderRadius.circular(12.0),
-                //             ),
-                //           ),
-                //         ),
-                //         onPressed: () {
-                //           // stompClient.activate();
-                //           //Envío de un mensaje para empezar una partida (solo el que crea la partida)
-                //           if (nJugadores == widget.numP) {
-                //             partidaEmpezada = true;
-                //             stompClient.send(
-                //                 destination: '/game/begin/${widget.idPagina}',
-                //                 body: '',
-                //                 headers: {
-                //                   'Authorization':
-                //                       'Bearer ${widget.autorization}',
-                //                   'username': widget.nomUser
-                //                 });
-                //             print("entro a la partida");
-                //             final route = MaterialPageRoute(
-                //                 builder: (context) => Partida(
-                //                       userListener: canalUser.stream,
-                //                       gameListener: canalGeneral.stream,
-                //                       cartaMedioListener:
-                //                           canalCartaMedio.stream,
-                //                       jugadaListener: canalJugada.stream,
-                //                       stompClient: stompClient,
-                //                       nomUser: widget.nomUser,
-                //                       authorization: widget.autorization,
-                //                       idPartida: widget.idPagina,
-                //                       infoInicial: widget.infoInicial,
-                //                       listaInicial: _listaJugadores,
-                //                     ));
-                //             Navigator.push(context, route);
-                //           } else {
-                //             faltanJugadores(context);
-                //             print('Faltan jugadores');
-                //           }
-                //         },
-                //         child: const Text(
-                //           'Crear torneo',
-                //           style: TextStyle(
-                //               color: Colors.white,
-                //               fontFamily: 'FredokaOne',
-                //               fontSize: 20.0),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                const SizedBox(height: 20)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: DefaultTextStyle(
+                            style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                            child: Text(widget.idPagina),
+                          ),
+                        ),
+                        ElevatedButton(
+                          child: const Text('Copiar código'),
+                          onPressed: () {
+                            final data = ClipboardData(text: widget.idPagina);
+                            Clipboard.setData(data);
+                          },
+                        ),
+                      ],
+                    ),
+                    TextButton(
+                      child: const DefaultTextStyle(
+                        child: Text('Salir de la partida'),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            backgroundColor: Colors.red),
+                      ),
+                      onPressed: () {
+                        stompClient.send(
+                            destination: '/game/disconnect/${widget.idPagina}',
+                            body: '',
+                            headers: {
+                              'Authorization': 'Bearer ${widget.autorization}',
+                              'username': widget.nomUser
+                            });
+                        Navigator.pop(context);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
               ])),
     );
-  }
-
-  @override
-  void dispose() {
-    if (stompClient != null) {
-      stompClient.deactivate();
-    }
-    canalGeneral.close();
-    canalUser.close();
-    super.dispose();
-  }
-
-  Future<dynamic> faltanJugadores(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              title: const Text(
-                'Aún no están todos los jugadores',
-                style: TextStyle(fontSize: 24, color: Colors.red),
-              ),
-            ));
   }
 
   Future<dynamic> popUpReglas(BuildContext context) {
@@ -484,5 +400,15 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                         ])),
                   ),
                 ))));
+  }
+
+  @override
+  void dispose() {
+    if (stompClient != null) {
+      stompClient.deactivate();
+    }
+    canalGeneral.close();
+    canalUser.close();
+    super.dispose();
   }
 }

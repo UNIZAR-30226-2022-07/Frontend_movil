@@ -199,6 +199,7 @@ class _CreateTournamentState extends State<CreateTournament> {
                   ],
                 ))));
   }
+
   dynamic crearReglas() {
     List<String> reglas = [];
     if (ceroSwitch) {
@@ -221,9 +222,8 @@ class _CreateTournamentState extends State<CreateTournament> {
     }
     return reglas;
   }
-  
-  
-    Future<dynamic> popUpError(BuildContext context) {
+
+  Future<dynamic> popUpError(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -241,7 +241,6 @@ class _CreateTournamentState extends State<CreateTournament> {
                   ),
                 ))));
   }
-
 
   Future<dynamic> popUpCorrecto(BuildContext context) {
     return showDialog(
@@ -261,8 +260,7 @@ class _CreateTournamentState extends State<CreateTournament> {
                   ),
                 ))));
   }
-  
-  
+
   Future CrearTorneo() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/torneo/createTorneo');
     final headers = {
@@ -292,6 +290,7 @@ class _CreateTournamentState extends State<CreateTournament> {
                 idPagina: respuesta['idTorneo'],
                 numP: 9,
                 infoInicial: respuesta,
+                reglas: a,
               ));
       Navigator.push(context, route);
       popUpCorrecto(context);
