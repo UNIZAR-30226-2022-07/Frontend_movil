@@ -336,8 +336,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       final route = MaterialPageRoute(
-                          builder: (context) =>
-                              ListTorneos(username: widget.username));
+                          builder: (context) => ListTorneos(
+                                username: widget.username,
+                                authorization: widget.autorization,
+                              ));
                       Navigator.push(context, route);
                     },
                     child: const Text(
