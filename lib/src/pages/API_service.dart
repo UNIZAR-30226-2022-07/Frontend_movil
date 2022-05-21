@@ -64,6 +64,7 @@ class FetchTournamentList {
       
       if (response.statusCode == 200) {
         results = jsonDecode(response.body);
+        print(results);
         return results;
       } 
       else {

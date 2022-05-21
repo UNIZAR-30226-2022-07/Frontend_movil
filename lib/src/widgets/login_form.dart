@@ -7,7 +7,15 @@ import 'package:flutter_unogame/src/widgets/input_text.dart';
 import 'dart:convert';
 
 import '../pages/home_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+import 'dart:async';
 
+import '../pages/partida.dart';
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -19,6 +27,13 @@ class _LoginFormState extends State<LoginForm> {
   GlobalKey<FormState> _formKey = GlobalKey();
   String _name = '';
   String _password = '';
+  bool partidaEmpezada = false;
+    final canalUser = StreamController.broadcast();
+  final canalGeneral = StreamController.broadcast();
+  final canalCartaMedio = StreamController.broadcast();
+  final canalJugada = StreamController.broadcast();
+  late List<String> _listaJugadores = [];
+  String autori = '';
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -221,11 +236,189 @@ class _LoginFormState extends State<LoginForm> {
           if (responseGetinfo.statusCode == 200) {
             //aqui me pasan toda la info de la partida, y falta conectarme a ella
             Map<String, dynamic> respuestaGetinfo = json.decode(responseGetinfo.body);
-            print(respuestaGetinfo['numeroJugadores']);
-            print(respuestaGetinfo['tiempoTurno']);
-            print(respuestaGetinfo['tiempoTurno']);
-            print(respuestaGetinfo['jugadores']);
-            print(respuestaGetinfo['reglas']);
+            String numJ = respuestaGetinfo['numeroJugadores'].toString();
+            String tt = respuestaGetinfo['tiempoTurno'].toString();
+            String jugadores = respuestaGetinfo['jugadores'].toString();
+            String reglas = respuestaGetinfo['reglas'].toString();
+            //==================================================================================================
+            //ahora suscribirme a todo y todo el rollo que toca para conectarme a la partida
+            late StompClient stompClient;
+            void onConnect(StompFrame frame) async {
+              autori= respuestaLogin['accessToken'].toString();
+              //por aqui devuelve tu mano de cartas
+              //Funciona
+              stompClient.subscribe(
+                  destination: '/user/$_name/msg',
+                  callback: (StompFrame frame) async {
+                    if (frame.body != null) {
+                      print('Canal usuario');
+                      print(frame.body);
+                      dynamic a = "No es tu turno";
+                      if (frame.body != a) {
+                        if (!partidaEmpezada) {
+                          partidaEmpezada = true;
+                          final route = MaterialPageRoute(
+                              builder: (context) => Partida(
+                                    userListener: canalUser.stream,
+                                    gameListener: canalGeneral.stream,
+                                    cartaMedioListener: canalCartaMedio.stream,
+                                    jugadaListener: canalJugada.stream,
+                                    stompClient: stompClient,
+                                    nomUser: _name,
+                                    authorization: autori,
+                                    idPartida: resp,
+                                    infoInicial: respuestaGetinfo,
+                                    listaInicial: _listaJugadores,
+                                  ));
+                          Navigator.push(context, route);
+                        }
+                        await Future.delayed(const Duration(seconds: 1));
+                        canalUser.sink.add(json.decode(frame.body!));
+                              }
+                            }
+              });
+              //enviar mensaje para jugar una carta
+              stompClient.subscribe(
+                destination: '/topic/jugada/$resp',
+                callback: (StompFrame frame) {
+                  if (frame.body != null) {
+                    canalJugada.sink.add(json.decode(frame.body!));
+                    print('Canal jugada');
+                    print(frame.body);
+                  }
+                },
+              );
+              //conectarse a la partida y nos devuelve la lista de los jugadores
+              stompClient.subscribe(
+                destination: '/topic/connect/$resp',
+                callback: (StompFrame frame) {
+                  if (frame.body != null) {
+                    canalGeneral.sink.add(json.decode(frame.body!));
+                    print('Canal general');
+                    print(json.decode(frame.body!));
+                    if (!partidaEmpezada) {
+                      dynamic a = json.decode(frame.body!);
+                      List<String> jugadores = [];
+                      for (dynamic i in a) {
+                        jugadores.add(i['nombre']);
+                      }
+                      print(jugadores);
+                      setState(() {
+                        _listaJugadores = jugadores;
+                      });
+                    }
+                  }
+                },
+              );
+              stompClient.subscribe(
+                  destination: '/topic/disconnect/$resp',
+                  callback: (StompFrame frame) async {
+                    if (frame.body != null) {
+                      print('Canal usuario');
+                      print(frame.body);
+                        await Future.delayed(const Duration(seconds: 1));
+                        canalUser.sink.add(json.decode(frame.body!));
+                    }
+                  }
+              );
+              //devuelve la carta del medio
+              stompClient.subscribe(
+                  destination: '/topic/begin/$resp',
+                  callback: (StompFrame frame) async {
+                  if (frame.body != null) {
+                    print('Canal carta medio:');
+                    print(frame.body);
+                    if (!partidaEmpezada) {
+                      partidaEmpezada = true;
+                      final route = MaterialPageRoute(
+                          builder: (context) => Partida(
+                                userListener: canalUser.stream,
+                                gameListener: canalGeneral.stream,
+                                cartaMedioListener: canalCartaMedio.stream,
+                                jugadaListener: canalJugada.stream,
+                                stompClient: stompClient,
+                                nomUser: _name,
+                                authorization: autori,
+                                idPartida: resp,
+                                infoInicial: respuestaGetinfo,
+                                listaInicial: _listaJugadores,
+                              ));
+                      Navigator.push(context, route);
+                    }
+                    await Future.delayed(const Duration(seconds: 1));
+                    canalCartaMedio.sink.add(json.decode(frame.body!));
+                  }
+                },
+              );
+              stompClient.subscribe(
+                  destination: '/topic/chat/$resp',
+                  callback: (StompFrame frame) async {
+                    if (frame.body != null) {
+                      print('Canal usuario');
+                      print(frame.body);
+                        await Future.delayed(const Duration(seconds: 1));
+                        canalUser.sink.add(json.decode(frame.body!));
+                    }
+                  }
+              );
+              stompClient.subscribe(
+                  destination: '/topic/buttonOne/$resp',
+                  callback: (StompFrame frame) async {
+                    if (frame.body != null) {
+                      print('Canal usuario');
+                      print(frame.body);
+                        await Future.delayed(const Duration(seconds: 1));
+                        canalUser.sink.add(json.decode(frame.body!));
+                    }
+                  }
+              );
+              //Envío de mensaje para conectarte a una partida
+              stompClient.send(
+                  destination: '/game/connect/$resp',
+                  body: '',
+                  headers: {
+                    'Authorization': 'Bearer $autori',
+                    'username': _name
+                  });
+            }
+            stompClient = StompClient(
+              config: StompConfig.SockJS(
+                url: 'https://onep1.herokuapp.com/onep1-game',
+                onConnect: onConnect,
+                beforeConnect: () async {
+                  print('waiting to connect...');
+                  await Future.delayed(const Duration(milliseconds: 200));
+                  print('connecting...');
+                },
+                stompConnectHeaders: {
+                  'Authorization': 'Bearer $autori',
+                  'username': _name
+                },
+                webSocketConnectHeaders: {
+                  'Authorization': 'Bearer $autori',
+                  'username': _name
+                },
+                onWebSocketError: (dynamic error) => print(error.toString()),
+                onStompError: (dynamic error) => print(error.toString()),
+                onDisconnect: (f) => print('disconnected'),
+              ),
+            );
+
+            @override
+            void initState() {
+              super.initState();
+              if (stompClient == null) {
+                StompFrame frame;
+                StompClient client = StompClient(
+                    config: StompConfig.SockJS(
+                  url: 'wss://onep1.herokuapp.com/onep1-game',
+                  onConnect: onConnect,
+                  onWebSocketError: (dynamic error) => print(error.toString()),
+                ));
+                stompClient.activate();
+              }
+            }
+            //=================================================================================================
           }
           else {
             print("problema con la info que me envían de la partida");
