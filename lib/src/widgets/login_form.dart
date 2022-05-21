@@ -178,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
   Future LoginUser() async {
     Uri urlLogin = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
     Uri urlActive = Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
-    Uri urlGetinfo = Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
+    Uri urlGetinfo = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
     //los headers son los mismos para ambos
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
@@ -211,13 +211,15 @@ class _LoginFormState extends State<LoginForm> {
         //en el caso de que si que haya partidas
         else {
           print("ir a una partida");
-          String resp = respuestaActive['message'].toString();
+          String resp = respuestaActive['partidas'].toString();
+          print("aqui va el id $resp");
+          print(resp);
           //para enviar el id de la partida que nos han dado ellos mismos
           Map mapeddateGetinfo = {'idPartida': resp};
           final responseGetinfo = await http.post(urlGetinfo,
             headers: headers, body: jsonEncode(mapeddateGetinfo)); // print(response);
           if (responseGetinfo.statusCode == 200) {
-            //aqui me viene 
+            //aqui me pasan toda la info de la partida, y falta conectarme a ella
             Map<String, dynamic> respuestaGetinfo = json.decode(responseGetinfo.body);
             print(respuestaGetinfo['numeroJugadores']);
             print(respuestaGetinfo['tiempoTurno']);
