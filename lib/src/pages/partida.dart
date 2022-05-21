@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
 import 'package:flutter_unogame/src/pages/chat.dart';
+import 'package:flutter_unogame/src/pages/home_page.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -40,6 +41,7 @@ class Partida extends StatefulWidget {
 
 class _PartidaState extends State<Partida> {
   List<types.Message> listaMensajes = [];
+  bool partidaEmpezada = false;
   late StreamSubscription userListener;
   late StreamSubscription gameListener;
   late StreamSubscription jugadaListener;
@@ -89,8 +91,16 @@ class _PartidaState extends State<Partida> {
   // Van a llegar los mensajes específicos del usuario
   //  -- Las cartas de la mano inicial
   void gestionarUsuario(dynamic a) {
+    List<Carta> vieja = mano.cartas;
+    List<Carta> lista = Carta.getCartas(a);
+    vieja.addAll(lista);
     setState(() {
-      mano = Mano(cartas: Carta.getCartas(a));
+      if (partidaEmpezada) {
+        mano = Mano(cartas: vieja);
+      } else {
+        mano = Mano(cartas: Carta.getCartas(a));
+        partidaEmpezada = true;
+      }
     });
   }
 
@@ -114,28 +124,35 @@ class _PartidaState extends State<Partida> {
   // Canal para enviar y recibir jugadas
   void gestionarJugada(dynamic a) {
     if (a != 'ALGUIEN HA INTENTADO JUGAR Y NO ERA SU TURNO') {
-      dynamic carta = a['carta'];
-      // Carta que se va a poner en la cima
-      Carta c = Carta(
-          color: carta['color'],
-          numero: carta['numero'],
-          url: Carta.getURL(carta['numero'], carta['color']));
+      dynamic exp = RegExp(r'HA GANADO [a-zA-Z0-9]+');
+      if (a is String && exp.hasMatch(a)) {
+        //Significa que un usuario ha ganado la partida
+        print(a);
+        popUpFinal(context, a);
+      } else {
+        dynamic carta = a['carta'];
+        // Carta que se va a poner en la cima
+        Carta c = Carta(
+            color: carta['color'],
+            numero: carta['numero'],
+            url: Carta.getURL(carta['numero'], carta['color']));
 
-      List<dynamic> mapaJugadores = a['jugadores'];
-      //Borramos nuestro jugador
-      for (dynamic a in mapaJugadores) {
-        if (a['username'] == widget.nomUser) {
-          //Borramos a nuestro propio usuario
-          mapaJugadores.remove(a);
-          break;
+        List<dynamic> mapaJugadores = a['jugadores'];
+        //Borramos nuestro jugador
+        for (dynamic a in mapaJugadores) {
+          if (a['username'] == widget.nomUser) {
+            //Borramos a nuestro propio usuario
+            mapaJugadores.remove(a);
+            break;
+          }
         }
+        dynamic turno = a['turno'];
+        setState(() {
+          cima = c; //Se cambia la cima
+          mapa = mapaJugadores; //Se actualiza la lista de jugadores
+          _turno = turno;
+        });
       }
-      dynamic turno = a['turno'];
-      setState(() {
-        cima = c; //Se cambia la cima
-        mapa = mapaJugadores; //Se actualiza la lista de jugadores
-        _turno = turno;
-      });
     }
   }
 
@@ -244,11 +261,9 @@ class _PartidaState extends State<Partida> {
           //     color: 'ROJO', numero: 'TRES', url: 'images/cartas/rojo-3.png');
           // mano.add(c);
           print('Robando carta...');
-          Map<String, dynamic> robo = {'nCards': 1};
-          print(jsonEncode(robo));
           stompClient.send(
               destination: '/game/card/draw/${widget.idPartida}',
-              body: jsonEncode(robo),
+              body: "1",
               headers: {
                 'Authorization': 'Bearer ${widget.authorization}',
                 'username': widget.nomUser
@@ -657,5 +672,42 @@ class _PartidaState extends State<Partida> {
                     ],
                   ),
                 ))));
+  }
+
+  Future<dynamic> popUpFinal(BuildContext context, String mensaje) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(mensaje),
+              content: TextButton(
+                child: const DefaultTextStyle(
+                  child: Text('Salir de la partida'),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      backgroundColor: Colors.red),
+                ),
+                onPressed: () {
+                  stompClient.send(
+                      destination: '/game/disconnect/${widget.idPartida}',
+                      body: '',
+                      headers: {
+                        'Authorization': 'Bearer ${widget.authorization}',
+                        'username': widget.nomUser
+                      });
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                ),
+              ),
+            ));
   }
 }

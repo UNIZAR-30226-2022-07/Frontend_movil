@@ -13,6 +13,10 @@ class Mano {
     cartas.add(carta);
   }
 
+  void addAll(List<Carta> cartas) {
+    cartas.addAll(cartas);
+  }
+
   void del(Carta carta) {
     cartas.remove(carta);
   }

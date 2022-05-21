@@ -84,7 +84,7 @@ class Carta {
   }
 
   String buildMessage() {
-    Map<String, String> rtdo = {'num': numero, 'col': color};
+    Map<String, String> rtdo = {'numero': numero, 'color': color};
     String mensaje = jsonEncode(rtdo);
     return mensaje;
   }
