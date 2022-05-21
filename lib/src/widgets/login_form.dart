@@ -76,6 +76,7 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     LoginUser();
+                    //mirar si hay partidas activas
                   }
                 },
                 child: const Text(
@@ -143,32 +144,101 @@ class _LoginFormState extends State<LoginForm> {
                 ))));
   }
 
+  // Future LoginUser() async {
+  //   Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
+  //   final headers = {
+  //     HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+  //   };
+  //   Map mapeddate = {'username': _name, 'password': _password};
+
+  //   final response = await http.post(url,
+  //       headers: headers, body: jsonEncode(mapeddate)); // print(response);
+  //   if (response.statusCode == 200) {
+  //     Map<String, dynamic> respuesta = json.decode(response
+  //         .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+  //     // print(respuesta);
+  //     // print(respuesta['accessToken']);
+  //     final route = MaterialPageRoute(
+  //         builder: (context) => HomePage(
+  //               autorization: respuesta['accessToken'],
+  //               username: respuesta['username'],
+  //               pais: respuesta['pais'],
+  //             ));
+  //     Navigator.push(context, route);
+  //     // Navigator.pushReplacementNamed(context, 'home_page');
+  //     print(response);
+  //   } else {
+  //     print('Contraseña incorrecta');
+  //     if (response.statusCode != 200) {
+  //       popUpError(context);
+  //     }
+  //   }
+  // }
+
   Future LoginUser() async {
-    Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
+    Uri urlLogin = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
+    Uri urlActive = Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
+    Uri urlGetinfo = Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
+    //los headers son los mismos para ambos
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
-    Map mapeddate = {'username': _name, 'password': _password};
+    
+    Map mapeddateLogin = {'username': _name, 'password': _password};
+    Map mapeddateActive = {'username': _name};
 
-    final response = await http.post(url,
-        headers: headers, body: jsonEncode(mapeddate)); // print(response);
-    if (response.statusCode == 200) {
-      Map<String, dynamic> respuesta = json.decode(response
-          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
-      // print(respuesta);
-      // print(respuesta['accessToken']);
-      final route = MaterialPageRoute(
-          builder: (context) => HomePage(
-                autorization: respuesta['accessToken'],
-                username: respuesta['username'],
-                pais: respuesta['pais'],
-              ));
-      Navigator.push(context, route);
-      // Navigator.pushReplacementNamed(context, 'home_page');
-      print(response);
-    } else {
+    final responseLogin = await http.post(urlLogin,
+        headers: headers, body: jsonEncode(mapeddateLogin)); // print(response);
+    final responseActive = await http.post(urlActive,
+        headers: headers, body: jsonEncode(mapeddateActive)); // print(response);
+    
+    if (responseLogin.statusCode == 200) {
+      Map<String, dynamic> respuestaLogin = json.decode(responseLogin.body); 
+      if (responseActive.statusCode == 200) {
+        Map<String, dynamic> respuestaActive = json.decode(responseActive.body); 
+        if (respuestaActive['message'] == "No hay partidas para el usuario" ) {
+            print("no hay partidas porque ha entrado");
+            final route = MaterialPageRoute(
+                builder: (context) => HomePage(
+                autorization: respuestaLogin['accessToken'],
+                username: respuestaLogin['username'],
+                pais: respuestaLogin['pais'],
+                )
+            );
+            Navigator.push(context, route);
+            print(respuestaActive['message']);
+        }
+        //en el caso de que si que haya partidas
+        else {
+          print("ir a una partida");
+          String resp = respuestaActive['message'].toString();
+          //para enviar el id de la partida que nos han dado ellos mismos
+          Map mapeddateGetinfo = {'idPartida': resp};
+          final responseGetinfo = await http.post(urlGetinfo,
+            headers: headers, body: jsonEncode(mapeddateGetinfo)); // print(response);
+          if (responseGetinfo.statusCode == 200) {
+            //aqui me viene 
+            Map<String, dynamic> respuestaGetinfo = json.decode(responseGetinfo.body);
+            print(respuestaGetinfo['numeroJugadores']);
+            print(respuestaGetinfo['tiempoTurno']);
+            print(respuestaGetinfo['tiempoTurno']);
+            print(respuestaGetinfo['jugadores']);
+            print(respuestaGetinfo['reglas']);
+          }
+          else {
+            print("problema con la info que me envían de la partida");
+          }
+        }
+      }
+      else {
+        print("error en las partidas activas");
+      }
+    }
+    //---------------------------------------------------------------------------------------
+
+    else {
       print('Contraseña incorrecta');
-      if (response.statusCode != 200) {
+      if (responseLogin.statusCode != 200) {
         popUpError(context);
       }
     }
