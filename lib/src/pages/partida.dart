@@ -40,6 +40,10 @@ class Partida extends StatefulWidget {
 }
 
 class _PartidaState extends State<Partida> {
+  int robarCartas = 0;
+  bool salto = false;
+  bool robar2 = true;
+  bool robar4 = true;
   List<types.Message> listaMensajes = [];
   bool partidaEmpezada = false;
   late StreamSubscription userListener;
@@ -136,7 +140,6 @@ class _PartidaState extends State<Partida> {
             color: carta['color'],
             numero: carta['numero'],
             url: Carta.getURL(carta['numero'], carta['color']));
-
         List<dynamic> mapaJugadores = a['jugadores'];
         //Borramos nuestro jugador
         for (dynamic a in mapaJugadores) {
@@ -147,6 +150,66 @@ class _PartidaState extends State<Partida> {
           }
         }
         dynamic turno = a['turno'];
+        //Gestionar la lógica de los bloqueos
+        if (carta['numero'] == 'BLOQUEO') {
+          if (!salto) {
+            stompClient.send(
+                destination: '/game/pasarTurno/${widget.idPartida}',
+                body: '',
+                headers: {
+                  'Authorization': 'Bearer ${widget.authorization}',
+                  'username': widget.nomUser
+                });
+            salto = true;
+          } else {
+            salto = false;
+          }
+        }
+        //Gestionar la lógica de los draws
+        if (carta['numero'] == 'MAS_DOS') {
+          if (robar2) {
+            stompClient.send(
+                destination: '/game/card/draw/${widget.idPartida}',
+                body: "2",
+                headers: {
+                  'Authorization': 'Bearer ${widget.authorization}',
+                  'username': widget.nomUser
+                });
+            stompClient.send(
+                destination: '/game/pasarTurno/${widget.idPartida}',
+                body: '',
+                headers: {
+                  'Authorization': 'Bearer ${widget.authorization}',
+                  'username': widget.nomUser
+                });
+            robar2 = false;
+          } else {
+            robar2 = false;
+          }
+        }
+        //Gestionar la lógica de los draws4
+        if (carta['numero'] == 'MAS_CUATRO') {
+          if (robar4) {
+            stompClient.send(
+                destination: '/game/card/draw/${widget.idPartida}',
+                body: "4",
+                headers: {
+                  'Authorization': 'Bearer ${widget.authorization}',
+                  'username': widget.nomUser
+                });
+            stompClient.send(
+                destination: '/game/pasarTurno/${widget.idPartida}',
+                body: '',
+                headers: {
+                  'Authorization': 'Bearer ${widget.authorization}',
+                  'username': widget.nomUser
+                });
+            robar4 = false;
+          } else {
+            robar4 = true;
+          }
+        }
+
         setState(() {
           cima = c; //Se cambia la cima
           mapa = mapaJugadores; //Se actualiza la lista de jugadores
@@ -175,6 +238,14 @@ class _PartidaState extends State<Partida> {
         seleccionada.color == cima.color ||
         seleccionada.numero == 'CAMBIO_COLOR' ||
         seleccionada.numero == 'MAS_CUATRO';
+    if (cima.numero == 'MAS_DOS') {
+      if (seleccionada.numero == 'MAS_DOS') {
+        robarCartas = 0;
+      } else {
+        robarCartas = 2;
+        sePuede = false;
+      }
+    }
     return sePuede;
   }
 
@@ -256,10 +327,6 @@ class _PartidaState extends State<Partida> {
   Widget cartaRobar() => GestureDetector(
       onTap: () {
         if (_turno == widget.nomUser) {
-          //Pedir carta al backend y cuando llegue:
-          // Carta c = Carta(
-          //     color: 'ROJO', numero: 'TRES', url: 'images/cartas/rojo-3.png');
-          // mano.add(c);
           print('Robando carta...');
           stompClient.send(
               destination: '/game/card/draw/${widget.idPartida}',
@@ -268,9 +335,14 @@ class _PartidaState extends State<Partida> {
                 'Authorization': 'Bearer ${widget.authorization}',
                 'username': widget.nomUser
               });
-
-          //Añadir carta a la mano del jugador
-          // setState(() {});
+          //Salto mi turno q no puedo jugar
+          stompClient.send(
+              destination: '/game/pasarTurno/${widget.idPartida}',
+              body: '',
+              headers: {
+                'Authorization': 'Bearer ${widget.authorization}',
+                'username': widget.nomUser
+              });
         }
       },
       child: Container(

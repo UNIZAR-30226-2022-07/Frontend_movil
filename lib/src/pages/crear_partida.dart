@@ -34,7 +34,7 @@ class _CreatePageState extends State<CreatePage> {
   bool chaosDraw = false;
   bool blockDraw = false;
   bool repeatDraw = false;
-  int tiempo = 5;
+  int tiempo = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -131,23 +131,6 @@ class _CreatePageState extends State<CreatePage> {
                                 margin: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
                                   color:
-                                      !tiempoA10 ? Colors.blue : Colors.black38,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: TextButton(
-                                  child: const Text(
-                                    '5s',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 25),
-                                  ),
-                                  onPressed: () =>
-                                      setState(() => tiempoA10 = false),
-                                )),
-                            Container(
-                                padding: const EdgeInsets.all(5),
-                                margin: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color:
                                       tiempoA10 ? Colors.blue : Colors.black38,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -157,11 +140,27 @@ class _CreatePageState extends State<CreatePage> {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 25),
                                     ),
-                                    // onPressed: () =>
-                                    //     setState(() => tiempoA10 = true),
                                     onPressed: () {
                                       setState(() => tiempoA10 = true);
                                       tiempo = 10;
+                                    })),
+                            Container(
+                                padding: const EdgeInsets.all(5),
+                                margin: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color:
+                                      !tiempoA10 ? Colors.blue : Colors.black38,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: TextButton(
+                                    child: const Text(
+                                      '15s',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 25),
+                                    ),
+                                    onPressed: () {
+                                      setState(() => tiempoA10 = false);
+                                      tiempo = 15;
                                     }))
                           ],
                         ),
