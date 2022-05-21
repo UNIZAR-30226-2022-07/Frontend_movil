@@ -26,7 +26,7 @@ class PlayerApi {
       int trophies = int.parse(cutted[1]);
       rtdos.add(Player(userName: name, trophies: trophies));
     }
-    rtdos.sort((a, b) => a.trophies.compareTo(b.trophies));
+    rtdos.sort((a, b) => b.trophies.compareTo(a.trophies));
     int n = 1;
     for (var j in rtdos) {
       j.rating = n;
@@ -57,7 +57,7 @@ class PlayerApi {
       int trophies = int.parse(cutted[1]);
       rtdos.add(Player(userName: name, trophies: trophies));
     }
-    rtdos.sort((a, b) => a.trophies.compareTo(b.trophies));
+    rtdos.sort((a, b) => b.trophies.compareTo(a.trophies));
     int n = 1;
     for (var j in rtdos) {
       j.rating = n;
@@ -85,7 +85,7 @@ class PlayerApi {
       int trophies = int.parse(cutted[1]);
       rtdos.add(Player(userName: name, trophies: trophies));
     }
-    rtdos.sort((a, b) => a.trophies.compareTo(b.trophies));
+    rtdos.sort((a, b) => b.trophies.compareTo(a.trophies));
     int n = 1;
     for (var j in rtdos) {
       j.rating = n;
