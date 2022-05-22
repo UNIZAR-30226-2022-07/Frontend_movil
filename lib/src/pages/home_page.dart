@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.centerRight,
             child: IconButton(
               icon: const Icon(
-                Icons.list,
+                Icons.supervised_user_circle_rounded,
                 size: 40,
                 color: Color.fromARGB(255, 157, 13, 13),
               ),
