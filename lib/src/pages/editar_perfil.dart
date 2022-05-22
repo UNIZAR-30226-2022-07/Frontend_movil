@@ -422,10 +422,8 @@ class _editState extends State<EditPage> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            DeleteAccount(widget.username);
-                            final route = MaterialPageRoute(
-                              builder: (context) => LoginPage());
-                            Navigator.push(context, route);
+                            popUpPreguntar(context);
+                            
                           },
                           child: const Text(
                             'Eliminar cuenta',
@@ -446,7 +444,51 @@ class _editState extends State<EditPage> {
     );
   }
 
-
+  Future<dynamic> popUpPreguntar(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    '¿Estás seguro de que quieres eliminar tu cuenta?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                        child: Text('Cancelar',
+                                  style: TextStyle(
+                                  fontSize: 18,
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    FlatButton(
+                        child: Text('Eliminar',
+                                      style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color.fromARGB(255, 249, 26, 26),
+                                      fontWeight: FontWeight.bold,
+                                      ),
+                        ),
+                        onPressed: () {
+                          DeleteAccount(widget.username);
+                          final route = MaterialPageRoute(
+                            builder: (context) => LoginPage());
+                          Navigator.push(context, route);
+                        })
+                  ],
+                ))));
+  }
 
   Future<dynamic> popUpErrorNombre(BuildContext context) {
       return showDialog(
