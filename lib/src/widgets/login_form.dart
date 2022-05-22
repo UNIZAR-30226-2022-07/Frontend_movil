@@ -277,17 +277,6 @@ class _LoginFormState extends State<LoginForm> {
                               }
                             }
               });
-              //enviar mensaje para jugar una carta
-              stompClient.subscribe(
-                destination: '/topic/jugada/$resp',
-                callback: (StompFrame frame) {
-                  if (frame.body != null) {
-                    canalJugada.sink.add(json.decode(frame.body!));
-                    print('Canal jugada');
-                    print(frame.body);
-                  }
-                },
-              );
               //conectarse a la partida y nos devuelve la lista de los jugadores
               stompClient.subscribe(
                 destination: '/topic/connect/$resp',
@@ -309,17 +298,6 @@ class _LoginFormState extends State<LoginForm> {
                     }
                   }
                 },
-              );
-              stompClient.subscribe(
-                  destination: '/topic/disconnect/$resp',
-                  callback: (StompFrame frame) async {
-                    if (frame.body != null) {
-                      print('Canal usuario');
-                      print(frame.body);
-                        await Future.delayed(const Duration(seconds: 1));
-                        canalUser.sink.add(json.decode(frame.body!));
-                    }
-                  }
               );
               //devuelve la carta del medio
               stompClient.subscribe(
@@ -350,8 +328,20 @@ class _LoginFormState extends State<LoginForm> {
                   }
                 },
               );
+              //enviar mensaje para jugar una carta
               stompClient.subscribe(
-                  destination: '/topic/chat/$resp',
+                destination: '/topic/jugada/$resp',
+                callback: (StompFrame frame) {
+                  if (frame.body != null) {
+                    canalJugada.sink.add(json.decode(frame.body!));
+                    print('Canal jugada');
+                    print(frame.body);
+                  }
+                },
+              );
+              
+              stompClient.subscribe(
+                  destination: '/topic/disconnect/$resp',
                   callback: (StompFrame frame) async {
                     if (frame.body != null) {
                       print('Canal usuario');
@@ -361,6 +351,7 @@ class _LoginFormState extends State<LoginForm> {
                     }
                   }
               );
+              //para el boton de uno
               stompClient.subscribe(
                   destination: '/topic/buttonOne/$resp',
                   callback: (StompFrame frame) async {
