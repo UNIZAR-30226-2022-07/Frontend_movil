@@ -174,7 +174,6 @@ class _HomePageState extends State<HomePage> {
 
                       final responsePartida =
                           await http.post(url, headers: headers);
-                      setState(() => this.code = code);
                       if (responsePartida.statusCode == 200) {
                         dynamic idPartida = json.decode(responsePartida.body);
                         Uri url = Uri.parse(
@@ -185,7 +184,6 @@ class _HomePageState extends State<HomePage> {
                         };
                         final response = await http.post(url,
                             headers: headers, body: jsonEncode(mapeddate));
-                        setState(() => this.code = code);
                         if (response.statusCode == 200) {
                           Map<String, dynamic> respuesta =
                               json.decode(response.body);
@@ -197,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                           final route = MaterialPageRoute(
                               builder: (context) => EsperaPublica(
                                     autorization: widget.autorization,
-                                    idPagina: code,
+                                    idPagina: idPartida,
                                     nomUser: widget.username,
                                     nPlayers: respuesta['numeroJugadores'],
                                     jugadores: jugadores,
