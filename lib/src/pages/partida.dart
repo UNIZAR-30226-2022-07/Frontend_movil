@@ -44,6 +44,7 @@ class _PartidaState extends State<Partida> {
   bool salto = false;
   bool robar2 = true;
   bool robar4 = true;
+  bool botonPulsado = false;
   List<types.Message> listaMensajes = [];
   bool partidaEmpezada = false;
   late StreamSubscription userListener;
@@ -273,6 +274,17 @@ class _PartidaState extends State<Partida> {
         if (_turno == widget.nomUser) {
           //Si es el turno del jugador
           if (comprobarMov(carta, cima)) {
+            if (mano.length() == 2 && !botonPulsado) {
+              stompClient.send(
+                  destination: '/game/card/draw/${widget.idPartida}',
+                  body: "2",
+                  headers: {
+                    'Authorization': 'Bearer ${widget.authorization}',
+                    'username': widget.nomUser
+                  });
+              Future.delayed(const Duration(seconds: 2));
+            }
+            botonPulsado = false;
             //Caso de las wild y el draw4
             switch (carta.numero) {
               case 'CAMBIO_COLOR':
@@ -409,6 +421,11 @@ class _PartidaState extends State<Partida> {
                             onPressed: () async {
                               //Acciones a realizar al apretar el botón UNO
                               //Avisar al Backend
+                              if (mano.length() == 2) {
+                                setState(() {
+                                  botonPulsado = true;
+                                });
+                              }
                             },
                             child: const Text(
                               'UNO',
