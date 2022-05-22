@@ -29,9 +29,6 @@ class _forgotPasswordState extends State<forgotPassword> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget> [
-                  IconContainer(
-                    url: 'images/uno.jpg',
-                  ),
                   Text(
                     '¿Has olvidado la contraseña?',
                     style: TextStyle(

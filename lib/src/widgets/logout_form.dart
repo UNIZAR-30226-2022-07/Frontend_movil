@@ -441,6 +441,19 @@ class _LogoutFormState extends State<LogoutForm> {
                     style:
                         TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
                   ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    // Navigator.pushNamed(context, 'sign_in');
+                    final route = MaterialPageRoute(
+                      builder: (context) => ActivateAccount());
+                    Navigator.push(context, route);
+                  },
+                  child: const Text(
+                    '         Activar cuenta',
+                    style:
+                        TextStyle(color: Colors.teal, fontFamily: 'FredokaOne'),
+                  ),
                 )
               ],
             ),
