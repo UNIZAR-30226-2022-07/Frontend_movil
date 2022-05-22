@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/pages/anadir_amigos.dart';
-import 'package:flutter_unogame/src/pages/search.dart';
 import '../models/user_model.dart';
 import 'API_service.dart';
 import 'package:http/http.dart' as http;
