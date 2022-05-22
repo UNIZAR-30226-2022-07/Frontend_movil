@@ -39,7 +39,7 @@ class _ListTorneosState extends State<ListTorneos> {
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<dynamic>>(
               //aqui sera FutureBuilder<List<TournamentList>>
-              future: _tournamentList
+              future: FetchTournamentList
                   .getTournamentList(), // esta en API_service y sera _torneoList.getTournamentList(widget.username)
               builder: (context, snapshot) {
                 var data = snapshot.data;

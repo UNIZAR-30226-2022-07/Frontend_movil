@@ -37,8 +37,8 @@ class _InvitePlayersState extends State<InvitePlayers> {
                   image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Userlist>>(
-              future: _friendList
-                  .getFriendList(widget.username), // esta en API_service
+              future: FetchFriendList.getFriendList(
+                  widget.username), // esta en API_service
               builder: (context, snapshot) {
                 var data = snapshot.data;
                 return ListView.builder(
