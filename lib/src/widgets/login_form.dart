@@ -34,6 +34,8 @@ class _LoginFormState extends State<LoginForm> {
   final canalJugada = StreamController.broadcast();
   late List<String> _listaJugadores = [];
   String autori = '';
+  String resp= '';
+  late StompClient stompClient;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -191,6 +193,8 @@ class _LoginFormState extends State<LoginForm> {
   // }
 
   Future LoginUser() async {
+    //----------------------------------------------------
+    //--------------------------------------------------------
     Uri urlLogin = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
     Uri urlActive = Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
     Uri urlGetinfo = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
@@ -204,11 +208,13 @@ class _LoginFormState extends State<LoginForm> {
 
     final responseLogin = await http.post(urlLogin,
         headers: headers, body: jsonEncode(mapeddateLogin)); // print(response);
-    final responseActive = await http.post(urlActive,
-        headers: headers, body: jsonEncode(mapeddateActive)); // print(response);
+    
     
     if (responseLogin.statusCode == 200) {
       Map<String, dynamic> respuestaLogin = json.decode(responseLogin.body); 
+      final responseActive = await http.post(urlActive,
+        headers: headers, body: jsonEncode(mapeddateActive)); // print(response);
+      
       if (responseActive.statusCode == 200) {
         Map<String, dynamic> respuestaActive = json.decode(responseActive.body); 
         if (respuestaActive['message'] == "No hay partidas para el usuario" ) {
@@ -226,7 +232,7 @@ class _LoginFormState extends State<LoginForm> {
         //en el caso de que si que haya partidas
         else {
           print("ir a una partida");
-          String resp = respuestaActive['partidas'].toString();
+          resp = respuestaActive['partidas'].toString();
           print("aqui va el id $resp");
           print(resp);
           //para enviar el id de la partida que nos han dado ellos mismos
@@ -240,9 +246,6 @@ class _LoginFormState extends State<LoginForm> {
             String tt = respuestaGetinfo['tiempoTurno'].toString();
             String jugadores = respuestaGetinfo['jugadores'].toString();
             String reglas = respuestaGetinfo['reglas'].toString();
-            //==================================================================================================
-            //ahora suscribirme a todo y todo el rollo que toca para conectarme a la partida
-            late StompClient stompClient;
             void onConnect(StompFrame frame) async {
               autori= respuestaLogin['accessToken'].toString();
               //por aqui devuelve tu mano de cartas
@@ -395,21 +398,22 @@ class _LoginFormState extends State<LoginForm> {
               ),
             );
 
-            @override
-            void initState() {
-              super.initState();
-              if (stompClient == null) {
-                StompFrame frame;
-                StompClient client = StompClient(
-                    config: StompConfig.SockJS(
-                  url: 'wss://onep1.herokuapp.com/onep1-game',
-                  onConnect: onConnect,
-                  onWebSocketError: (dynamic error) => print(error.toString()),
-                ));
-                stompClient.activate();
-              }
-            }
-            //=================================================================================================
+            // @override
+            // void initState() {
+            //   super.initState();
+            //   if (stompClient == null) {
+            //     StompFrame frame;
+            //     StompClient client = StompClient(
+            //         config: StompConfig.SockJS(
+            //       url: 'wss://onep1.herokuapp.com/onep1-game',
+            //       onConnect: onConnect,
+            //       onWebSocketError: (dynamic error) => print(error.toString()),
+            //     ));
+            //     stompClient.activate();
+            //   }
+            // }
+            stompClient.activate();
+            GetMiMano();             
           }
           else {
             print("problema con la info que me envían de la partida");
@@ -429,4 +433,28 @@ class _LoginFormState extends State<LoginForm> {
       }
     }
   }
+
+
+  Future GetMiMano() async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/game/getManoJugador');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map<String, String> mapeddate = {
+      'username': _name,
+      'idPartida': resp,
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(mapeddate));
+
+    if (response.statusCode == 200) {
+      print("ha legado bien el mensaje");
+    } else {
+      print("ha llegado mal el mensaje");
+    }
+  }
+
+
+
+
 }
