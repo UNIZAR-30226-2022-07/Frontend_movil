@@ -17,8 +17,6 @@ class SearchPlayers extends StatefulWidget {
 }
 
 class _SearchPlayersState extends State<SearchPlayers> {
-  final FetchFriendList _friendList = FetchFriendList();
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
@@ -46,8 +44,8 @@ class _SearchPlayersState extends State<SearchPlayers> {
 
   Widget PlayerBuilder() {
     return FutureBuilder<List<Userlist>>(
-        future:
-            _friendList.getFriendList(widget.username), // esta en API_service
+        future: FetchFriendList.getFriendList(
+            widget.username), // esta en API_service
         builder: (context, snapshot) {
           var data = snapshot.data;
           if (snapshot.connectionState == ConnectionState.none &&
@@ -73,60 +71,52 @@ class _SearchPlayersState extends State<SearchPlayers> {
                           padding: const EdgeInsets.all(8.0),
                           child: ListTile(
                             title: Row(
-                              children: [
-                                const SizedBox(width: 20),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          '${data?[index].username}',
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                      // const SizedBox(width: 300),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: TextButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                        Color>(
-                                                    const Color.fromARGB(
-                                                        255, 221, 26, 26)),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
-                                              ),
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            String nom =
-                                                '${data?[index].username}';
-                                            print(nom);
-                                            DeleteFriend(widget.username, nom)
-                                                .then((_) => setState(() {}));
-                                          },
-                                          child: const Text(
-                                            'Eliminar',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'FredokaOne',
-                                                fontSize: 15.0),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      '${data?[index].username}',
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                  // const SizedBox(width: 300),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                const Color.fromARGB(
+                                                    255, 221, 26, 26)),
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
                                           ),
                                         ),
                                       ),
-                                    ])
-                              ],
-                            ),
+                                      onPressed: () {
+                                        String nom = '${data?[index].username}';
+                                        print(nom);
+                                        DeleteFriend(widget.username, nom)
+                                            .then((_) => setState(() {}));
+                                      },
+                                      child: const Text(
+                                        'Eliminar',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'FredokaOne',
+                                            fontSize: 15.0),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
                           ),
                         ),
                       );

@@ -3,24 +3,21 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 
-
 class FetchFriendList {
-  var data = [];
-  List<Userlist> results = []; //para meter aqui los amigos
-  
-  Future<List<Userlist>> getFriendList(String username) async {
+  static Future<List<Userlist>> getFriendList(String username) async {
     var url = Uri.parse('https://onep1.herokuapp.com/friends/friendsList');
+    List<Userlist> results = [];
     try {
-      
       final headers = {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
       };
 
-      Map mapeddate = {'username': username}; // lo que yo le mando a backend para que me mande la lista de amigos
-      
-      final response = await http.post(url,
-        headers: headers, body: jsonEncode(mapeddate));
-      
+      Map mapeddate = {
+        'username': username
+      }; // lo que yo le mando a backend para que me mande la lista de amigos
+
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(mapeddate));
       if (response.statusCode == 200) {
         Map data = jsonDecode(response.body);
         print(data);
@@ -28,15 +25,12 @@ class FetchFriendList {
         var laux = json.decode(l);
         for (var i in laux) {
           print(i);
-          results.add(Userlist(
-              username: i));
+          results.add(Userlist(username: i));
         }
         return results;
-      } 
-      else {
+      } else {
         print("fetch error");
         print(response.statusCode);
-
       }
     } on Exception catch (e) {
       print('error: $e');
@@ -46,31 +40,27 @@ class FetchFriendList {
 }
 
 class FetchTournamentList {
-  var data = [];
-  List<dynamic> results = []; //para meter aqui los amigos
-  
-  Future<List<dynamic>> getTournamentList() async {
+  static Future<List<dynamic>> getTournamentList() async {
     var url = Uri.parse('https://onep1.herokuapp.com/torneo/getTorneos');
+    List<dynamic> results = [];
     try {
-      
       final headers = {
         HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
       };
 
-      Map mapeddate = {}; // lo que yo le mando a backend para que me mande la lista de amigos
-      
-      final response = await http.post(url,
-        headers: headers, body: jsonEncode(mapeddate));
-      
+      Map mapeddate =
+          {}; // lo que yo le mando a backend para que me mande la lista de amigos
+
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(mapeddate));
+
       if (response.statusCode == 200) {
         results = jsonDecode(response.body);
         print(results);
         return results;
-      } 
-      else {
+      } else {
         print("fetch error");
         print(response.statusCode);
-
       }
     } on Exception catch (e) {
       print('error: $e');
