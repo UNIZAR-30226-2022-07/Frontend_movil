@@ -124,7 +124,8 @@ class _notificationsState extends State<Notifications> {
                                                   index,
                                                   '${data?[index].idPartida}');
                                               EntrarPartida(
-                                                  '${data?[index].idPartida}');
+                                                      '${data?[index].idPartida}')
+                                                  .then((_) => setState(() {}));
                                             }
                                             //notificaciones.removeAt(index);
                                           },
@@ -152,9 +153,10 @@ class _notificationsState extends State<Notifications> {
                                             } else if ('${data?[index].accion}' ==
                                                 'partida') {
                                               CancelPartida(
-                                                  widget.username,
-                                                  index,
-                                                  '${data?[index].idPartida}');
+                                                      widget.username,
+                                                      index,
+                                                      '${data?[index].idPartida}')
+                                                  .then((_) => setState(() {}));
                                             }
                                           },
                                           icon: const Icon(
