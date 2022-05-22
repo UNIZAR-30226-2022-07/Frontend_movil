@@ -258,8 +258,10 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                   ElevatedButton(
                       onPressed: () {
                         final route = MaterialPageRoute(
-                            builder: (context) =>
-                                InvitePlayers(username: widget.nomUser));
+                            builder: (context) => InvitePlayers(
+                                  username: widget.nomUser,
+                                  idPartida: widget.idPagina,
+                                ));
                         Navigator.push(context, route);
                       },
                       child: const Text('Invitar amigos')),

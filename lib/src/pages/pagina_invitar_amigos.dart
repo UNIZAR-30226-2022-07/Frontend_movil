@@ -11,7 +11,10 @@ import 'package:http/http.dart' as http;
 
 class InvitePlayers extends StatefulWidget {
   final String username;
-  const InvitePlayers({Key? key, required this.username}) : super(key: key);
+  final String idPartida;
+  const InvitePlayers(
+      {Key? key, required this.username, required this.idPartida})
+      : super(key: key);
   @override
   _InvitePlayersState createState() => _InvitePlayersState();
 }
@@ -82,7 +85,8 @@ class _InvitePlayersState extends State<InvitePlayers> {
                                           String nom =
                                               '${data?[index].username}';
                                           print(nom);
-                                          InviteFriend(widget.username, nom);
+                                          InviteFriend(widget.username, nom,
+                                              widget.idPartida);
                                         },
                                         child: const Text(
                                           'Invitar',
@@ -144,13 +148,18 @@ class _InvitePlayersState extends State<InvitePlayers> {
                 ))));
   }
 
-  Future InviteFriend(String username, String friendname) async {
-    Uri url = Uri.parse('https://onep1.herokuapp.com/friends/deleteFriend');
+  Future InviteFriend(
+      String username, String friendname, String idPartida) async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/game/invite');
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     print(friendname);
-    Map mapeddate = {'username': username, 'friendname': friendname};
+    Map mapeddate = {
+      'username': username,
+      'friendname': friendname,
+      'gameId': idPartida
+    };
     final response = await http.post(url,
         headers: headers, body: jsonEncode(mapeddate)); // print(response);
     if (response.statusCode == 200) {
