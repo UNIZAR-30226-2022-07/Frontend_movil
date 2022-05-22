@@ -21,7 +21,7 @@ class PlayerApi {
     List<Player> rtdos = [];
     //"[\"3nsalada3,0,espagna\",\"nereapruebas,0,España\"]"
     for (var i in laux) {
-      String cutted = i.split(',');
+      List<String> cutted = i.split(',');
       String name = cutted[0];
       int trophies = int.parse(cutted[1]);
       rtdos.add(Player(userName: name, trophies: trophies));
