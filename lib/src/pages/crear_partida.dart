@@ -383,6 +383,7 @@ class _CreatePageState extends State<CreatePage> {
       final route = MaterialPageRoute(
           builder: (context) => AnadirJugadores(
                 nomUser: widget.nomUser,
+                reglas: crearReglas(),
                 autorization: widget.autorization,
                 idPagina: respuesta['id'],
                 numP: count,
