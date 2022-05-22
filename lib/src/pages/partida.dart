@@ -103,7 +103,7 @@ class _PartidaState extends State<Partida> {
       if (partidaEmpezada) {
         mano = Mano(cartas: vieja);
       } else {
-        mano = Mano(cartas: Carta.getCartas(a));
+        mano = Mano(cartas: vieja);
         partidaEmpezada = true;
       }
     });
