@@ -24,33 +24,45 @@ class _SearchPlayersState extends State<SearchPlayers> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Mis amigos',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-          actions: [
-            IconButton(
-              onPressed: () {
-                final route = MaterialPageRoute(
-                    builder: (context) =>
-                        AnadirAmigos(username: widget.username));
-                Navigator.push(context, route);
-              },
-              iconSize: 38.0,
-              icon: const Icon(Icons.add),
-            )
-          ],
-        ),
-        body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
-          padding: const EdgeInsets.all(20),
-          child: FutureBuilder<List<Userlist>>(
-              future: _friendList
-                  .getFriendList(widget.username), // esta en API_service
-              builder: (context, snapshot) {
-                var data = snapshot.data;
-                return ListView.builder(
+          appBar: AppBar(
+            title: const Text('Mis amigos',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  final route = MaterialPageRoute(
+                      builder: (context) =>
+                          AnadirAmigos(username: widget.username));
+                  Navigator.push(context, route);
+                },
+                iconSize: 38.0,
+                icon: const Icon(Icons.add),
+              )
+            ],
+          ),
+          body: PlayerBuilder()),
+    );
+  }
+
+  Widget PlayerBuilder() {
+    return FutureBuilder<List<Userlist>>(
+        future:
+            _friendList.getFriendList(widget.username), // esta en API_service
+        builder: (context, snapshot) {
+          var data = snapshot.data;
+          if (snapshot.connectionState == ConnectionState.none &&
+              snapshot.hasData == null) {
+            return Container();
+          }
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
+            child: Flex(direction: Axis.vertical, children: [
+              Expanded(
+                child: ListView.builder(
                     itemCount: data?.length,
                     itemBuilder: (context, index) {
                       if (!snapshot.hasData) {
@@ -64,56 +76,65 @@ class _SearchPlayersState extends State<SearchPlayers> {
                               children: [
                                 const SizedBox(width: 20),
                                 Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '${data?[index].username}',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          '${data?[index].username}',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600),
+                                        ),
                                       ),
-                                      const SizedBox(width: 300),
-                                      TextButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  const Color.fromARGB(
-                                                      255, 221, 26, 26)),
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
+                                      // const SizedBox(width: 300),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: TextButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                        Color>(
+                                                    const Color.fromARGB(
+                                                        255, 221, 26, 26)),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        onPressed: () {
-                                          String nom =
-                                              '${data?[index].username}';
-                                          print(nom);
-                                          DeleteFriend(widget.username, nom);
-                                        },
-                                        child: const Text(
-                                          'Eliminar',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'FredokaOne',
-                                              fontSize: 15.0),
+                                          onPressed: () {
+                                            String nom =
+                                                '${data?[index].username}';
+                                            print(nom);
+                                            DeleteFriend(widget.username, nom)
+                                                .then((_) => setState(() {}));
+                                          },
+                                          child: const Text(
+                                            'Eliminar',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'FredokaOne',
+                                                fontSize: 15.0),
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 10),
                                     ])
                               ],
                             ),
                           ),
                         ),
                       );
-                    });
-              }),
-        ),
-      ),
-    );
+                    }),
+              ),
+            ]),
+          );
+        });
   }
 
   Future<dynamic> popUpError(BuildContext context) {
