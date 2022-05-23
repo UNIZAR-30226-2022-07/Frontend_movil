@@ -11,6 +11,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import '../models/mano.dart';
 import 'package:http/http.dart' as http;
 
+import 'home_page.dart';
 import 'pantalla_espera.dart';
 
 class Semifinal extends StatefulWidget {
@@ -855,15 +856,12 @@ class _SemifinalState extends State<Semifinal> {
                       backgroundColor: Colors.red),
                 ),
                 onPressed: () {
-                  stompClient.send(
-                      destination: '/game/disconnect/${widget.idPartida}',
-                      body: '',
-                      headers: {
-                        'Authorization': 'Bearer ${widget.authorization}',
-                        'username': widget.nomUser
-                      });
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  final route = MaterialPageRoute(
+                      builder: (context) => HomePage(
+                          autorization: widget.authorization,
+                          username: widget.nomUser,
+                          pais: 'Espana'));
+                  Navigator.push(context, route);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.red),

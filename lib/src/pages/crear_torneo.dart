@@ -34,7 +34,7 @@ class _CreateTournamentState extends State<CreateTournament> {
   bool chaosDraw = false;
   bool blockDraw = false;
   bool repeatDraw = false;
-  int tiempo = 5;
+  int tiempo = 20;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

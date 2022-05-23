@@ -152,7 +152,7 @@ class _PartidaState extends State<Partida> {
         }
         dynamic turno = a['turno'];
         //Gestionar la lógica de los bloqueos
-        if (carta['numero'] == 'BLOQUEO') {
+        if (carta['numero'] == 'BLOQUEO' && cima.numero != 'MAS_CUATRO') {
           if (!salto && turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/pasarTurno/${widget.idPartida}',
@@ -162,8 +162,6 @@ class _PartidaState extends State<Partida> {
                   'username': widget.nomUser
                 });
             salto = true;
-          } else {
-            salto = false;
           }
         }
         //Gestionar la lógica de los draws
@@ -770,13 +768,6 @@ class _PartidaState extends State<Partida> {
                       backgroundColor: Colors.red),
                 ),
                 onPressed: () {
-                  stompClient.send(
-                      destination: '/game/disconnect/${widget.idPartida}',
-                      body: '',
-                      headers: {
-                        'Authorization': 'Bearer ${widget.authorization}',
-                        'username': widget.nomUser
-                      });
                   final route = MaterialPageRoute(
                       builder: (context) => HomePage(
                           autorization: widget.authorization,
