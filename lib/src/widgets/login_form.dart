@@ -253,7 +253,6 @@ class _LoginFormState extends State<LoginForm> {
             void onConnect(StompFrame frame) async {
               autori = respuestaLogin['accessToken'].toString();
               //por aqui devuelve tu mano de cartas
-              //Funciona
               stompClient.subscribe(
                   destination: '/user/$_name/msg',
                   callback: (StompFrame frame) async {
@@ -284,6 +283,7 @@ class _LoginFormState extends State<LoginForm> {
                       }
                     }
                   });
+
               //conectarse a la partida y nos devuelve la lista de los jugadores
               stompClient.subscribe(
                 destination: '/topic/connect/$resp',
@@ -368,14 +368,9 @@ class _LoginFormState extends State<LoginForm> {
                       canalUser.sink.add(json.decode(frame.body!));
                     }
                   });
-              //Envío de mensaje para conectarte a una partida
-              // stompClient.send(
-              //     destination: '/game/connect/$resp',
-              //     body: '',
-              //     headers: {
-              //       'Authorization': 'Bearer $autori',
-              //       'username': _name
-              //     });
+
+              print('Se ha hecho el onConnect');
+              GetMiMano();
             }
 
             stompClient = StompClient(
@@ -401,22 +396,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             );
 
-            // @override
-            // void initState() {
-            //   super.initState();
-            //   if (stompClient == null) {
-            //     StompFrame frame;
-            //     StompClient client = StompClient(
-            //         config: StompConfig.SockJS(
-            //       url: 'wss://onep1.herokuapp.com/onep1-game',
-            //       onConnect: onConnect,
-            //       onWebSocketError: (dynamic error) => print(error.toString()),
-            //     ));
-            //     stompClient.activate();
-            //   }
-            // }
             stompClient.activate();
-            GetMiMano();
           } else {
             print("problema con la info que me envían de la partida");
           }
@@ -448,7 +428,7 @@ class _LoginFormState extends State<LoginForm> {
         await http.post(url, headers: headers, body: jsonEncode(mapeddate));
 
     if (response.statusCode == 200) {
-      print("ha legado bien el mensaje");
+      print("ha llegado bien el mensaje");
     } else {
       print("ha llegado mal el mensaje");
     }
