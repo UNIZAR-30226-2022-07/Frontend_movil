@@ -153,7 +153,10 @@ class _SemifinalState extends State<Semifinal> {
           final response = await http.post(url,
               headers: headers, body: jsonEncode(mapeddate));
           if (response.statusCode == 200) {
-            popUpGanador(context, jsonDecode(response.body));
+            print(response.body);
+            final aux = jsonDecode(response.body);
+            print(aux);
+            popUpGanador(context, aux);
           }
         } else {
           popUpFinal(context, a);
