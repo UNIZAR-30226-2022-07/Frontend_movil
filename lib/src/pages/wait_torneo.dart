@@ -17,10 +17,12 @@ class EsperaTorneo extends StatefulWidget {
   final List<String> jugadores;
   final List<dynamic> reglas;
   final dynamic infoInicial;
+  final String idTorneo;
   EsperaTorneo(
       {required this.autorization,
       required this.idPagina,
       required this.nomUser,
+      required this.idTorneo,
       required this.nPlayers,
       required this.jugadores,
       required this.infoInicial,
@@ -75,6 +77,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                           nomUser: widget.nomUser,
                           authorization: widget.autorization,
                           idPartida: widget.idPagina,
+                          idTorneo: widget.idTorneo,
                           infoInicial: respuesta,
                           listaInicial: _listaJugadores,
                         ));
@@ -138,6 +141,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                         nomUser: widget.nomUser,
                         authorization: widget.autorization,
                         idPartida: widget.idPagina,
+                        idTorneo: widget.idTorneo,
                         infoInicial: respuesta,
                         listaInicial: _listaJugadores,
                       ));
@@ -178,6 +182,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                       stompClient: stompClient,
                       nomUser: widget.nomUser,
                       authorization: widget.autorization,
+                      idTorneo: widget.idTorneo,
                       idPartida: widget.idPagina,
                       infoInicial: respuesta,
                       listaInicial: _listaJugadores,

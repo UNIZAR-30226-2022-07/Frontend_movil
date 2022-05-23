@@ -99,6 +99,7 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                       builder: (context) => EsperaTorneo(
                           autorization: widget.autorization,
                           idPagina: idPartidaTorneo,
+                          idTorneo: widget.idPagina,
                           nomUser: widget.nomUser,
                           nPlayers: respuesta['numeroJugadores'],
                           jugadores: jugadores,

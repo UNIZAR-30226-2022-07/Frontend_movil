@@ -25,6 +25,7 @@ class Semifinal extends StatefulWidget {
   final String authorization;
   final dynamic infoInicial;
   final dynamic listaInicial;
+  final String idTorneo;
   const Semifinal(
       {Key? key,
       required this.idPartida,
@@ -36,6 +37,7 @@ class Semifinal extends StatefulWidget {
       required this.authorization,
       required this.stompClient,
       this.infoInicial,
+      required this.idTorneo,
       required this.listaInicial})
       : super(key: key);
 
@@ -138,9 +140,21 @@ class _SemifinalState extends State<Semifinal> {
         //Significa que un usuario ha ganado la partida
         print(a);
         if (a == 'HA GANADO ${widget.nomUser}') {
-          //Esperamos 2 segundos por si acaso
-          Future.delayed(const Duration(seconds: 2));
-          popUpGanador(context);
+          //Pasar a la final
+          //Petición post y el id
+          Uri url = Uri.parse('https://onep1.herokuapp.com/torneo/jugarFinal');
+          final headers = {
+            HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+          };
+          Map mapeddate = {
+            'username': widget.nomUser,
+            'torneoId': widget.idTorneo,
+          };
+          final response = await http.post(url,
+              headers: headers, body: jsonEncode(mapeddate));
+          if (response.statusCode == 200) {
+            popUpGanador(context, jsonDecode(response.body));
+          }
         } else {
           popUpFinal(context, a);
         }
@@ -774,7 +788,7 @@ class _SemifinalState extends State<Semifinal> {
                 ))));
   }
 
-  Future<dynamic> popUpGanador(BuildContext context) {
+  Future<dynamic> popUpGanador(BuildContext context, dynamic id) {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -789,20 +803,7 @@ class _SemifinalState extends State<Semifinal> {
                       backgroundColor: Colors.red),
                 ),
                 onPressed: () async {
-                  //Pasar a la final
-                  //Petición post y el id
-                  Uri url = Uri.parse(
-                      'https://onep1.herokuapp.com/game/getInfoPartida');
-                  final headers = {
-                    HttpHeaders.contentTypeHeader:
-                        "application/json; charset=UTF-8"
-                  };
-                  Map mapeddate = {
-                    'idPartida': 'idfinal',
-                  };
-                  final response = await http.post(url,
-                      headers: headers, body: jsonEncode(mapeddate));
-                  pasarFinal(response.body);
+                  pasarFinal(id);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
@@ -816,7 +817,7 @@ class _SemifinalState extends State<Semifinal> {
             ));
   }
 
-  Future<dynamic> pasarFinal(String idfinal) async {
+  Future<dynamic> pasarFinal(dynamic idfinal) async {
     //Pedir info de la final -> getInfoPartida
     Uri url = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
     final headers = {
