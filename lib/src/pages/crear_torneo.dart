@@ -14,7 +14,6 @@ import 'dart:convert';
 
 import '../pages/home_page.dart';
 
-// int count = 2;
 bool tiempoA10 = false;
 
 class CreateTournament extends StatefulWidget {
@@ -101,11 +100,7 @@ class _CreateTournamentState extends State<CreateTournament> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      CrearTorneo(); //falta de implementar aqui esta funcion
-                      //       final route = MaterialPageRoute(
-                      //           builder: (context) => HomePage(autorization: widget.autorization,
-                      // username: widget.username, pais: widget.pais,));
-                      //       Navigator.push(context, route);
+                      CrearTorneo();
                     },
                     child: const Text('Crear torneo'),
 
@@ -178,7 +173,7 @@ class _CreateTournamentState extends State<CreateTournament> {
                       Expanded(
                         child: CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
-                          title: const Text('Reapeat Draw'),
+                          title: const Text('Repeat Draw'),
                           value: repeatDraw,
                           onChanged: (regla4) =>
                               setState(() => repeatDraw = regla4!),

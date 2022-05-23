@@ -14,7 +14,7 @@ import 'dart:convert';
 import '../pages/home_page.dart';
 
 int count = 2;
-bool tiempoA10 = false;
+bool tiempoA15 = false;
 
 class CreatePage extends StatefulWidget {
   final String autorization;
@@ -131,25 +131,7 @@ class _CreatePageState extends State<CreatePage> {
                                 margin: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
                                   color:
-                                      tiempoA10 ? Colors.blue : Colors.black38,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: TextButton(
-                                    child: const Text(
-                                      '10s',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25),
-                                    ),
-                                    onPressed: () {
-                                      setState(() => tiempoA10 = true);
-                                      tiempo = 10;
-                                    })),
-                            Container(
-                                padding: const EdgeInsets.all(5),
-                                margin: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color:
-                                      !tiempoA10 ? Colors.blue : Colors.black38,
+                                      tiempoA15 ? Colors.blue : Colors.black38,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: TextButton(
@@ -159,8 +141,26 @@ class _CreatePageState extends State<CreatePage> {
                                           color: Colors.white, fontSize: 25),
                                     ),
                                     onPressed: () {
-                                      setState(() => tiempoA10 = false);
+                                      setState(() => tiempoA15 = true);
                                       tiempo = 15;
+                                    })),
+                            Container(
+                                padding: const EdgeInsets.all(5),
+                                margin: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color:
+                                      !tiempoA15 ? Colors.blue : Colors.black38,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: TextButton(
+                                    child: const Text(
+                                      '20s',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 25),
+                                    ),
+                                    onPressed: () {
+                                      setState(() => tiempoA15 = false);
+                                      tiempo = 20;
                                     }))
                           ],
                         ),
