@@ -152,8 +152,9 @@ class _PartidaState extends State<Partida> {
         }
         dynamic turno = a['turno'];
         //Gestionar la lógica de los bloqueos
-        if (carta['numero'] == 'BLOQUEO' && cima.numero != 'MAS_CUATRO') {
-          if (!salto && turno == widget.nomUser) {
+        if (carta['numero'] == 'BLOQUEO' &&
+            !(cima.numero == 'BLOQUEO' || cima.color == carta['color'])) {
+          if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/pasarTurno/${widget.idPartida}',
                 body: '',
@@ -161,12 +162,12 @@ class _PartidaState extends State<Partida> {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
-            salto = true;
           }
         }
         //Gestionar la lógica de los draws
-        if (carta['numero'] == 'MAS_DOS' && turno == widget.nomUser) {
-          if (robar2) {
+        if (carta['numero'] == 'MAS_DOS' &&
+            !(cima.numero == 'MAS_DOS' || cima.color == carta['color'])) {
+          if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
                 body: "2",
@@ -181,14 +182,12 @@ class _PartidaState extends State<Partida> {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
-            robar2 = false;
-          } else {
-            robar2 = false;
           }
         }
         //Gestionar la lógica de los draws4
-        if (carta['numero'] == 'MAS_CUATRO' && cima.numero != 'MAS_CUATRO') {
-          if (robar4 && turno == widget.nomUser) {
+        if (carta['numero'] == 'MAS_CUATRO' &&
+            !(cima.numero == 'MAS_CUATRO' || cima.color == carta['color'])) {
+          if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
                 body: "4",
@@ -204,7 +203,6 @@ class _PartidaState extends State<Partida> {
                   'username': widget.nomUser
                 });
           }
-          robar4 = false;
         }
 
         setState(() {
@@ -296,6 +294,13 @@ class _PartidaState extends State<Partida> {
                       'username': widget.nomUser
                     });
                 break;
+            }
+            if (carta.numero == 'MAS_DOS') {
+              robar2 = true;
+            } else if (carta.numero == 'MAS_CUATRO') {
+              robar4 = true;
+            } else if (carta.numero == 'BLOQUEO') {
+              salto = true;
             }
           } else {
             print('No se puede realizar ese movimiento');
