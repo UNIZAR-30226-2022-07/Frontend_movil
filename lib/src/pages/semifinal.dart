@@ -149,6 +149,7 @@ class _SemifinalState extends State<Semifinal> {
           popUpFinal(context, a);
         }
       } else {
+        // a = jsonDecode(a);
         dynamic carta = a['carta'];
         // Carta que se va a poner en la cima
         Carta c = Carta(

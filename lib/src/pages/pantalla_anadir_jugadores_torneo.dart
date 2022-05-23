@@ -73,7 +73,7 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                 canalUser.sink.add(json.decode(frame.body!));
               } else {
                 //Nos llega el id de la partida a jugar
-                idPartidaTorneo = jsonDecode(frame.body!);
+                idPartidaTorneo = frame.body!;
                 partidaEmpezada = true;
                 Uri url = Uri.parse(
                     'https://onep1.herokuapp.com/game/getInfoPartida');

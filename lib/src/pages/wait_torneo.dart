@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/pages/semifinal.dart';
@@ -51,6 +53,19 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
             dynamic a = "No es tu turno";
             if (frame.body != a) {
               if (!partidaEmpezada) {
+                Uri url = Uri.parse(
+                    'https://onep1.herokuapp.com/game/getInfoPartida');
+                final headers = {
+                  HttpHeaders.contentTypeHeader:
+                      "application/json; charset=UTF-8"
+                };
+                Map mapeddate = {
+                  'idPartida': widget.idPagina,
+                };
+                //Obtenemos la info necesaria para poder ir a la partida en cuestión
+                final response = await http.post(url,
+                    headers: headers, body: jsonEncode(mapeddate));
+                final respuesta = jsonDecode(response.body);
                 partidaEmpezada = true;
                 final route = MaterialPageRoute(
                     builder: (context) => Semifinal(
@@ -62,7 +77,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                           nomUser: widget.nomUser,
                           authorization: widget.autorization,
                           idPartida: widget.idPagina,
-                          infoInicial: widget.infoInicial,
+                          infoInicial: respuesta,
                           listaInicial: _listaJugadores,
                         ));
                 Navigator.push(context, route);
@@ -76,7 +91,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
     //conectarse a la partida y nos devuelve la lista de los jugadores
     stompClient.subscribe(
       destination: '/topic/connect/${widget.idPagina}',
-      callback: (StompFrame frame) {
+      callback: (StompFrame frame) async {
         if (frame.body != null) {
           canalGeneral.sink.add(json.decode(frame.body!));
           print('Canal general');
@@ -95,6 +110,18 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
             if (nJugadores == widget.nPlayers &&
                 jugadores[0] == widget.nomUser) {
               //Comenzar la partida automáticamente
+              Uri url =
+                  Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
+              final headers = {
+                HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+              };
+              Map mapeddate = {
+                'idPartida': widget.idPagina,
+              };
+              //Obtenemos la info necesaria para poder ir a la partida en cuestión
+              final response = await http.post(url,
+                  headers: headers, body: jsonEncode(mapeddate));
+              final respuesta = jsonDecode(response.body);
               stompClient.send(
                   destination: '/game/begin/${widget.idPagina}',
                   body: '',
@@ -113,7 +140,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                         nomUser: widget.nomUser,
                         authorization: widget.autorization,
                         idPartida: widget.idPagina,
-                        infoInicial: widget.infoInicial,
+                        infoInicial: respuesta,
                         listaInicial: _listaJugadores,
                       ));
               Navigator.push(context, route);
@@ -132,6 +159,18 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
           print(frame.body);
           if (!partidaEmpezada) {
             partidaEmpezada = true;
+            Uri url =
+                Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
+            final headers = {
+              HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+            };
+            Map mapeddate = {
+              'idPartida': widget.idPagina,
+            };
+            //Obtenemos la info necesaria para poder ir a la partida en cuestión
+            final response = await http.post(url,
+                headers: headers, body: jsonEncode(mapeddate));
+            final respuesta = jsonDecode(response.body);
             final route = MaterialPageRoute(
                 builder: (context) => Semifinal(
                       userListener: canalUser.stream,
@@ -142,7 +181,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                       nomUser: widget.nomUser,
                       authorization: widget.autorization,
                       idPartida: widget.idPagina,
-                      infoInicial: widget.infoInicial,
+                      infoInicial: respuesta,
                       listaInicial: _listaJugadores,
                     ));
             Navigator.push(context, route);
@@ -173,6 +212,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
           'Authorization': 'Bearer ${widget.autorization}',
           'username': widget.nomUser
         });
+    print('wait_torneo susxrito');
   }
 
   late StompClient stompClient = StompClient(

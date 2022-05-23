@@ -235,18 +235,20 @@ class _PartidaState extends State<Partida> {
   // Esta función dependerá también de las diferentes reglas con las que se juegue
   bool comprobarMov(Carta seleccionada, Carta cima) {
     bool sePuede = false;
+    print(cima.color);
+    print(seleccionada.color);
     sePuede = seleccionada.numero == cima.numero ||
         seleccionada.color == cima.color ||
         seleccionada.numero == 'CAMBIO_COLOR' ||
         seleccionada.numero == 'MAS_CUATRO';
-    if (cima.numero == 'MAS_DOS') {
-      if (seleccionada.numero == 'MAS_DOS') {
-        robarCartas = 0;
-      } else {
-        robarCartas = 2;
-        sePuede = false;
-      }
-    }
+    // if (cima.numero == 'MAS_DOS') {
+    //   if (seleccionada.numero == 'MAS_DOS') {
+    //     robarCartas = 0;
+    //   } else {
+    //     robarCartas = 2;
+    //     sePuede = false;
+    //   }
+    // }
     return sePuede;
   }
 
