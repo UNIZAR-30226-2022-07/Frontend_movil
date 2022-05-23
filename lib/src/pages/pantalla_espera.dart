@@ -241,7 +241,7 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                 Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _listaJugadores.length,
+                    itemCount: widget.nPlayers,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Padding(
@@ -259,7 +259,9 @@ class _EsperaPartidaState extends State<EsperaPartida> {
                                     fontSize: 10,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
-                                child: Text(_listaJugadores[index])),
+                                child: _listaJugadores.length > index
+                                    ? Text(_listaJugadores[index])
+                                    : const Text('Esperando...')),
                           ],
                         ),
                       );

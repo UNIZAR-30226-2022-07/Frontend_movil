@@ -244,7 +244,7 @@ class _EsperaPublicaState extends State<EsperaPublica> {
               Expanded(
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _listaJugadores.length,
+                  itemCount: widget.nPlayers,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Padding(

@@ -311,7 +311,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                 Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _listaJugadores.length,
+                    itemCount: 3,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Padding(
