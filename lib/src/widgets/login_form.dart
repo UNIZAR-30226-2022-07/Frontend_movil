@@ -16,6 +16,7 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:async';
 
 import '../pages/partida.dart';
+
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -28,13 +29,13 @@ class _LoginFormState extends State<LoginForm> {
   String _name = '';
   String _password = '';
   bool partidaEmpezada = false;
-    final canalUser = StreamController.broadcast();
+  final canalUser = StreamController.broadcast();
   final canalGeneral = StreamController.broadcast();
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   late List<String> _listaJugadores = [];
   String autori = '';
-  String resp= '';
+  String resp = '';
   late StompClient stompClient;
   @override
   Widget build(BuildContext context) {
@@ -196,38 +197,39 @@ class _LoginFormState extends State<LoginForm> {
     //----------------------------------------------------
     //--------------------------------------------------------
     Uri urlLogin = Uri.parse('https://onep1.herokuapp.com/api/auth/signin');
-    Uri urlActive = Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
-    Uri urlGetinfo = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
+    Uri urlActive =
+        Uri.parse('https://onep1.herokuapp.com/game/getPartidasActivas');
+    Uri urlGetinfo =
+        Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
     //los headers son los mismos para ambos
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
-    
+
     Map mapeddateLogin = {'username': _name, 'password': _password};
     Map mapeddateActive = {'username': _name};
 
     final responseLogin = await http.post(urlLogin,
         headers: headers, body: jsonEncode(mapeddateLogin)); // print(response);
-    
-    
+
     if (responseLogin.statusCode == 200) {
-      Map<String, dynamic> respuestaLogin = json.decode(responseLogin.body); 
+      Map<String, dynamic> respuestaLogin = json.decode(responseLogin.body);
       final responseActive = await http.post(urlActive,
-        headers: headers, body: jsonEncode(mapeddateActive)); // print(response);
-      
+          headers: headers,
+          body: jsonEncode(mapeddateActive)); // print(response);
+
       if (responseActive.statusCode == 200) {
-        Map<String, dynamic> respuestaActive = json.decode(responseActive.body); 
-        if (respuestaActive['message'] == "No hay partidas para el usuario" ) {
-            print("no hay partidas porque ha entrado");
-            final route = MaterialPageRoute(
-                builder: (context) => HomePage(
-                autorization: respuestaLogin['accessToken'],
-                username: respuestaLogin['username'],
-                pais: respuestaLogin['pais'],
-                )
-            );
-            Navigator.push(context, route);
-            print(respuestaActive['message']);
+        Map<String, dynamic> respuestaActive = json.decode(responseActive.body);
+        if (respuestaActive['message'] == "No hay partidas para el usuario") {
+          print("no hay partidas porque ha entrado");
+          final route = MaterialPageRoute(
+              builder: (context) => HomePage(
+                    autorization: respuestaLogin['accessToken'],
+                    username: respuestaLogin['username'],
+                    pais: respuestaLogin['pais'],
+                  ));
+          Navigator.push(context, route);
+          print(respuestaActive['message']);
         }
         //en el caso de que si que haya partidas
         else {
@@ -238,16 +240,18 @@ class _LoginFormState extends State<LoginForm> {
           //para enviar el id de la partida que nos han dado ellos mismos
           Map mapeddateGetinfo = {'idPartida': resp};
           final responseGetinfo = await http.post(urlGetinfo,
-            headers: headers, body: jsonEncode(mapeddateGetinfo)); // print(response);
+              headers: headers,
+              body: jsonEncode(mapeddateGetinfo)); // print(response);
           if (responseGetinfo.statusCode == 200) {
             //aqui me pasan toda la info de la partida, y falta conectarme a ella
-            Map<String, dynamic> respuestaGetinfo = json.decode(responseGetinfo.body);
+            Map<String, dynamic> respuestaGetinfo =
+                json.decode(responseGetinfo.body);
             String numJ = respuestaGetinfo['numeroJugadores'].toString();
             String tt = respuestaGetinfo['tiempoTurno'].toString();
             String jugadores = respuestaGetinfo['jugadores'].toString();
             String reglas = respuestaGetinfo['reglas'].toString();
             void onConnect(StompFrame frame) async {
-              autori= respuestaLogin['accessToken'].toString();
+              autori = respuestaLogin['accessToken'].toString();
               //por aqui devuelve tu mano de cartas
               //Funciona
               stompClient.subscribe(
@@ -277,9 +281,9 @@ class _LoginFormState extends State<LoginForm> {
                         }
                         await Future.delayed(const Duration(seconds: 1));
                         canalUser.sink.add(json.decode(frame.body!));
-                              }
-                            }
-              });
+                      }
+                    }
+                  });
               //conectarse a la partida y nos devuelve la lista de los jugadores
               stompClient.subscribe(
                 destination: '/topic/connect/$resp',
@@ -304,8 +308,8 @@ class _LoginFormState extends State<LoginForm> {
               );
               //devuelve la carta del medio
               stompClient.subscribe(
-                  destination: '/topic/begin/$resp',
-                  callback: (StompFrame frame) async {
+                destination: '/topic/begin/$resp',
+                callback: (StompFrame frame) async {
                   if (frame.body != null) {
                     print('Canal carta medio:');
                     print(frame.body);
@@ -342,18 +346,17 @@ class _LoginFormState extends State<LoginForm> {
                   }
                 },
               );
-              
+
               stompClient.subscribe(
                   destination: '/topic/disconnect/$resp',
                   callback: (StompFrame frame) async {
                     if (frame.body != null) {
                       print('Canal usuario');
                       print(frame.body);
-                        await Future.delayed(const Duration(seconds: 1));
-                        canalUser.sink.add(json.decode(frame.body!));
+                      await Future.delayed(const Duration(seconds: 1));
+                      canalUser.sink.add(json.decode(frame.body!));
                     }
-                  }
-              );
+                  });
               //para el boton de uno
               stompClient.subscribe(
                   destination: '/topic/buttonOne/$resp',
@@ -361,20 +364,20 @@ class _LoginFormState extends State<LoginForm> {
                     if (frame.body != null) {
                       print('Canal usuario');
                       print(frame.body);
-                        await Future.delayed(const Duration(seconds: 1));
-                        canalUser.sink.add(json.decode(frame.body!));
+                      await Future.delayed(const Duration(seconds: 1));
+                      canalUser.sink.add(json.decode(frame.body!));
                     }
-                  }
-              );
-              //Envío de mensaje para conectarte a una partida
-              stompClient.send(
-                  destination: '/game/connect/$resp',
-                  body: '',
-                  headers: {
-                    'Authorization': 'Bearer $autori',
-                    'username': _name
                   });
+              //Envío de mensaje para conectarte a una partida
+              // stompClient.send(
+              //     destination: '/game/connect/$resp',
+              //     body: '',
+              //     headers: {
+              //       'Authorization': 'Bearer $autori',
+              //       'username': _name
+              //     });
             }
+
             stompClient = StompClient(
               config: StompConfig.SockJS(
                 url: 'https://onep1.herokuapp.com/onep1-game',
@@ -413,14 +416,12 @@ class _LoginFormState extends State<LoginForm> {
             //   }
             // }
             stompClient.activate();
-            GetMiMano();             
-          }
-          else {
+            GetMiMano();
+          } else {
             print("problema con la info que me envían de la partida");
           }
         }
-      }
-      else {
+      } else {
         print("error en las partidas activas");
       }
     }
@@ -433,7 +434,6 @@ class _LoginFormState extends State<LoginForm> {
       }
     }
   }
-
 
   Future GetMiMano() async {
     Uri url = Uri.parse('https://onep1.herokuapp.com/game/getManoJugador');
@@ -453,8 +453,4 @@ class _LoginFormState extends State<LoginForm> {
       print("ha llegado mal el mensaje");
     }
   }
-
-
-
-
 }

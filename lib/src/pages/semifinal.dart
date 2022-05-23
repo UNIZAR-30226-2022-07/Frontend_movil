@@ -254,14 +254,14 @@ class _SemifinalState extends State<Semifinal> {
         seleccionada.color == cima.color ||
         seleccionada.numero == 'CAMBIO_COLOR' ||
         seleccionada.numero == 'MAS_CUATRO';
-    if (cima.numero == 'MAS_DOS') {
-      if (seleccionada.numero == 'MAS_DOS') {
-        robarCartas = 0;
-      } else {
-        robarCartas = 2;
-        sePuede = false;
-      }
-    }
+    // if (cima.numero == 'MAS_DOS') {
+    //   if (seleccionada.numero == 'MAS_DOS') {
+    //     robarCartas = 0;
+    //   } else {
+    //     robarCartas = 2;
+    //     sePuede = false;
+    //   }
+    // }
     return sePuede;
   }
 
