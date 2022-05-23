@@ -153,7 +153,7 @@ class _PartidaState extends State<Partida> {
         dynamic turno = a['turno'];
         //Gestionar la lógica de los bloqueos
         if (carta['numero'] == 'BLOQUEO' &&
-            !(cima.numero == 'BLOQUEO' || cima.color == carta['color'])) {
+            !(cima.numero == 'BLOQUEO' && cima.color == carta['color'])) {
           if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/pasarTurno/${widget.idPartida}',
@@ -166,7 +166,7 @@ class _PartidaState extends State<Partida> {
         }
         //Gestionar la lógica de los draws
         if (carta['numero'] == 'MAS_DOS' &&
-            !(cima.numero == 'MAS_DOS' || cima.color == carta['color'])) {
+            !(cima.numero == 'MAS_DOS' && cima.color == carta['color'])) {
           if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
@@ -186,7 +186,7 @@ class _PartidaState extends State<Partida> {
         }
         //Gestionar la lógica de los draws4
         if (carta['numero'] == 'MAS_CUATRO' &&
-            !(cima.numero == 'MAS_CUATRO' || cima.color == carta['color'])) {
+            !(cima.numero == 'MAS_CUATRO' && cima.color == carta['color'])) {
           if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',

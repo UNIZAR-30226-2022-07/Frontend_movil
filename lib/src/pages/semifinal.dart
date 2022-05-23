@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unogame/src/models/carta.dart';
 import 'package:flutter_unogame/src/pages/chat.dart';
+import 'package:flutter_unogame/src/pages/wait_publica.dart';
 import 'package:flutter_unogame/src/widgets/rival_card.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -181,7 +182,7 @@ class _SemifinalState extends State<Semifinal> {
         dynamic turno = a['turno'];
         //Gestionar la lógica de los bloqueos
         if (carta['numero'] == 'BLOQUEO' &&
-            !(cima.numero == 'BLOQUEO' || cima.color == carta['color'])) {
+            !(cima.numero == 'BLOQUEO' && cima.color == carta['color'])) {
           if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/pasarTurno/${widget.idPartida}',
@@ -194,7 +195,7 @@ class _SemifinalState extends State<Semifinal> {
         }
         //Gestionar la lógica de los draws
         if (carta['numero'] == 'MAS_DOS' &&
-            !(cima.numero == 'MAS_DOS' || cima.color == carta['color'])) {
+            !(cima.numero == 'MAS_DOS' && cima.color == carta['color'])) {
           if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
@@ -214,7 +215,7 @@ class _SemifinalState extends State<Semifinal> {
         }
         //Gestionar la lógica de los draws4
         if (carta['numero'] == 'MAS_CUATRO' &&
-            !(cima.numero == 'MAS_CUATRO' || cima.color == carta['color'])) {
+            !(cima.numero == 'MAS_CUATRO' && cima.color == carta['color'])) {
           if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
@@ -834,14 +835,14 @@ class _SemifinalState extends State<Semifinal> {
         jugadores.add(a);
       }
       final route = MaterialPageRoute(
-          builder: (context) => EsperaPartida(
-              autorization: widget.authorization,
-              idPagina: idfinal,
-              nomUser: widget.nomUser,
-              nPlayers: respuesta['numeroJugadores'],
-              jugadores: jugadores,
-              infoInicial: respuesta,
-              reglas: respuesta['reglas']));
+          builder: (context) => EsperaPublica(
+                autorization: widget.authorization,
+                idPagina: idfinal,
+                nomUser: widget.nomUser,
+                nPlayers: respuesta['numeroJugadores'],
+                jugadores: jugadores,
+                infoInicial: respuesta, //reglas: respuesta['reglas']
+              ));
       Navigator.push(context, route);
     }
   }

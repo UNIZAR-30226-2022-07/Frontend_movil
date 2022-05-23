@@ -88,7 +88,7 @@ class _CreatePageState extends State<CreatePage> {
                             child: Row(children: [
                               IconButton(
                                 onPressed: () {
-                                  if (count > 1) setState(() => count--);
+                                  if (count > 2) setState(() => count--);
                                 },
                                 icon: const Icon(
                                   Icons.exposure_minus_1,
