@@ -153,7 +153,7 @@ class _PartidaState extends State<Partida> {
         dynamic turno = a['turno'];
         //Gestionar la lógica de los bloqueos
         if (carta['numero'] == 'BLOQUEO') {
-          if (!salto) {
+          if (!salto && turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/pasarTurno/${widget.idPartida}',
                 body: '',
@@ -167,7 +167,7 @@ class _PartidaState extends State<Partida> {
           }
         }
         //Gestionar la lógica de los draws
-        if (carta['numero'] == 'MAS_DOS') {
+        if (carta['numero'] == 'MAS_DOS' && turno == widget.nomUser) {
           if (robar2) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
@@ -189,8 +189,8 @@ class _PartidaState extends State<Partida> {
           }
         }
         //Gestionar la lógica de los draws4
-        if (carta['numero'] == 'MAS_CUATRO') {
-          if (robar4) {
+        if (carta['numero'] == 'MAS_CUATRO' && cima.numero != 'MAS_CUATRO') {
+          if (robar4 && turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
                 body: "4",
@@ -205,10 +205,8 @@ class _PartidaState extends State<Partida> {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
-            robar4 = false;
-          } else {
-            robar4 = true;
           }
+          robar4 = false;
         }
 
         setState(() {
@@ -241,14 +239,6 @@ class _PartidaState extends State<Partida> {
         seleccionada.color == cima.color ||
         seleccionada.numero == 'CAMBIO_COLOR' ||
         seleccionada.numero == 'MAS_CUATRO';
-    // if (cima.numero == 'MAS_DOS') {
-    //   if (seleccionada.numero == 'MAS_DOS') {
-    //     robarCartas = 0;
-    //   } else {
-    //     robarCartas = 2;
-    //     sePuede = false;
-    //   }
-    // }
     return sePuede;
   }
 
