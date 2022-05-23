@@ -33,7 +33,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
   String message = '';
   int nJugadores = 1;
   bool partidaEmpezada = false;
-  bool soyHost = false;
   String idPartidaTorneo = '';
   final canalUser = StreamController.broadcast();
   final canalGeneral = StreamController.broadcast();
@@ -61,7 +60,7 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
   }
 
   void onConnect(StompFrame frame) {
-    //por aqui devuelve tu mano de cartas
+    //Llega aquí el identificador de la semifinal a la que hay que entrar
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) async {
@@ -112,13 +111,14 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
           }
         });
 
-    //conectarse a la partida y nos devuelve la lista de los jugadores
+    //conectarse al torneo y nos devuelve la lista de los jugadores
     stompClient.subscribe(
       destination: '/topic/connect/torneo/${widget.idPagina}',
       callback: (StompFrame frame) {
         if (frame.body != null) {
           print('Canal general');
           print(json.decode(frame.body!));
+          //en principio sobra esta comprobación
           if (!partidaEmpezada) {
             dynamic a = json.decode(frame.body!);
             List<String> jugadores = [];
@@ -136,7 +136,6 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             // y si el jugador en cuestión es el host
             if (nJugadores == widget.numP && jugadores[0] == widget.nomUser) {
               //Comenzar la partida automáticamente
-              soyHost = true;
               stompClient.send(
                   destination: '/game/begin/torneo/${widget.idPagina}',
                   body: '',
@@ -159,6 +158,7 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
       },
     );
 
+    //Envío de mensaje para conectarme al torneo
     stompClient.send(
         destination: '/game/connect/torneo/${widget.idPagina}',
         body: '',
@@ -302,7 +302,8 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                   ),
                   onPressed: () {
                     stompClient.send(
-                        destination: '/game/disconnect/${widget.idPagina}',
+                        destination:
+                            '/game/disconnect/torneo/${widget.idPagina}',
                         body: '',
                         headers: {
                           'Authorization': 'Bearer ${widget.autorization}',

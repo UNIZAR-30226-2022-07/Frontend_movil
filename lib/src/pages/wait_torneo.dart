@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_unogame/src/pages/semifinal.dart';
 import 'dart:convert';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
@@ -38,24 +39,9 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   late List<String> _listaJugadores = widget.jugadores;
-// {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
-//estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
-//njugadores: 1, tturno: 5, ultimaCartaJugada: {numero: NUEVE, color: AZUL},
-//turno: {nombre: usuario123, cartas: []}, tipo: true}
-
-// if (soyHost) {
-  //   stompClient.send(
-  //       destination: '/game/begin/torneo/$idPartidaTorneo',
-  //       body: '',
-  //       headers: {
-  //         'Authorization': 'Bearer ${widget.autorization}',
-  //         'username': widget.nomUser
-  //       });
-  // }
 
   void onConnect(StompFrame frame) async {
     //por aqui devuelve tu mano de cartas
-    //Funciona
     stompClient.subscribe(
         destination: '/user/${widget.nomUser}/msg',
         callback: (StompFrame frame) async {
@@ -67,7 +53,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
               if (!partidaEmpezada) {
                 partidaEmpezada = true;
                 final route = MaterialPageRoute(
-                    builder: (context) => Partida(
+                    builder: (context) => Semifinal(
                           userListener: canalUser.stream,
                           gameListener: canalGeneral.stream,
                           cartaMedioListener: canalCartaMedio.stream,
@@ -80,8 +66,8 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                           listaInicial: _listaJugadores,
                         ));
                 Navigator.push(context, route);
+                await Future.delayed(const Duration(seconds: 1));
               }
-              await Future.delayed(const Duration(seconds: 1));
               canalUser.sink.add(json.decode(frame.body!));
             }
           }
@@ -103,12 +89,12 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
             }
             print(jugadores);
             setState(() {
-              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              _listaJugadores = jugadores;
               nJugadores = jugadores.length;
             });
             if (nJugadores == widget.nPlayers &&
                 jugadores[0] == widget.nomUser) {
-              //Si soy el host envío el begin de la partida cuando estén todos los jugadores
+              //Comenzar la partida automáticamente
               stompClient.send(
                   destination: '/game/begin/${widget.idPagina}',
                   body: '',
@@ -116,6 +102,21 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                     'Authorization': 'Bearer ${widget.autorization}',
                     'username': widget.nomUser
                   });
+              partidaEmpezada = true;
+              final route = MaterialPageRoute(
+                  builder: (context) => Semifinal(
+                        userListener: canalUser.stream,
+                        gameListener: canalGeneral.stream,
+                        cartaMedioListener: canalCartaMedio.stream,
+                        jugadaListener: canalJugada.stream,
+                        stompClient: stompClient,
+                        nomUser: widget.nomUser,
+                        authorization: widget.autorization,
+                        idPartida: widget.idPagina,
+                        infoInicial: widget.infoInicial,
+                        listaInicial: _listaJugadores,
+                      ));
+              Navigator.push(context, route);
             }
           }
         }
@@ -132,7 +133,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
           if (!partidaEmpezada) {
             partidaEmpezada = true;
             final route = MaterialPageRoute(
-                builder: (context) => Partida(
+                builder: (context) => Semifinal(
                       userListener: canalUser.stream,
                       gameListener: canalGeneral.stream,
                       cartaMedioListener: canalCartaMedio.stream,
@@ -145,8 +146,8 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                       listaInicial: _listaJugadores,
                     ));
             Navigator.push(context, route);
+            await Future.delayed(const Duration(seconds: 1));
           }
-          await Future.delayed(const Duration(seconds: 1));
           canalCartaMedio.sink.add(json.decode(frame.body!));
         }
       },
@@ -212,6 +213,11 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
     }
     _listaJugadores = List.filled(widget.nPlayers, 'Esperando...');
     _listaJugadores[0] = widget.nomUser;
+    int i = 1;
+    for (dynamic a in widget.infoInicial['jugadores']) {
+      _listaJugadores[i] = a;
+      i++;
+    }
   }
 
   String getReglas() {
@@ -281,7 +287,9 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                                     fontSize: 10,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
-                                child: Text(_listaJugadores[index])),
+                                child: _listaJugadores.length > index
+                                    ? Text(_listaJugadores[index])
+                                    : const Text('Esperando...')),
                           ],
                         ),
                       );
