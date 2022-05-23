@@ -244,7 +244,8 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                                               headers: {
                                                 'Authorization':
                                                     'Bearer ${widget.autorization}',
-                                                'username': _listaJugadores[index]
+                                                'username':
+                                                    _listaJugadores[index]
                                               });
                                           setState(() {
                                             _listaJugadores[index] =
@@ -264,6 +265,7 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                     },
                   ),
                 ),
+
                 DefaultTextStyle(
                     style: const TextStyle(
                       color: Colors.black,
@@ -312,9 +314,6 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                         child: const Text('Invitar amigos')),
                   ],
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
                 //Botón crear
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -352,7 +351,8 @@ class _AnadirJugadoresState extends State<AnadirJugadores> {
                                 builder: (context) => Partida(
                                       userListener: canalUser.stream,
                                       gameListener: canalGeneral.stream,
-                                      cartaMedioListener: canalCartaMedio.stream,
+                                      cartaMedioListener:
+                                          canalCartaMedio.stream,
                                       jugadaListener: canalJugada.stream,
                                       stompClient: stompClient,
                                       nomUser: widget.nomUser,

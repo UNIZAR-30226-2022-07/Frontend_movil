@@ -52,54 +52,47 @@ class _InvitePlayersState extends State<InvitePlayers> {
                           padding: const EdgeInsets.all(8.0),
                           child: ListTile(
                             title: Row(
-                              children: [
-                                const SizedBox(width: 20),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${data?[index].username}',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      const SizedBox(width: 300),
-                                      TextButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Color.fromARGB(
-                                                      255, 68, 221, 26)),
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          String nom =
-                                              '${data?[index].username}';
-                                          print(nom);
-                                          InviteFriend(widget.username, nom,
-                                              widget.idPartida);
-                                        },
-                                        child: const Text(
-                                          'Invitar',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'FredokaOne',
-                                              fontSize: 15.0),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${data?[index].username}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(width: 300),
+                                  TextButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              const Color.fromARGB(
+                                                  255, 68, 221, 26)),
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
                                         ),
                                       ),
-                                      // const SizedBox(height: 10),
-                                    ])
-                              ],
-                            ),
+                                    ),
+                                    onPressed: () {
+                                      String nom = '${data?[index].username}';
+                                      print(nom);
+                                      InviteFriend(widget.username, nom,
+                                          widget.idPartida);
+                                    },
+                                    child: const Text(
+                                      'Invitar',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'FredokaOne',
+                                          fontSize: 15.0),
+                                    ),
+                                  ),
+                                  // const SizedBox(height: 10),
+                                ]),
                           ),
                         ),
                       );
