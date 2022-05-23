@@ -180,8 +180,9 @@ class _SemifinalState extends State<Semifinal> {
         }
         dynamic turno = a['turno'];
         //Gestionar la lógica de los bloqueos
-        if (carta['numero'] == 'BLOQUEO') {
-          if (!salto) {
+        if (carta['numero'] == 'BLOQUEO' &&
+            !(cima.numero == 'BLOQUEO' || cima.color == carta['color'])) {
+          if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/pasarTurno/${widget.idPartida}',
                 body: '',
@@ -189,14 +190,12 @@ class _SemifinalState extends State<Semifinal> {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
-            salto = true;
-          } else {
-            salto = false;
           }
         }
         //Gestionar la lógica de los draws
-        if (carta['numero'] == 'MAS_DOS') {
-          if (robar2) {
+        if (carta['numero'] == 'MAS_DOS' &&
+            !(cima.numero == 'MAS_DOS' || cima.color == carta['color'])) {
+          if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
                 body: "2",
@@ -211,14 +210,12 @@ class _SemifinalState extends State<Semifinal> {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
-            robar2 = false;
-          } else {
-            robar2 = false;
           }
         }
         //Gestionar la lógica de los draws4
-        if (carta['numero'] == 'MAS_CUATRO') {
-          if (robar4) {
+        if (carta['numero'] == 'MAS_CUATRO' &&
+            !(cima.numero == 'MAS_CUATRO' || cima.color == carta['color'])) {
+          if (turno == widget.nomUser) {
             stompClient.send(
                 destination: '/game/card/draw/${widget.idPartida}',
                 body: "4",
@@ -233,9 +230,6 @@ class _SemifinalState extends State<Semifinal> {
                   'Authorization': 'Bearer ${widget.authorization}',
                   'username': widget.nomUser
                 });
-            robar4 = false;
-          } else {
-            robar4 = true;
           }
         }
 
