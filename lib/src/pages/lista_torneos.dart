@@ -111,8 +111,10 @@ class _ListTorneosState extends State<ListTorneos> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      String idTorneo = data![index];
-                                      UnirseTorneo(idTorneo);
+                                      String idTorneo =
+                                          data![index]['idTorneo'];
+                                      dynamic d = data[index];
+                                      UnirseTorneo(d);
                                     },
                                     child: const Text(
                                       'Unirme',
@@ -162,33 +164,18 @@ class _ListTorneosState extends State<ListTorneos> {
                 ))));
   }
 
-  Future<dynamic> UnirseTorneo(String idTorneo) async {
-    Uri url = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
-    final headers = {
-      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
-    };
-    Map mapeddate = {'idPartida': idTorneo};
-    final response = await http.post(url,
-        headers: headers, body: jsonEncode(mapeddate)); // print(response);
-    if (response.statusCode == 200) {
-      Map<String, dynamic> respuesta = json.decode(response.body);
-      print(respuesta);
-      print(respuesta['id']);
-      final route = MaterialPageRoute(
-          builder: (context) => AnadirJugadoresTorneo(
-                nomUser: widget.username,
-                autorization: widget.authorization,
-                idPagina: respuesta['idTorneo'],
-                numP: 9,
-                infoInicial: respuesta,
-                reglas: respuesta['reglas'],
-              ));
-      Navigator.push(context, route);
-    } else {
-      print('No se ha creado');
-      if (response.statusCode != 200) {
-        print(response.statusCode);
-      }
-    }
+//{idTorneo: b81f8516-9fc3-4735-a89e-52251f1e89b3, tiempoTurno: 10, jugadores: [Helios2, victor], reglas: []}
+  Future<dynamic> UnirseTorneo(dynamic dataTorneo) async {
+    // print(response);
+    final route = MaterialPageRoute(
+        builder: (context) => AnadirJugadoresTorneo(
+              nomUser: widget.username,
+              autorization: widget.authorization,
+              idPagina: dataTorneo['idTorneo'],
+              numP: 9,
+              infoInicial: dataTorneo,
+              reglas: dataTorneo['reglas'],
+            ));
+    Navigator.push(context, route);
   }
 }

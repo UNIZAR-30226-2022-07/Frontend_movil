@@ -128,7 +128,8 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
             print(jugadores);
             //Se actualiza la lista de jugadores
             setState(() {
-              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              // _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
+              _listaJugadores = jugadores;
               nJugadores = jugadores.length;
             });
             //Se comprueba si se ha llegado al número necesario de jugadores
@@ -150,6 +151,21 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
         }
       },
     );
+
+    stompClient.subscribe(
+      destination: '/topic/disconnect/torneo/${widget.idPagina}',
+      callback: (StompFrame frame) {
+        if (frame.body != null) {}
+      },
+    );
+
+    stompClient.send(
+        destination: '/game/connect/torneo/${widget.idPagina}',
+        body: '',
+        headers: {
+          'Authorization': 'Bearer ${widget.autorization}',
+          'username': widget.nomUser
+        });
   }
 
   late StompClient stompClient = StompClient(
@@ -190,6 +206,11 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
     }
     _listaJugadores = List.filled(widget.numP, 'Esperando...');
     _listaJugadores[0] = widget.nomUser;
+    int i = 1;
+    for (dynamic a in widget.infoInicial['jugadores']) {
+      _listaJugadores[i] = a;
+      i++;
+    }
   }
 
   @override
@@ -229,7 +250,7 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                 Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: widget.numP,
+                    itemCount: 9,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Padding(
@@ -249,7 +270,9 @@ class _AnadirJugadoresTorneoState extends State<AnadirJugadoresTorneo> {
                                     fontSize: 10,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
-                                child: Text(_listaJugadores[index])),
+                                child: _listaJugadores.length > index
+                                    ? Text(_listaJugadores[index])
+                                    : Text('Esperando...')),
                           ],
                         ),
                       );
