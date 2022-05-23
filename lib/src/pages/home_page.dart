@@ -148,42 +148,148 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20),
           children: <Widget>[
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: double.infinity,
-                  height: 50.0,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black54),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black54),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: () async {
-                      Uri url = Uri.parse(
-                          'https://onep1.herokuapp.com/game/getPartidaPublica');
-                      final headers = {
-                        HttpHeaders.contentTypeHeader:
-                            "application/json; charset=UTF-8"
-                      };
+                      onPressed: () async {
+                        Uri url = Uri.parse(
+                            'https://onep1.herokuapp.com/game/getPartidaPublica');
+                        final headers = {
+                          HttpHeaders.contentTypeHeader:
+                              "application/json; charset=UTF-8"
+                        };
 
-                      final responsePartida =
-                          await http.post(url, headers: headers);
-                      if (responsePartida.statusCode == 200) {
-                        dynamic idPartida = json.decode(responsePartida.body);
+                        final responsePartida =
+                            await http.post(url, headers: headers);
+                        if (responsePartida.statusCode == 200) {
+                          dynamic idPartida = json.decode(responsePartida.body);
+                          Uri url = Uri.parse(
+                              'https://onep1.herokuapp.com/game/getInfoPartida');
+                          print(idPartida);
+                          Map mapeddate = {
+                            'idPartida': idPartida,
+                          };
+                          final response = await http.post(url,
+                              headers: headers, body: jsonEncode(mapeddate));
+                          if (response.statusCode == 200) {
+                            Map<String, dynamic> respuesta =
+                                json.decode(response.body);
+                            print(respuesta);
+                            List<String> jugadores = [];
+                            for (dynamic a in respuesta['jugadores']) {
+                              jugadores.add(a);
+                            }
+                            final route = MaterialPageRoute(
+                                builder: (context) => EsperaPublica(
+                                      autorization: widget.autorization,
+                                      idPagina: idPartida,
+                                      nomUser: widget.username,
+                                      nPlayers: respuesta['numeroJugadores'],
+                                      jugadores: jugadores,
+                                      infoInicial: respuesta,
+                                    ));
+                            Navigator.push(context, route);
+                          } else {
+                            print('Error');
+                            dynamic respuesta = json.decode(response.body);
+                            print(respuesta);
+                          }
+                        } else {
+                          print('Error');
+                          dynamic respuesta = json.decode(responsePartida.body);
+                          print(respuesta);
+                        }
+                      },
+                      child: const Text(
+                        'Partida rápida',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'FredokaOne',
+                            fontSize: 30.0),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black54),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        final route = MaterialPageRoute(
+                            builder: (context) => CreatePage(
+                                  nomUser: widget.username,
+                                  autorization: widget.autorization,
+                                ));
+                        Navigator.push(context, route);
+                      },
+                      child: const Text(
+                        'Crear partida privada',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'FredokaOne',
+                            fontSize: 30.0),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black54),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final code = await openDialog();
+                        if (code == null || code.isEmpty) return;
                         Uri url = Uri.parse(
                             'https://onep1.herokuapp.com/game/getInfoPartida');
-                        print(idPartida);
+                        final headers = {
+                          HttpHeaders.contentTypeHeader:
+                              "application/json; charset=UTF-8"
+                        };
                         Map mapeddate = {
-                          'idPartida': idPartida,
+                          'idPartida': code,
                         };
                         final response = await http.post(url,
                             headers: headers, body: jsonEncode(mapeddate));
+                        print(response.body);
+                        setState(() => this.code = code);
                         if (response.statusCode == 200) {
                           Map<String, dynamic> respuesta =
                               json.decode(response.body);
@@ -193,196 +299,94 @@ class _HomePageState extends State<HomePage> {
                             jugadores.add(a);
                           }
                           final route = MaterialPageRoute(
-                              builder: (context) => EsperaPublica(
-                                    autorization: widget.autorization,
-                                    idPagina: idPartida,
-                                    nomUser: widget.username,
-                                    nPlayers: respuesta['numeroJugadores'],
-                                    jugadores: jugadores,
-                                    infoInicial: respuesta,
-                                  ));
+                              builder: (context) => EsperaPartida(
+                                  autorization: widget.autorization,
+                                  idPagina: code,
+                                  nomUser: widget.username,
+                                  nPlayers: respuesta['numeroJugadores'],
+                                  jugadores: jugadores,
+                                  infoInicial: respuesta,
+                                  reglas: respuesta['reglas']));
                           Navigator.push(context, route);
-                        } else {
-                          print('Error');
-                          dynamic respuesta = json.decode(response.body);
-                          print(respuesta);
                         }
-                      } else {
-                        print('Error');
-                        dynamic respuesta = json.decode(responsePartida.body);
-                        print(respuesta);
-                      }
-                    },
-                    child: const Text(
-                      'Partida rápida',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'FredokaOne',
-                          fontSize: 30.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50.0,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black54),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
+                      },
+                      child: const Text(
+                        'Unirse a partida privada',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'FredokaOne',
+                            fontSize: 30.0),
                       ),
                     ),
-                    onPressed: () {
-                      final route = MaterialPageRoute(
-                          builder: (context) => CreatePage(
-                                nomUser: widget.username,
-                                autorization: widget.autorization,
-                              ));
-                      Navigator.push(context, route);
-                    },
-                    child: const Text(
-                      'Crear partida privada',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'FredokaOne',
-                          fontSize: 30.0),
-                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50.0,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black54),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50.0,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black54),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: () async {
-                      final code = await openDialog();
-                      if (code == null || code.isEmpty) return;
-                      Uri url = Uri.parse(
-                          'https://onep1.herokuapp.com/game/getInfoPartida');
-                      final headers = {
-                        HttpHeaders.contentTypeHeader:
-                            "application/json; charset=UTF-8"
-                      };
-                      Map mapeddate = {
-                        'idPartida': code,
-                      };
-                      final response = await http.post(url,
-                          headers: headers, body: jsonEncode(mapeddate));
-                      print(response.body);
-                      setState(() => this.code = code);
-                      if (response.statusCode == 200) {
-                        Map<String, dynamic> respuesta =
-                            json.decode(response.body);
-                        print(respuesta);
-                        List<String> jugadores = [];
-                        for (dynamic a in respuesta['jugadores']) {
-                          jugadores.add(a);
-                        }
+                      onPressed: () {
                         final route = MaterialPageRoute(
-                            builder: (context) => EsperaPartida(
-                                autorization: widget.autorization,
-                                idPagina: code,
-                                nomUser: widget.username,
-                                nPlayers: respuesta['numeroJugadores'],
-                                jugadores: jugadores,
-                                infoInicial: respuesta,
-                                reglas: respuesta['reglas']));
+                            builder: (context) => ListTorneos(
+                                  username: widget.username,
+                                  authorization: widget.autorization,
+                                ));
                         Navigator.push(context, route);
-                      }
-                    },
-                    child: const Text(
-                      'Unirse a partida privada',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'FredokaOne',
-                          fontSize: 30.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50.0,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black54),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
+                      },
+                      child: const Text(
+                        'Buscar torneo',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'FredokaOne',
+                            fontSize: 30.0),
                       ),
                     ),
-                    onPressed: () {
-                      final route = MaterialPageRoute(
-                          builder: (context) => ListTorneos(
-                                username: widget.username,
-                                authorization: widget.autorization,
-                              ));
-                      Navigator.push(context, route);
-                    },
-                    child: const Text(
-                      'Buscar torneo',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'FredokaOne',
-                          fontSize: 30.0),
-                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50.0,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black54),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      final route = MaterialPageRoute(
-                          builder: (context) => CreateTournament(
-                              autorization: widget.autorization,
-                              username: widget.username));
-                      Navigator.push(context, route);
-                    },
-                    child: const Text(
-                      'Crear torneo',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'FredokaOne',
-                          fontSize: 30.0),
-                    ),
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-              ],
-            )
+                  //   SizedBox(
+                  //     width: double.infinity,
+                  //     height: 50.0,
+                  //     child: TextButton(
+                  //       style: ButtonStyle(
+                  //         backgroundColor:
+                  //             MaterialStateProperty.all<Color>(Colors.black54),
+                  //         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //           RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(12.0),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       onPressed: () {
+                  //         final route = MaterialPageRoute(
+                  //             builder: (context) => CreateTournament(
+                  //                 autorization: widget.autorization,
+                  //                 username: widget.username));
+                  //         Navigator.push(context, route);
+                  //       },
+                  //       child: const Text(
+                  //         'Crear torneo',
+                  //         style: TextStyle(
+                  //             color: Colors.white,
+                  //             fontFamily: 'FredokaOne',
+                  //             fontSize: 30.0),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ],
+                ])
           ],
         ),
       ),
