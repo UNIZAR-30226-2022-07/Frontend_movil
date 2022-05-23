@@ -9,8 +9,6 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:async';
 
-import 'partida.dart';
-
 class EsperaTorneo extends StatefulWidget {
   final String idPagina;
   final String autorization;
@@ -83,7 +81,7 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
                 Navigator.push(context, route);
                 await Future.delayed(const Duration(seconds: 1));
               }
-              canalUser.sink.add(json.decode(frame.body!));
+              canalUser.sink.add(jsonDecode(frame.body!));
             }
           }
         });
@@ -212,7 +210,6 @@ class _EsperaTorneoState extends State<EsperaTorneo> {
           'Authorization': 'Bearer ${widget.autorization}',
           'username': widget.nomUser
         });
-    print('wait_torneo susxrito');
   }
 
   late StompClient stompClient = StompClient(

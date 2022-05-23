@@ -773,6 +773,7 @@ class _PartidaState extends State<Partida> {
                       backgroundColor: Colors.red),
                 ),
                 onPressed: () {
+                  stompClient.deactivate();
                   final route = MaterialPageRoute(
                       builder: (context) => HomePage(
                           autorization: widget.authorization,

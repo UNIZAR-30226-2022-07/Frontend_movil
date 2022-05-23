@@ -60,7 +60,6 @@ class _SemifinalState extends State<Semifinal> {
   late Mano mano;
   late String _turno;
   late List<dynamic> mapa = [];
-  String idFinal = '';
   //infoInicial
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
@@ -101,21 +100,17 @@ class _SemifinalState extends State<Semifinal> {
   // Van a llegar los mensajes específicos del usuario
   //  -- Las cartas de la mano inicial
   void gestionarUsuario(dynamic a) {
-    if (a is String) {
-      idFinal = a;
-    } else {
-      List<Carta> vieja = mano.cartas;
-      List<Carta> lista = Carta.getCartas(a);
-      vieja.addAll(lista);
-      setState(() {
-        if (partidaEmpezada) {
-          mano = Mano(cartas: vieja);
-        } else {
-          mano = Mano(cartas: vieja);
-          partidaEmpezada = true;
-        }
-      });
-    }
+    List<Carta> vieja = mano.cartas;
+    List<Carta> lista = Carta.getCartas(a);
+    vieja.addAll(lista);
+    setState(() {
+      if (partidaEmpezada) {
+        mano = Mano(cartas: vieja);
+      } else {
+        mano = Mano(cartas: vieja);
+        partidaEmpezada = true;
+      }
+    });
   }
 
   // Va a llegar la lista de jugadores
@@ -793,9 +788,21 @@ class _SemifinalState extends State<Semifinal> {
                       fontWeight: FontWeight.bold,
                       backgroundColor: Colors.red),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   //Pasar a la final
-                  pasarFinal();
+                  //Petición post y el id
+                  Uri url = Uri.parse(
+                      'https://onep1.herokuapp.com/game/getInfoPartida');
+                  final headers = {
+                    HttpHeaders.contentTypeHeader:
+                        "application/json; charset=UTF-8"
+                  };
+                  Map mapeddate = {
+                    'idPartida': 'idfinal',
+                  };
+                  final response = await http.post(url,
+                      headers: headers, body: jsonEncode(mapeddate));
+                  pasarFinal(response.body);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
@@ -809,14 +816,14 @@ class _SemifinalState extends State<Semifinal> {
             ));
   }
 
-  Future<dynamic> pasarFinal() async {
+  Future<dynamic> pasarFinal(String idfinal) async {
     //Pedir info de la final -> getInfoPartida
     Uri url = Uri.parse('https://onep1.herokuapp.com/game/getInfoPartida');
     final headers = {
       HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
     };
     Map mapeddate = {
-      'idPartida': idFinal,
+      'idPartida': idfinal,
     };
     final response =
         await http.post(url, headers: headers, body: jsonEncode(mapeddate));
@@ -831,7 +838,7 @@ class _SemifinalState extends State<Semifinal> {
       final route = MaterialPageRoute(
           builder: (context) => EsperaPartida(
               autorization: widget.authorization,
-              idPagina: idFinal,
+              idPagina: idfinal,
               nomUser: widget.nomUser,
               nPlayers: respuesta['numeroJugadores'],
               jugadores: jugadores,
@@ -856,6 +863,7 @@ class _SemifinalState extends State<Semifinal> {
                       backgroundColor: Colors.red),
                 ),
                 onPressed: () {
+                  stompClient.deactivate();
                   final route = MaterialPageRoute(
                       builder: (context) => HomePage(
                           autorization: widget.authorization,
