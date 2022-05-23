@@ -777,8 +777,12 @@ class _PartidaState extends State<Partida> {
                         'Authorization': 'Bearer ${widget.authorization}',
                         'username': widget.nomUser
                       });
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  final route = MaterialPageRoute(
+                      builder: (context) => HomePage(
+                          autorization: widget.authorization,
+                          username: widget.nomUser,
+                          pais: 'Espana'));
+                  Navigator.push(context, route);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Colors.red),

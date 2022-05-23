@@ -38,7 +38,6 @@ class _EsperaPublicaState extends State<EsperaPublica> {
   final canalCartaMedio = StreamController.broadcast();
   final canalJugada = StreamController.broadcast();
   List<String> _listaJugadores = [];
-  List<bool> _listacompleta = [];
 
 // {jugadores: [{nombre: usuario123, cartas: []}], reglas: [],
 //estado: NEW, id: 6dbd5630-f5a9-452c-b54c-05f3248b259c,
@@ -94,8 +93,7 @@ class _EsperaPublicaState extends State<EsperaPublica> {
             }
             print(jugadores);
             setState(() {
-              _listaJugadores[nJugadores] = jugadores[jugadores.length - 1];
-              _listacompleta[nJugadores] = true;
+              _listaJugadores = jugadores;
               nJugadores = jugadores.length;
             });
             if (nJugadores == widget.nPlayers &&
@@ -220,7 +218,11 @@ class _EsperaPublicaState extends State<EsperaPublica> {
     }
     _listaJugadores = List.filled(widget.nPlayers, 'Esperando...');
     _listaJugadores[0] = widget.nomUser;
-    _listacompleta = List.filled(widget.nPlayers, false);
+    int i = 1;
+    for (dynamic a in widget.infoInicial['jugadores']) {
+      _listaJugadores[i] = a;
+      i++;
+    }
   }
 
   @override
@@ -260,7 +262,9 @@ class _EsperaPublicaState extends State<EsperaPublica> {
                                   fontSize: 10,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
-                              child: Text(_listaJugadores[index])),
+                              child: _listaJugadores.length > index
+                                  ? Text(_listaJugadores[index])
+                                  : const Text('Esperando...')),
                         ],
                       ),
                     );
