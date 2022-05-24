@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter_unogame/src/pages/recuperar_contra_token.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_unogame/src/widgets/input_text.dart';
 
@@ -24,8 +28,8 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       child: Column(
         children: <Widget> [
           InputText(
-            hint: 'Email address',
-            label: 'Email address',
+            hint: 'Email',
+            label: 'Email',
             keyboard: TextInputType.emailAddress,
             icono: Icon(Icons.verified_user),
             onChanged: (data) {
@@ -33,10 +37,10 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
             },
             validator: (data) {
               if (!data!.contains('@')) {
-                return "Invalid email";
+                return "Email inválido";
               }
               else if (data.trim().isEmpty){
-                return "Invalid email";
+                return "Email inválido";
               }
               return null;
             },
@@ -55,8 +59,13 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                           ),
                         ),
                       ),
-              onPressed: _submit,  // poner lo de la pagina que han dicho estos,
-              child: Text('Send email',
+              onPressed: () {
+                EnviarEmail(_email);
+                // final route = MaterialPageRoute(
+                //     builder: (context) => RecuperarContra());
+                // Navigator.push(context, route);
+              }, 
+              child: Text('Enviar email de recuperación',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'FredokaOne',
@@ -71,5 +80,48 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
         ],
       )
     );
+  }
+    Future<dynamic> popUpError(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: ((context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  title: const Text(
+                    'Algo ha ido mal',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ))));
+  }
+
+  Future EnviarEmail(String _email) async {
+    Uri url = Uri.parse('https://onep1.herokuapp.com/api/auth/forgot_password');
+    final headers = {
+      HttpHeaders.contentTypeHeader: "application/json; charset=UTF-8"
+    };
+    Map mapeddate = {'email': _email};
+
+    final response = await http.post(url,
+        headers: headers, body: jsonEncode(mapeddate)); // print(response);
+    if (response.statusCode == 200) {
+      Map<String, dynamic> respuesta = json.decode(response
+          .body); // https://coflutter.com/dart-how-to-get-keys-and-values-from-map/
+      final route = MaterialPageRoute(
+                    builder: (context) => RecuperarContra());
+                Navigator.push(context, route);
+      // Navigator.pushReplacementNamed(context, 'home_page');
+      print(response);
+    } else {
+      print('Email erróneo');
+      if (response.statusCode != 200) {
+        popUpError(context);
+      }
+    }
   }
 }
