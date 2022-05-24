@@ -68,3 +68,5 @@ class FetchTournamentList {
     return results;
   }
 }
+
+
