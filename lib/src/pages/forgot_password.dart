@@ -18,14 +18,8 @@ class _forgotPasswordState extends State<forgotPassword> {
           width: double.infinity, 
           height: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                Color.fromARGB(255, 252, 125, 125),
-                Color.fromARGB(0, 255, 123, 123)
-              ],
-              begin: Alignment.topCenter
-            ),
-          ),
+            image: DecorationImage(
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
           child: ListView(
             padding: EdgeInsets.symmetric(
               horizontal: 40.0,
@@ -35,18 +29,15 @@ class _forgotPasswordState extends State<forgotPassword> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget> [
-                  IconContainer(
-                    url: 'images/uno.jpg',
-                  ),
                   Text(
-                    'Get a new password',
+                    '¿Has olvidado la contraseña?',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 25.0
                     ),
                   ),
                   Text(
-                    'Type in your email so we can do this!',
+                    'Inserta tu correo electrónico de registro',
                     style: TextStyle(
                       fontFamily: 'PermanentMarker',
                       fontSize: 15.0
@@ -59,18 +50,18 @@ class _forgotPasswordState extends State<forgotPassword> {
                   ForgotPasswordForm()
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>  [
-                  FloatingActionButton(
-                    backgroundColor: Colors.red[900],
-                    child: Icon(Icons.settings_backup_restore),
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: <Widget>  [
+              //     FloatingActionButton(
+              //       backgroundColor: Colors.red[900],
+              //       child: Icon(Icons.settings_backup_restore),
+              //       onPressed: (){
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

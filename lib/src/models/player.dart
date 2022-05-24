@@ -1,8 +1,9 @@
 class Player {
   final String userName;
   final int trophies;
+  late int? rating;
 
-  Player({required this.userName, required this.trophies});
+  Player({required this.userName, required this.trophies, this.rating});
 
   factory Player.fromJson(dynamic json) {
     return Player(

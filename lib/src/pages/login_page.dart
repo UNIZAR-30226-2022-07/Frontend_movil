@@ -21,22 +21,19 @@ class _LoginPageState extends State<LoginPage> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: <Color>[
-            Color.fromARGB(255, 252, 125, 125),
-            Color.fromARGB(0, 255, 123, 123)
-          ], begin: Alignment.topCenter),
-        ),
+          image: DecorationImage(
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)),
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 60),
           children: <Widget>[
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const IconContainer(
-                  url: 'images/uno.jpg',
+                  url: 'images/one-red.png',
                 ),
                 const Text(
-                  'Welcome!',
+                  '¡Bienvenido!',
                   style:
                       TextStyle(fontFamily: 'PermanentMarker', fontSize: 38.0),
                 ),
@@ -62,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(context, route);
                     },
                     child: const Text(
-                      'Sign in',
+                      'Iniciar sesión',
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',
@@ -92,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(context, route);
                     },
                     child: const Text(
-                      'Sign up',
+                      'Regístrate',
                       style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'FredokaOne',

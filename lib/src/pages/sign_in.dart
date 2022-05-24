@@ -18,50 +18,31 @@ class _SignInState extends State<SignIn> {
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: <Color>[
-              Color.fromARGB(255, 252, 125, 125),
-              Color.fromARGB(0, 255, 123, 123)
-            ], begin: Alignment.topCenter),
+            image: DecorationImage(
+                image: AssetImage('images/fondo2.jpg'), fit: BoxFit.cover)
           ),
           child: ListView(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 40.0, vertical: 100),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 50),
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const <Widget>[
                   IconContainer(
-                    url: 'images/uno.jpg',
-                  ),
-                  SizedBox(
-                    height: 20.0,
+                    url: 'images/one-red.png',
                   ),
                   Text(
-                    'Sign In',
+                    'Iniciar sesión',
                     style: TextStyle(
-                        fontFamily: 'PermanentMarker', fontSize: 38.0),
+                        fontFamily: 'PermanentMarker', fontSize: 32.0),
                   ),
-
-                  Text('Hi there! Nice to see you again.',
+                  Text('!Hola! ¡Qué bien verte de nuevo!',
                       style: TextStyle(
-                          fontFamily: 'PermanentMarker', fontSize: 20.0)),
+                          fontFamily: 'PermanentMarker', fontSize: 14.0)),
                   SizedBox(
-                    height: 15.0,
+                    height: 10.0,
                   ),
                   // Formulario
-                  LoginForm()
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  FloatingActionButton(
-                    backgroundColor: Colors.red[900],
-                    child: const Icon(Icons.settings_backup_restore),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  LoginForm(),
                 ],
               ),
             ],
